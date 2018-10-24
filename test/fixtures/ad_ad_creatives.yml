@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  client: one
+  ad: one
+  ad_creative: one
+
+two:
+  client: two
+  ad: two
+  ad_creative: two

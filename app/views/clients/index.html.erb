@@ -1,0 +1,51 @@
+<% provide(:title, "Clientes") %>
+<% provide(:page, "clients") %>
+<section class="container">
+  <div class="page-header">
+    <h2>Clientes</h2>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Clientes</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="row toolbar">
+    <div class="col-md-12 text-right">
+      <%= link_to "Crear Cliente", new_client_path, class: "btn btn-primary" %>
+      <%#= link_to "Descargar Listado", clients_path(format: "xlsx"), class: "btn btn-primary btn-sm" %>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered table-sm display">
+      <thead class="thead-light">
+        <tr>
+          <th>Nombre</th>
+          <th style="width:130px;">Cuenta FB</th>
+          <th style="width:130px;">Cuenta GAds</th>
+          <th style="width:140px;">Actualizado</th>
+          <th style="width:60px;">¿Hab.?</th>
+          <th style="width:90px;">Herr.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @clients.each do |client| %>
+        <tr class="<%= client.is_enabled ? 'enabled' : "disabled" %>">
+          <td><%= client.name %></td>
+          <td class="text-center"><%= client.fb_ad_account_id %></td>
+          <td class="text-center"><%= client.ga_ad_account_id %></td>
+          <td><%= !client.last_update.blank? ? client.last_update.strftime("%F %T") : nil %></td>
+          <td class="text-center"><%= client.is_enabled ? 'Sí' : 'No' %></td>
+          <td class="text-center">
+            <% if current_user.is_admin %>
+            <%= link_to '', edit_client_path(client), class: 'fa fa-pencil-alt fa-fw action blue', title: "Editar cliente '#{client.name}'" %>
+            <%= link_to '', client, method: :delete, class: 'fa fa-trash fa-fw action red', data: { confirm: "¿Eliminar el cliente '#{client.name}'?" } %>
+            <% end %>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

@@ -1,0 +1,25 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  impressions: 1
+  total_reach: 1
+  impressions_organic: 1
+  impressions_organic_uniq: 1
+  impressions_paid: 1
+  impressions_paid_uniq: 1
+  negative_feedback: 1
+  negative_feedback_uniq: 1
+  engaged_fan: 1
+  reactions_by_type_total: 
+
+two:
+  impressions: 1
+  total_reach: 1
+  impressions_organic: 1
+  impressions_organic_uniq: 1
+  impressions_paid: 1
+  impressions_paid_uniq: 1
+  negative_feedback: 1
+  negative_feedback_uniq: 1
+  engaged_fan: 1
+  reactions_by_type_total: 

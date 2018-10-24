@@ -1,0 +1,27 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  id: 
+  name: MyString
+  bid_type: MyString
+  bid_amount: 1
+  created_time: 2018-05-25 11:54:25
+  updated_time: 2018-05-25 11:54:25
+  status: MyString
+  ad_creative_id: 
+  ad_set: one
+  ad_campaign: one
+  client: one
+
+two:
+  id: 
+  name: MyString
+  bid_type: MyString
+  bid_amount: 1
+  created_time: 2018-05-25 11:54:25
+  updated_time: 2018-05-25 11:54:25
+  status: MyString
+  ad_creative_id: 
+  ad_set: two
+  ad_campaign: two
+  client: two

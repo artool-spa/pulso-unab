@@ -1,0 +1,43 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  timeframe: MyString
+  objective: MyString
+  spend: 9.99
+  clicks: 1
+  clicks_uniq: 1
+  cpc: 9.99
+  cpc_uniq: 9.99
+  ctr: 9.99
+  ctr_uniq: 9.99
+  impressions: 1
+  reach: 1
+  frequency: 9.99
+  relevance_score: 1
+  date_start: 2018-05-28
+  date_stop: 2018-05-28
+  ad: one
+  ad_set: one
+  ad_campaign: one
+  client: one
+
+two:
+  timeframe: MyString
+  objective: MyString
+  spend: 9.99
+  clicks: 1
+  clicks_uniq: 1
+  cpc: 9.99
+  cpc_uniq: 9.99
+  ctr: 9.99
+  ctr_uniq: 9.99
+  impressions: 1
+  reach: 1
+  frequency: 9.99
+  relevance_score: 1
+  date_start: 2018-05-28
+  date_stop: 2018-05-28
+  ad: two
+  ad_set: two
+  ad_campaign: two
+  client: two

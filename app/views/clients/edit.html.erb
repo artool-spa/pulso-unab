@@ -1,0 +1,21 @@
+<% provide(:title, "Modificar Cliente") %>
+<% provide(:page, "edit_client") %>
+<section class="container">
+  <div class="page-header">
+    <h2>Modificar Cliente</h2>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><%= link_to "Clientes", clients_path %></li>
+        <li class="breadcrumb-item active"><%= "Editar: #{@client.name}"%></li>
+      </ol>
+    </nav>
+  </div>
+  <!--div class="row">
+    <div class="col-md-12 text-right">
+      <%#= link_to "Crear Formulario", new_client_fb_form_path(@client), class: "btn btn-primary btn-sm" %>
+    </div>
+  </div-->
+
+  <%= render 'form', client: @client %>
+</section>

@@ -1,0 +1,29 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @client.name %>
+</p>
+
+<p>
+  <strong>Page:</strong>
+  <%= @client.page_id %>
+</p>
+
+<p>
+  <strong>Ad account:</strong>
+  <%= @client.fb_ad_account_id %>
+</p>
+
+<p>
+  <strong>Is enabled:</strong>
+  <%= @client.is_enabled %>
+</p>
+
+<p>
+  <strong>Main color:</strong>
+  <%= @client.main_color %>
+</p>
+
+<%= link_to 'Edit', edit_client_path(@client) %> |
+<%= link_to 'Back', clients_path %>

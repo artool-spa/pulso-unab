@@ -1,0 +1,66 @@
+<%= form_with(model: user, local: true) do |form| %>
+
+  <div class="card">
+    <div class="card-header">
+      Datos Personales
+    </div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <%= form.label :email, "E-mail" %>
+          <%= form.email_field :email, id: :user_email, class: "form-control", required: true %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <%= form.label :password, "Contraseña" %>
+          <%= form.password_field :password, id: :user_password, class: "form-control" %>
+        </div>
+        <div class="form-group col-md-6">
+          <%= form.label :password_confirmation, "Repetir Contraseña" %>
+          <%= form.password_field :password_confirmation, id: :user_password_confirmation, class: "form-control" %>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group col-md-2">
+          <div class="custom-control custom-checkbox">
+            <%= form.check_box :is_enabled, class: "custom-control-input", id: "user_is_enabled" %>
+            <%= form.label "is_enabled", "Usuario Habilitado", class: "custom-control-label" %>
+          </div>
+        </div>
+        <div class="form-group col-md-2">
+          <div class="custom-control custom-checkbox">
+            <%= form.check_box :is_admin, class: "custom-control-input", id: "user_is_admin" %>
+            <%= form.label "is_admin", "Usuario Admin", class: "custom-control-label" %>
+          </div>
+        </div>
+        <div class="form-group col-md-6">
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!--br /><br />
+
+  <% #if user.email.include?("artool") %>
+  <div class="card">
+    <div class="card-header">
+      Clientes
+    </div>
+    <div class="card-body">
+      <%= form.select :client_ids, options_for_select(@clients, @selected_clients), { include_hidden: false }, { class: 'form-control multiselect1', multiple: true, required: true }  %>
+    </div>
+  </div>
+  <% #end %>
+
+  <br /><br /-->
+
+  <br />
+
+  <div class="actions">
+    <%= form.submit class: "btn btn-primary" %>
+  </div>
+<% end %>
