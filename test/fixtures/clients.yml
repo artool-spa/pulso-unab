@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  page_id: 
+  fb_ad_account_id: 
+  is_enabled: false
+  main_color: MyString
+
+two:
+  name: MyString
+  page_id: 
+  fb_ad_account_id: 
+  is_enabled: false
+  main_color: MyString

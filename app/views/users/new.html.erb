@@ -1,0 +1,21 @@
+<% provide(:title, "Crear Usuario") %>
+<% provide(:page, "new_user") %>
+<section class="container">
+  <div class="page-header">
+    <h2>Crear Usuario</h2>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><%= link_to "Usuarios", users_path %></li>
+        <li class="breadcrumb-item active">Crear</li>
+      </ol>
+    </nav>
+  </div>
+  <!--div class="row">
+    <div class="col-md-12 text-right">
+      <%#= link_to "Crear Formulario", new_client_fb_form_path(@client), class: "btn btn-primary btn-sm" %>
+    </div>
+  </div-->
+
+  <%= render 'form', user: @user %>
+</section>

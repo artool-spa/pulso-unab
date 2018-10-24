@@ -1,0 +1,47 @@
+<% provide(:title, "Usuarios") %>
+<% provide(:page, "users") %>
+<section class="container">
+  <div class="page-header">
+    <h2>Usuarios</h2>
+
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item active" aria-current="page">Usuarios</li>
+      </ol>
+    </nav>
+  </div>
+  <div class="row toolbar">
+    <div class="col-md-12 text-right">
+      <%= link_to "Crear Usuario", new_user_path, class: "btn btn-primary" %>
+      <%#= link_to "Descargar Listado", users_path(format: "xlsx"), class: "btn btn-primary btn-sm" %>
+    </div>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-hover table-bordered table-sm display">
+      <thead class="thead-light">
+        <tr>
+          <th>E-Mail</th>
+          <th style="width:150px;">Últ. Inicio Sesión</th>
+          <th style="width:60px;">¿Hab.?</th>
+          <th style="width:60px;">Adm.</th>
+          <th style="width:70px;">Herr.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+        <tr class="<%= user.is_enabled ? 'enabled' : "disabled" %>">
+          <td><%= user.email %></td>
+          <td class="text-center"><%= user.last_sign_in_at.blank? ? nil : user.last_sign_in_at.strftime("%F %T") %></td>
+          <td class="text-center"><%= user.is_enabled ? 'Sí' : 'No' %></td>
+          <td class="text-center"><%= user.is_admin ? 'Sí' : 'No' %></td>
+          <td class="text-center">
+            <%= link_to '', edit_user_path(user), class: 'fa fa-pencil-alt fa-fw action blue', title: "Editar usuario '#{user.email}'" %>
+            <%= link_to '', user, method: :delete, class: 'fa fa-trash fa-fw action red', data: { confirm: "¿Eliminar el usuario '#{user.email}'?" } %>
+          </td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</section>

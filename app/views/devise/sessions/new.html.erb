@@ -1,0 +1,55 @@
+<!-- https://nauvalazhar.github.io/my-login/index.html -->
+
+<div class="my-login-page">
+  <section class="h-100">
+    <div class="container h-100">
+      <div class="row justify-content-md-center h-100">
+        <div class="card-wrapper">
+          <div class="brand">
+						<%= image_tag('artool_logo_ddmsem.png', alt: "", width: "", height: "50", class: "img-fluid") %>
+					</div>
+          <div class="card fat">
+            <div class="card-body">
+              <h4 class="card-title">Iniciar Sesión</h4>
+              <%- form_for(resource, as: resource_name, url: session_path(resource_name), class: 'form-signin') do |f| %>
+
+                <div class="form-group">
+                  <%= f.label :email, "E-mail", class: "" %>
+                  <%= f.email_field :email, class: 'form-control', required: true, autofocus: true %>
+                </div>
+
+                <div class="form-group">
+                  <label for="password">Contraseña
+                    <!--a href="forgot.html" class="float-right">
+                      ¿Olvidó su contraseña?
+                    </a-->
+                  </label>
+                  <%= f.password_field :password, class: 'form-control', required: true, autocomplete: "off", data: 'eye' %>
+                </div>
+
+                <div class="form-group">
+                  <label>
+                    <%= f.check_box :remember_me %> Recordarme en este equipo
+                  </label>
+                </div>
+
+                <div class="form-group no-margin">
+                  <%= f.submit "Entrar", class: 'btn btn-primary btn-block' %>
+                </div>
+                <!--div class="margin-top20 text-center">
+                  Don't have an account? <a href="register.html">Create One</a>
+                </div-->
+              <% end %>
+              <%- resource_class.omniauth_providers.each do |provider| %>
+                <%= link_to "Entrar con Cuenta de Artool", omniauth_authorize_path(resource_name, provider), class: 'btn btn-primary btn-block' %>
+              <% end -%>
+            </div>
+          </div>
+          <!--div class="footer">
+            Copyright &copy; 2017 &mdash; Your Company
+          </div-->
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

@@ -1,0 +1,65 @@
+//$font-family-sans-serif: 'Open Sans', sans-serif;
+$headings-font-family:   'Open Sans', sans-serif;
+$font-size-base:          0.85rem;
+$border-radius:           0;
+
+//@import "bootstrap-sprockets";
+@import "bootstrap";
+@import "font-awesome-sprockets";
+@import "font-awesome";
+@import "bootstrap-select";
+@import "daterangepicker";
+@import "multi-select";
+@import "bootstrap-sortable";
+@import "bs4-switch";
+@import "styles";
+/*
+// make all images responsive by default
+img {
+  @extend .img-fluid;
+  margin: 0 auto;
+}
+// override for the 'Home' navigation link
+.navbar-brand {
+  font-size: inherit;
+  }
+
+// THESE ARE EXAMPLES YOU CAN MODIFY
+// create your own classes
+// to make views framework-neutral
+.column {
+  @extend .col-md-6;
+  text-align: center;
+}
+.form {
+  @extend .col-md-6;
+}
+.form-centered {
+  @extend .col-md-6;
+  text-align: center;
+}
+.submit {
+  @extend .btn;
+  @extend .btn-primary;
+  @extend .btn-lg;
+}
+
+// apply styles to HTML elements
+// to make views framework-neutral
+main {
+  @extend .container;
+  margin-top: 10px; // accommodate the navbar
+}
+
+section {
+  @extend .row;
+  margin-top: 10px;
+}
+
+body {
+  //padding-top: 60px;
+}
+.navbar-brand {
+  padding: 7px 15px;
+}
+*/

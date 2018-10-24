@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  access_token: MyText
+  expiry_at: 2018-05-25 11:53:49
+  client: one
+
+two:
+  access_token: MyText
+  expiry_at: 2018-05-25 11:53:49
+  client: two
