@@ -4,7 +4,7 @@ services:
   - postgres:latest
 
 variables:
-  POSTGRES_DB: ddm_be_test
+  POSTGRES_DB: ddm_unab_test
   POSTGRES_USER: runner
   POSTGRES_PASSWORD: ""
 
