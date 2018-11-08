@@ -90,4 +90,5 @@ gem 'omniauth-google-oauth2'
 # for TDD
 group :development, :test do
   gem 'rspec-rails', '~> 3.7'
+  gem "factory_bot_rails"
 end
