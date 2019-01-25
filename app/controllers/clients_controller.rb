@@ -7,11 +7,11 @@ class ClientsController < ApplicationController
   # GET /clients.json
   def index
   client = UnabApi.new 
-  rut = client.get_client_by_rut('15540874-K')
+  rut = client.get_client_by_rut('15.540.874-k')
   created = client.get_ticket_created('2018-11-14')
   closed = client.get_ticket_closed('2018-11-14')
   managed = client.get_ticket_managed('2018-11-14')
-  
+  byebug
   @clients = Client.all.order(name: :asc)
   end
 

@@ -1,10 +1,8 @@
 class Client < ApplicationRecord
   include FbDb
   has_and_belongs_to_many :users
-  #has_many :sheets
   has_many :fb_campaigns, dependent: :destroy
   has_many :fb_adsets, dependent: :destroy
-  #has_many :fb_ads, dependent: :destroy
   has_many :labels, dependent: :destroy
 
   validates_uniqueness_of :fb_ad_account_id, allow_blank: true
