@@ -20,4 +20,7 @@ class User < ApplicationRecord
       # user.skip_confirmation!
     end
   end
+  def send_instructions
+    Notifier.instructions(self).deliver_now
+  end
 end
