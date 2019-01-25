@@ -12,7 +12,6 @@
     <ul class="navbar-nav mr-auto">
     </ul>
     <ul class="nav navbar-nav ml-auto">
-      <li class="nav-item <%= (yield(:page) == "semaphore" ? "active" : "")%>"><%= link_to "Semáforo", semaphore_index_path, class: "nav-link" %></li>
       <li class="nav-item <%= (yield(:page) == "clients" ? "active" : "")%>"><%= link_to "Clientes", clients_path, class: "nav-link" %></li>
       <li class="nav-item <%= (yield(:page) == "users" ? "active" : "")%>"><%= link_to "Usuarios", users_path, class: "nav-link" %></li>
       <li class="nav-item dropdown">

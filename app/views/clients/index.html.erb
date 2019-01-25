@@ -47,5 +47,61 @@
         <% end %>
       </tbody>
     </table>
+    <p>XML: <%=@block%></p>
+    <p>Data extraida de XML  de ejemplo</p>
+
+    <%@block.search('//CASOS_CREADOS').each do |field|%>
+      <p>Statecode: <%=field.xpath("statecode").text%> </p>
+      <p>Case type code: <%=field.xpath("casetypecode").text%> </p>
+      <p>Creado en: <%=field.xpath("createdon").text%> </p>
+      <p>Unidad de negocio: <%=field.xpath("mksv_unidaddenegociodelpropietarioid").text%> </p>
+      <p>Numero de ticket: <%=field.xpath("ticketnumber").text%> </p>
+      <p>Id del owner: <%=field.xpath("ownerid").text%> </p>
+      <p>Modificado en: <%=field.xpath("modifiedon").text%> </p>
+      <p>Fono: <%=field.xpath("ctc.telephone2").text%> </p>
+      <p>Campus_id: <%=field.xpath("mksv_campusid").text%> </p>
+      <p>Priority_code:  <%=field.xpath("prioritycode").text%> </p>
+      <p>Id_carrera: <%=field.xpath("mksv_carreraid").text%> </p>
+      <p>Id_facultad: <%=field.xpath("prog.mksv_facultadid").text%> </p>
+      <p>Email: <%=field.xpath("ctc.emailaddress1").text%> </p>
+      <p>Status_code: <%=field.xpath("statuscode").text%> </p>
+      <p>Modificado por: <%=field.xpath("modifiedby").text%> </p>
+      <p>Unidad de negocio owner: <%=field.xpath("mksv_unidaddenegociodelautorid").text%> </p>
+      <p>Fase del caso: <%=field.xpath("mksv_fasedelcaso").text%> </p>
+      <p>Subject_id: <%=field.xpath("subjectid").text%> </p>
+      <p>Id canal de ingreso: <%=field.xpath("mksv_canaldeingresoid").text%> </p>
+      <p>Rut: <%=field.xpath("ctc.wa_rut").text%> </p>
+      <p>Id business: <%=field.xpath("ownr.businessunitid").text%> </p>
+      <p>Creado por: <%=field.xpath("createdby").text%> </p>
+      <p>Cierre en primera linea <%=field.xpath("mksv_cierreenprimeralinea").text%> </p>
+      <p>Id customer: <%=field.xpath("customerid").text%> </p>
+      <p>Id incidente: <%=field.xpath("incidentid").text%> </p>
+      <p>Telefono movil: <%=field.xpath("ctc.mobilephone").text%> </p>
+      <p>Statecode: <%=field.xpath("statecodename").text%> </p>
+      <p>Tipo de caso: <%=field.xpath("casetypecodename").text%> </p>
+      <p>Creado por: <%=field.xpath("createdonname").text%> </p>
+      <p>Modificado por: <%=field.xpath("modifiedonname").text%> </p>
+      <p>Prioridad: <%=field.xpath("prioritycodename").text%> </p>
+      <p>Estado: <%=field.xpath("statuscodename").text%> </p>
+      <p>Fase del caso: <%=field.xpath("mksv_fasedelcasoname").text%> </p>
+      <p>Cierre en primera linea: <%=field.xpath("mksv_cierreenprimeralineaname").text%> </p>
+    <%end%>        
+    
+    <p>Rut contacto: </p>  
+    <%@block_2.search('//CONTACTO').each do |field|%>
+      <p>Email: <%=field.xpath("emailaddress1").text%></p>
+      <p>id_contacto: <%=field.xpath("contactid").text%></p>
+      <p>Rut: <%=field.xpath("wa_rut").text%></p>
+      <p>Nombre Completo:<%=field.xpath("fullname").text%></p>
+      <p>Estado academico: <%=field.xpath("da.mksv_estadoacademicoid").text%></p>
+      <p>id programa: <%=field.xpath("da.mksv_programaid").text%></p>
+      <p>id campus: <%=field.xpath("da.mksv_campusid").text%></p>
+      <p>id facultad: <%=field.xpath("prog.mksv_facultadid").text%></p>
+    <%end%>
+
+    <p>Casos gestionados</p>
+    <%#@block_3.search('//CASOS_GESTIONADOS').each do |field|%>
+      <p><%#=field.xpath('ownerid').text%></p>
+    <%end%>
   </div>
 </section>

@@ -73,6 +73,7 @@ gem 'colorize'
 gem 'koala'
 gem 'httparty'
 gem 'momentjs-rails'
+gem 'savon', '~> 2.12.0'
 #gem 'bootstrap-daterangepicker-rails'
 gem 'bootstrap4-select-rails'
 gem 'font-awesome-sass', '~> 5.0.9'
@@ -81,7 +82,7 @@ gem 'twitter'
 gem 'bootstrap-filestyle-rails'
 gem 'creek'# Building Excel files
 gem 'awesome_print', require: "ap"
-
+gem 'savon', '~> 2.12.0'
 # user management
 gem 'devise', '~> 4.0'
 gem 'omniauth-google-oauth2'

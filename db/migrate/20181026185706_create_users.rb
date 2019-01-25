@@ -2,6 +2,8 @@ class CreateUsers < ActiveRecord::Migration[5.2]
   def change
     create_table :users do |t|
       ## Database authenticatable
+      ## Database authenticatable
+      t.string :name,               default: ""
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
 
@@ -13,11 +15,11 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.datetime :remember_created_at
 
       ## Trackable
-      # t.integer  :sign_in_count, default: 0, null: false
-      # t.datetime :current_sign_in_at
-      # t.datetime :last_sign_in_at
-      # t.inet     :current_sign_in_ip
-      # t.inet     :last_sign_in_ip
+       t.integer  :sign_in_count, default: 0, null: false
+       t.datetime :current_sign_in_at
+       t.datetime :last_sign_in_at
+       t.inet     :current_sign_in_ip
+       t.inet     :last_sign_in_ip
 
       ## Confirmable
       # t.string   :confirmation_token
@@ -29,7 +31,11 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
-
+      t.boolean :is_enabled, null: false, default: true
+      t.boolean :is_admin, null: false, default: false
+      ## Omniauthable (JP)
+      t.string :provider, index: true
+      t.string :uid, index: true
 
       # Uncomment below if timestamps were not included in your original model.
       # t.timestamps null: false
