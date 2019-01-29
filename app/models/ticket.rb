@@ -7,26 +7,28 @@ class Ticket < ApplicationRecord
     curr_date = Date.current.strftime("%Y-%m-%d")
     curr_date = '2018-11-14'
     unab_api = UnabApi.new
+    check = StringUtils.new
     unab_api.get_ticket_created(curr_date)[:casos_creados].each do |ticket_created|
       Person.transaction do
         person = Person.new
         person.full_name = ticket_created[:customerid]
-        person.rut = ticket_created[:ctc_wa_rut]
-        person.cellphone =  ticket_created[:ctc_mobilephone]
-        person.phone = ticket_created[:ctc_telephone2]
-        person.email = ticket_created[:ctc_emailaddress1]
+        rut = ticket_created[:ctc_wa_rut]
+        person.rut = check.normalize_rut(rut)
+        person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
+        person.phone = check.normalize_phone(ticket_created[:ctc_telephone2])
+        person.email = check.normalize_mail(ticket_created[:ctc_emailaddress1])
         person.career = ticket_created[:mksv_carreraid]
         person.campus = ticket_created[:mksv_campusid]
         person.faculty = ticket_created[:prog_mksv_facultadid]
         person.send_email = false
         #check if there are fields 
-        if unab_api.get_client_by_rut(person.rut)[:salida][:estado] == '1'
-          if unab_api.get_client_by_rut(person.rut)[:contacto].kind_of?(Array)
-            unab_api.get_client_by_rut(person.rut)[:contacto].each do |element|
+        if unab_api.get_client_by_rut(rut)[:salida][:estado] == '1'
+          if unab_api.get_client_by_rut(rut)[:contacto].kind_of?(Array)
+            unab_api.get_client_by_rut(rut)[:contacto].each do |element|
               person.contact_id = element[:contactid]
             end 
           else
-            contact_id = unab_api.get_client_by_rut(person.rut)[:contacto][:contactid]
+            contact_id = unab_api.get_client_by_rut(rut)[:contacto][:contactid]
             person.contact_id = contact_id
           end
         else
