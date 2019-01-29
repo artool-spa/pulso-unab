@@ -5,7 +5,7 @@ class UnabApi
   end
 
   def get_client_by_rut(rut)
-    rut = rut.strip.remove('.', '_', ' ').upcase!
+    rut = rut.strip.remove('.', '_', ' ').upcase
     response = @client.call(:wm_find_by_rut, message: { rutContacto: rut })
     response.body[:wm_find_by_rut_response][:wm_find_by_rut_result][:output]
   end
