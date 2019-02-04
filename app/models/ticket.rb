@@ -3,6 +3,11 @@ class Ticket < ApplicationRecord
   has_many :mailers
   has_many :answers
 
+  def self.get_from_survey
+    SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 165941594, date_range: "2019-01-01 - 2019-01-30").all
+    SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 165941594, date_range: "2019-01-01 - 2019-01-30").all
+  end
+
   def self.get_from_crm
     curr_date = Date.current.strftime("%Y-%m-%d")
     curr_date = '2018-11-14'
@@ -16,6 +21,8 @@ class Ticket < ApplicationRecord
         person.rut = check.normalize_rut(rut)
         person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
         person.phone = check.normalize_phone(ticket_created[:ctc_telephone2])
+        puts "Phone: #{ticket_created[:ctc_telephone2]}"
+        puts "Phone_modify: #{person.phone}"
         person.email = check.normalize_mail(ticket_created[:ctc_emailaddress1])
         person.career = ticket_created[:mksv_carreraid]
         person.campus = ticket_created[:mksv_campusid]
@@ -58,6 +65,10 @@ class Ticket < ApplicationRecord
         ticket.updated_time = ticket_created[:modifiedonname].to_date
 
         ticket.save
+
+        mailer_send = person.log_mailer_sends.find_or_initialize_by(mails_count: 0)
+        mailer_send.had_answer = false
+        mailer_send.save
       end
     end
     

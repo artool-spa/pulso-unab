@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_17_142018) do
+ActiveRecord::Schema.define(version: 2019_01_30_130418) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,16 @@ ActiveRecord::Schema.define(version: 2019_01_17_142018) do
     t.bigint "user_id", null: false
     t.index ["client_id", "user_id"], name: "index_clients_users_on_client_id_and_user_id"
     t.index ["user_id", "client_id"], name: "index_clients_users_on_user_id_and_client_id"
+  end
+
+  create_table "log_mailer_sends", force: :cascade do |t|
+    t.boolean "had_answer"
+    t.datetime "send_date"
+    t.integer "mails_count"
+    t.bigint "person_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["person_id"], name: "index_log_mailer_sends_on_person_id"
   end
 
   create_table "mailers", force: :cascade do |t|
