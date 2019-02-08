@@ -7,7 +7,16 @@ class CreateAnswers < ActiveRecord::Migration[5.2]
       t.integer :level_executive
       t.integer :level_time_respond
       t.string :income_channel
-      t.references :ticket
+      t.text :question
+      t.text :answer
+
+      t.string :crm_ticket_id, index: true 
+      t.bigint :sm_response_id
+      t.bigint :sm_question_id
+      
+      t.datetime :date_created
+      t.datetime :date_updated
+      #t.references :ticket
       t.timestamps
     end
   end

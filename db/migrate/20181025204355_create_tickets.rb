@@ -1,7 +1,7 @@
 class CreateTickets < ActiveRecord::Migration[5.2]
   def change
     create_table :tickets do |t|
-      t.string :ticket_id, index: true
+      t.string :crm_ticket_id, index: true
     
       t.string :business_owner_unit, index: true
       t.string :business_author_unit, index: true

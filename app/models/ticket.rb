@@ -1,11 +1,43 @@
 class Ticket < ApplicationRecord
   belongs_to :person
   has_many :mailers
-  has_many :answers
-
+  #has_many :answers
+  
+  @test_subject = Person.where(full_name: 'CRISTIAN MANUEL FERNANDEZ VASQUEZ').first
+  if @test_subject.full_name == 'CRISTIAN MANUEL FERNANDEZ VASQUEZ' && @test_subject.send_email == false
+    AlertMailer.exception_msg(@test_subject, "testing_unab").deliver_now
+  end
+  byebug
   def self.get_from_survey
-    SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 165941594, date_range: "2019-01-01 - 2019-01-30").all
-    SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 165941594, date_range: "2019-01-01 - 2019-01-30").all
+    curr_date = Date.current.strftime("%Y-%m-%d")
+    SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 165941594, date_range: "2019-01-01 - #{curr_date}").each do |answer_obj|
+      
+      Answer.transaction do
+        answer = Answer.new
+        answer.question = answer_obj[:heading]
+        answer.answer = answer_obj[:txt_response]
+        answer.sm_response_id = answer_obj[:sm_response_id]
+        answer.sm_question_id = answer_obj[:sm_question_id]
+        answer.date_created = answer_obj[:created_at]
+        answer.date_updated = answer_obj[:updated_at]
+        answer.income_channel = 'Survey Monkey'
+        answer.save
+        #byebug
+      end
+    end
+    SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 165941594, date_range: "2019-01-01 - #{curr_date}").each do |graded|
+      Answer.transaction do
+        answer = Answer.new
+        answer.question = graded[:heading]
+        answer.answer = graded[:weight]
+        answer.sm_response_id = graded[:sm_response_id]
+        answer.sm_question_id = graded[:sm_question_id]
+        answer.date_created = graded[:created_at]
+        answer.date_updated = graded[:updated_at]
+        answer.income_channel = 'Survey Monkey'
+        answer.save
+      end
+    end
   end
 
   def self.get_from_crm
@@ -28,6 +60,7 @@ class Ticket < ApplicationRecord
         person.campus = ticket_created[:mksv_campusid]
         person.faculty = ticket_created[:prog_mksv_facultadid]
         person.send_email = false
+        
         #check if there are fields 
         if unab_api.get_client_by_rut(rut)[:salida][:estado] == '1'
           if unab_api.get_client_by_rut(rut)[:contacto].kind_of?(Array)
@@ -44,7 +77,7 @@ class Ticket < ApplicationRecord
 
         person.save
 
-        ticket = person.tickets.find_or_initialize_by(ticket_id: ticket_created[:ticketnumber])
+        ticket = person.tickets.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
         ticket.business_owner_unit = ticket_created[:mksv_unidaddenegociodelpropietarioid]
         ticket.business_author_unit = ticket_created[:mksv_unidaddenegociodelautorid]
                 
@@ -66,6 +99,7 @@ class Ticket < ApplicationRecord
 
         ticket.save
 
+        #answer = ticket.answers.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
         mailer_send = person.log_mailer_sends.find_or_initialize_by(mails_count: 0)
         mailer_send.had_answer = false
         mailer_send.save

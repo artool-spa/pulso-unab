@@ -13,7 +13,7 @@ namespace :tickets do
       date_from = date_curr.beginning_of_month
       date_to = date_curr
     end
-
+    Ticket.get_from_survey
     Ticket.get_from_crm
 
     end  

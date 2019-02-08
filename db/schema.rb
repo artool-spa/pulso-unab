@@ -22,10 +22,16 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.integer "level_executive"
     t.integer "level_time_respond"
     t.string "income_channel"
-    t.bigint "ticket_id"
+    t.text "question"
+    t.text "answer"
+    t.string "crm_ticket_id"
+    t.bigint "sm_response_id"
+    t.bigint "sm_question_id"
+    t.datetime "date_created"
+    t.datetime "date_updated"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["ticket_id"], name: "index_answers_on_ticket_id"
+    t.index ["crm_ticket_id"], name: "index_answers_on_crm_ticket_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -50,6 +56,7 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.boolean "had_answer"
     t.datetime "send_date"
     t.integer "mails_count"
+    t.string "ticket_id"
     t.bigint "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -94,7 +101,7 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
   end
 
   create_table "tickets", force: :cascade do |t|
-    t.string "ticket_id"
+    t.string "crm_ticket_id"
     t.string "business_owner_unit"
     t.string "business_author_unit"
     t.string "created_by"
@@ -119,12 +126,12 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.index ["case_type"], name: "index_tickets_on_case_type"
     t.index ["category"], name: "index_tickets_on_category"
     t.index ["created_time"], name: "index_tickets_on_created_time"
+    t.index ["crm_ticket_id"], name: "index_tickets_on_crm_ticket_id"
     t.index ["income_channel"], name: "index_tickets_on_income_channel"
     t.index ["person_id"], name: "index_tickets_on_person_id"
     t.index ["priority"], name: "index_tickets_on_priority"
     t.index ["state"], name: "index_tickets_on_state"
     t.index ["status"], name: "index_tickets_on_status"
-    t.index ["ticket_id"], name: "index_tickets_on_ticket_id"
     t.index ["updated_time"], name: "index_tickets_on_updated_time"
   end
 

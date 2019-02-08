@@ -1,7 +1,7 @@
 class UnabApi
 
   def initialize
-    @client = Savon.client(wsdl: 'http://200.29.164.74:8059/WS_CRMContactosCasos.asmx?WSDL')
+    @client = Savon.client(wsdl: 'http://200.29.164.111:8059/WS_CRMContactosCasos.asmx?WSDL')
   end
 
   def get_client_by_rut(rut)

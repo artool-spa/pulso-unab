@@ -1,4 +1,4 @@
 class ApplicationMailer < ActionMailer::Base
-  default(from: "Artool <no-reply@artool.cl>", to: 'jp@artool.cl')
+  default(from: "UNAB <no-reply@artool.cl>", to: 'cfernandez@artool.cl')
   layout 'mailer'
 end
