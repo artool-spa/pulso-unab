@@ -16,6 +16,8 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
   enable_extension "plpgsql"
 
   create_table "answers", force: :cascade do |t|
+    t.bigint "api_id"
+    t.string "answer_type"
     t.boolean "have_solution"
     t.integer "level_effort"
     t.string "descript_effort"
@@ -24,14 +26,18 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.string "income_channel"
     t.text "question"
     t.text "answer"
-    t.string "crm_ticket_id"
     t.bigint "sm_response_id"
     t.bigint "sm_question_id"
     t.datetime "date_created"
     t.datetime "date_updated"
+    t.bigint "ticket_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["crm_ticket_id"], name: "index_answers_on_crm_ticket_id"
+    t.index ["answer_type"], name: "index_answers_on_answer_type"
+    t.index ["api_id"], name: "index_answers_on_api_id"
+    t.index ["sm_question_id"], name: "index_answers_on_sm_question_id"
+    t.index ["sm_response_id"], name: "index_answers_on_sm_response_id"
+    t.index ["ticket_id"], name: "index_answers_on_ticket_id"
   end
 
   create_table "clients", force: :cascade do |t|
@@ -56,7 +62,7 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.boolean "had_answer"
     t.datetime "send_date"
     t.integer "mails_count"
-    t.string "ticket_id"
+    t.string "crm_ticket_id"
     t.bigint "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

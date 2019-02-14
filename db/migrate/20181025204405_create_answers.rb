@@ -1,6 +1,8 @@
 class CreateAnswers < ActiveRecord::Migration[5.2]
   def change
     create_table :answers do |t|
+      t.bigint :api_id, index: true
+      t.string :answer_type, index: true
       t.boolean :have_solution
       t.integer :level_effort
       t.string :descript_effort
@@ -9,15 +11,15 @@ class CreateAnswers < ActiveRecord::Migration[5.2]
       t.string :income_channel
       t.text :question
       t.text :answer
-
-      t.string :crm_ticket_id, index: true 
-      t.bigint :sm_response_id
-      t.bigint :sm_question_id
+      
+      t.bigint :sm_response_id, index: true
+      t.bigint :sm_question_id, index: true
       
       t.datetime :date_created
       t.datetime :date_updated
-      #t.references :ticket
+      t.references :ticket
       t.timestamps
     end
+
   end
 end

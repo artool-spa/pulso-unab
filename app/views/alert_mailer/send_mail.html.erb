@@ -3,7 +3,7 @@
 le pedimos contestar la siguiente encuesta</p>
 <p> La encuesta se encuentra disponible en el siguiente link</p>
 <p>
-  <a href= "https://es.research.net/r/5M8JN3T">Encuesta Calidad de atención</a>
+  <%=link_to  "Link", "https://es.research.net/r/5M8JN3T?ticket_id=#{@person.tickets.first.crm_ticket_id}"%>
 </p>
 <p>De antemano muchas gracias</p>
 

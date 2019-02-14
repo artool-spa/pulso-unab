@@ -1,5 +1,5 @@
-namespace :tickets do
-    desc "Process tickets (; separator)"
+namespace :send_mail do
+    desc "Process mails to"
     task :all, [:date_from, :date_to] => [:environment] do |t, args|
       args.with_defaults(date_from: nil, date_to: nil)
 
@@ -14,8 +14,5 @@ namespace :tickets do
       date_to = date_curr
     end
 
-    ticket_hash = Ticket.get_from_crm
-    Ticket.get_from_survey(ticket_hash)
     end  
 end
-  
