@@ -14,7 +14,7 @@ namespace :tickets do
       date_to = date_curr
     end
 
-    ticket_hash = Ticket.get_tickets_from_crm
+    ticket_hash = Ticket.get_tickets_from_crm(date_from, date_to)
     Answer.get_answers_from_survey(ticket_hash)
     end  
 end
