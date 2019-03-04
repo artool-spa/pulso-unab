@@ -35,4 +35,23 @@ class Answer < ApplicationRecord
     end
   end
 
+  def self.get_answer_from_ivr(from_date, to_date, ticket_hash)
+    ivr_api = UnabIvr.new
+    from_date.upto(to_date) do |date|
+      
+      answer = JSON.parse(ivr_api.get_ivr_data(date).body)
+      answer["data"].each do |response|
+        Answer.transaction do
+          answer = Answer.find_or_initialize_by(ticket_id: ticket_hash[response["ticket_id"]])
+          #answer.ticket_id = response["ticket_id"]
+          answer.income_channel = "IVR"
+          answer.have_solution = response["answer"]
+          answer.answer_details = response["answer_details"]
+          answer.save
+        end
+
+      end
+    end
+  end
+
 end

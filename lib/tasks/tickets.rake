@@ -15,7 +15,13 @@ namespace :tickets do
     end
 
     ticket_hash = Ticket.get_tickets_from_crm(date_from, date_to)
+    puts "listo."
+    Ticket.get_tickets_close_from_crm(date_from, date_to)
+    puts "listo.."
     Answer.get_answers_from_survey(ticket_hash)
+    puts "listo..."
+    Answer.get_answer_from_ivr(date_from, date_to, ticket_hash)
+    puts "listo...."
     end  
 end
   

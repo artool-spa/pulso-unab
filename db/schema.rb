@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.string "income_channel"
     t.text "question"
     t.text "answer"
+    t.jsonb "answer_details", default: {}, null: false
     t.bigint "sm_response_id"
     t.bigint "sm_question_id"
     t.datetime "date_created"
@@ -59,9 +60,9 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
   end
 
   create_table "log_mailer_sends", force: :cascade do |t|
-    t.boolean "had_answer"
+    t.boolean "had_answer", default: false
     t.datetime "send_date"
-    t.integer "mails_count"
+    t.integer "mails_count", default: 0
     t.string "crm_ticket_id"
     t.bigint "person_id"
     t.datetime "created_at", null: false
@@ -92,7 +93,8 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.string "career"
     t.string "campus"
     t.string "faculty"
-    t.boolean "send_email"
+    t.integer "mail_send_counts", default: 0
+    t.datetime "mail_send_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["campus"], name: "index_people_on_campus"
@@ -103,7 +105,6 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.index ["faculty"], name: "index_people_on_faculty"
     t.index ["phone"], name: "index_people_on_phone"
     t.index ["rut"], name: "index_people_on_rut"
-    t.index ["send_email"], name: "index_people_on_send_email"
   end
 
   create_table "tickets", force: :cascade do |t|
@@ -123,6 +124,9 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.string "case_type"
     t.datetime "created_time"
     t.datetime "updated_time"
+    t.datetime "closed_time"
+    t.integer "mail_send_counts", default: 0
+    t.datetime "mail_send_date"
     t.bigint "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -131,6 +135,7 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.index ["case_phase"], name: "index_tickets_on_case_phase"
     t.index ["case_type"], name: "index_tickets_on_case_type"
     t.index ["category"], name: "index_tickets_on_category"
+    t.index ["closed_time"], name: "index_tickets_on_closed_time"
     t.index ["created_time"], name: "index_tickets_on_created_time"
     t.index ["crm_ticket_id"], name: "index_tickets_on_crm_ticket_id"
     t.index ["income_channel"], name: "index_tickets_on_income_channel"

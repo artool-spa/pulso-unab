@@ -11,10 +11,10 @@ class CreateAnswers < ActiveRecord::Migration[5.2]
       t.string :income_channel
       t.text :question
       t.text :answer
-      
+      t.jsonb :answer_details, null: false, default: {}
       t.bigint :sm_response_id, index: true
       t.bigint :sm_question_id, index: true
-      
+
       t.datetime :date_created
       t.datetime :date_updated
       t.references :ticket

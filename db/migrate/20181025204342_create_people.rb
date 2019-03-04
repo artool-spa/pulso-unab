@@ -11,7 +11,9 @@ class CreatePeople < ActiveRecord::Migration[5.2]
       t.string :career, index: true
       t.string :campus, index: true
       t.string :faculty, index: true
-      t.boolean :send_email, index: true
+      
+      t.integer :mail_send_counts, default: 0 
+      t.datetime :mail_send_date, default: nil
       t.timestamps
     end
   end
