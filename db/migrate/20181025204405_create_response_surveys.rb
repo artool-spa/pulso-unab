@@ -1,6 +1,6 @@
-class CreateAnswers < ActiveRecord::Migration[5.2]
+class CreateResponseSurveys < ActiveRecord::Migration[5.2]
   def change
-    create_table :answers do |t|
+    create_table :response_surveys do |t|
       t.bigint :api_id, index: true
       t.string :answer_type, index: true
       t.boolean :have_solution
@@ -11,10 +11,9 @@ class CreateAnswers < ActiveRecord::Migration[5.2]
       t.string :income_channel
       t.text :question
       t.text :answer
-      t.jsonb :answer_details, null: false, default: {}
       t.bigint :sm_response_id, index: true
       t.bigint :sm_question_id, index: true
-
+      t.string :crm_ticket_id
       t.datetime :date_created
       t.datetime :date_updated
       t.references :ticket

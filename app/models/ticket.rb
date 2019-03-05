@@ -1,7 +1,8 @@
 class Ticket < ApplicationRecord
   belongs_to :person
   has_many :mailers
-  has_many :answers
+  has_many :response_ivrs
+  has_many :response_surveys
   
   #@test_subject = Person.where(full_name: 'CRISTIAN MANUEL FERNANDEZ VASQUEZ').first
   #if @test_subject.full_name == 'CRISTIAN MANUEL FERNANDEZ VASQUEZ' && @test_subject.send_email == false
@@ -88,14 +89,18 @@ class Ticket < ApplicationRecord
     unab_api = UnabApi.new
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
-      unab_api.get_ticket_closed(date)[:casos_cerrados].each do |ticket_closed|
-        Ticket.transaction do        
-          ticket = Ticket.find_by(crm_ticket_id: ticket_closed[:ticketnumber])
-          if ticket.present?
-            ticket.closed_time = ticket_closed.key?(:modifiedonname) && ticket_closed[:modifiedonname].present? ? ticket_closed[:modifiedonname].to_datetime : nil
-            ticket.save
+      if !unab_api.get_ticket_closed(date)[:salida][:estado] == '3'
+        unab_api.get_ticket_closed(date)[:casos_cerrados].each do |ticket_closed|
+          Ticket.transaction do        
+            ticket = Ticket.find_by(crm_ticket_id: ticket_closed[:ticketnumber])
+            if ticket.present?
+              ticket.closed_time = ticket_closed.key?(:modifiedonname) && ticket_closed[:modifiedonname].present? ? ticket_closed[:modifiedonname].to_datetime : nil
+              ticket.save
+            end
+
           end
         end
+
       end
     end
   end

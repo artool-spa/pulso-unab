@@ -17,20 +17,22 @@ namespace :send_mail do
       
       person = Person.all.find(id = ticket.person_id)
       
-      if !ticket.answers.present?
+      if !ticket.response_ivrs.present? && !ticket.response_surveys.present? && ticket.closed_time.present?
         #Si un ticket se abre, deriva y cierra todo en un mismo día, 
         #y a su vez no se reciben respuestas mediante IVR ni TOTEM, 
         #entonces a esa persona se le enviará un email con la encuesta.
         if ticket.created_time.to_date == ticket.closed_time.to_date
           #ENVIAR MAIL
+          #@person = person
+          #AlertMailer.send_mail(person, "testing_unab").deliver_now
           mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
           mailer_send.mails_count += 1
           mailer_send.send_date = Date.current
-          mailer_send.save
+          #mailer_send.save
           puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
         end
       else
-        puts "Tiene resuesta"
+        #puts "Tiene respuesta"
 =begin        
         #Enviar mail evaluando la ultima vez que se mando mail
         ticket.mail_send_counts += 1

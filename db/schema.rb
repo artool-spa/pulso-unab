@@ -15,32 +15,6 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "answers", force: :cascade do |t|
-    t.bigint "api_id"
-    t.string "answer_type"
-    t.boolean "have_solution"
-    t.integer "level_effort"
-    t.string "descript_effort"
-    t.integer "level_executive"
-    t.integer "level_time_respond"
-    t.string "income_channel"
-    t.text "question"
-    t.text "answer"
-    t.jsonb "answer_details", default: {}, null: false
-    t.bigint "sm_response_id"
-    t.bigint "sm_question_id"
-    t.datetime "date_created"
-    t.datetime "date_updated"
-    t.bigint "ticket_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["answer_type"], name: "index_answers_on_answer_type"
-    t.index ["api_id"], name: "index_answers_on_api_id"
-    t.index ["sm_question_id"], name: "index_answers_on_sm_question_id"
-    t.index ["sm_response_id"], name: "index_answers_on_sm_response_id"
-    t.index ["ticket_id"], name: "index_answers_on_ticket_id"
-  end
-
   create_table "clients", force: :cascade do |t|
     t.string "name"
     t.bigint "fb_ad_account_id"
@@ -105,6 +79,49 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.index ["faculty"], name: "index_people_on_faculty"
     t.index ["phone"], name: "index_people_on_phone"
     t.index ["rut"], name: "index_people_on_rut"
+  end
+
+  create_table "response_ivrs", force: :cascade do |t|
+    t.boolean "have_solution"
+    t.string "income_channel"
+    t.integer "option_1"
+    t.integer "option_2"
+    t.integer "option_3"
+    t.integer "option_4"
+    t.datetime "date_created"
+    t.datetime "date_updated"
+    t.string "crm_ticket_id"
+    t.bigint "ticket_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["have_solution"], name: "index_response_ivrs_on_have_solution"
+    t.index ["ticket_id"], name: "index_response_ivrs_on_ticket_id"
+  end
+
+  create_table "response_surveys", force: :cascade do |t|
+    t.bigint "api_id"
+    t.string "answer_type"
+    t.boolean "have_solution"
+    t.integer "level_effort"
+    t.string "descript_effort"
+    t.integer "level_executive"
+    t.integer "level_time_respond"
+    t.string "income_channel"
+    t.text "question"
+    t.text "answer"
+    t.bigint "sm_response_id"
+    t.bigint "sm_question_id"
+    t.string "crm_ticket_id"
+    t.datetime "date_created"
+    t.datetime "date_updated"
+    t.bigint "ticket_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["answer_type"], name: "index_response_surveys_on_answer_type"
+    t.index ["api_id"], name: "index_response_surveys_on_api_id"
+    t.index ["sm_question_id"], name: "index_response_surveys_on_sm_question_id"
+    t.index ["sm_response_id"], name: "index_response_surveys_on_sm_response_id"
+    t.index ["ticket_id"], name: "index_response_surveys_on_ticket_id"
   end
 
   create_table "tickets", force: :cascade do |t|
