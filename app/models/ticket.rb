@@ -66,7 +66,7 @@ class Ticket < ApplicationRecord
             
             ticket.save
             puts "ticket guardado fecha: #{date}"
-            ticket_hash[ticket.crm_ticket_id] = ticket.id
+            #ticket_hash[ticket.crm_ticket_id] = ticket.id
             
             #mailer_send = person.log_mailer_sends.find_or_initialize_by(person_id: person.id)
             #mailer_send.had_answer = false
@@ -82,7 +82,7 @@ class Ticket < ApplicationRecord
         end
       end
     end
-    ticket_hash
+    #ticket_hash
   end
 
   def self.get_tickets_close_from_crm(from_date, to_date)
@@ -103,6 +103,59 @@ class Ticket < ApplicationRecord
 
       end
     end
+  end
+
+  def self.check_send_mail(date_from, date_to)
+    temp_alta = true
+    temp_baja = false
+    date_curr = DateTime.current
+    Ticket.where("created_time between ? and ?", date_from, date_to).each do |ticket|
+      person = Person.find_by(id: ticket.person_id)
+      if !person.nil?
+        mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
+        puts "person_name: #{person.full_name}"
+
+        if mailer_send.mails_count < 2 && !ticket.response_ivrs.present? && !ticket.response_surveys.present?
+          
+          if ticket.closed_time.present?
+            if ticket.created_time.to_date == ticket.closed_time.to_date
+              #ENVIAR MAIL
+              #@person = person
+              #AlertMailer.send_mail(person, "testing_unab").deliver_now
+              mailer_send.mails_count += 1
+              mailer_send.send_date = Date.current
+              mailer_send.save
+              puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
+            end
+          end
+          if mailer_send.mails_count == 1 && temp_alta
+            if mailer_send.send_date.between?(date_curr, date_curr + 30.days)
+              #ENVIAR MAIL
+              #@person = person
+              #AlertMailer.send_mail(person, "testing_unab").deliver_now
+              mailer_send.mails_count += 1
+              mailer_send.send_date = Date.current
+              mailer_send.save
+              puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
+            end
+
+          elsif mailer_send.mails_count == 1 && temp_baja
+            if mailer_send.send_date.between?(date_curr, date_curr + 15.days)
+              #ENVIAR MAIL
+              #@person = person
+              #AlertMailer.send_mail(person, "testing_unab").deliver_now
+              mailer_send.mails_count += 1
+              mailer_send.send_date = Date.current
+              mailer_send.save
+              puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
+            end
+
+          end
+          
+        end
+      end
+    end
+    nil
   end
 
 end
