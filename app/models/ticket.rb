@@ -106,15 +106,15 @@ class Ticket < ApplicationRecord
   end
 
   def self.check_send_mail(date_from, date_to)
-    temp_alta = true
-    temp_baja = false
+    temp_alta = false
+    temp_baja = true
     date_curr = DateTime.current
     Ticket.where("created_time between ? and ?", date_from, date_to).each do |ticket|
       person = Person.find_by(id: ticket.person_id)
       if !person.nil?
         mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
         puts "person_name: #{person.full_name}"
-
+        
         if mailer_send.mails_count < 2 && !ticket.response_ivrs.present? && !ticket.response_surveys.present?
           
           if ticket.closed_time.present?
@@ -128,8 +128,17 @@ class Ticket < ApplicationRecord
               puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
             end
           end
-          if mailer_send.mails_count == 1 && temp_alta
-            if mailer_send.send_date.between?(date_curr, date_curr + 30.days)
+          if mailer_send.mails_count == 0
+            #ENVIAR MAIL
+            #@person = person
+            #AlertMailer.send_mail(person, "testing_unab").deliver_now
+            mailer_send.mails_count += 1
+            mailer_send.send_date = Date.current - 15.days
+            mailer_send.save
+            puts "Mail enviado al ticket #{ticket.crm_ticket_id}"  
+          
+          elsif mailer_send.mails_count == 1 && temp_alta
+            if mailer_send.send_date.between?(date_curr - 32.days, date_curr)
               #ENVIAR MAIL
               #@person = person
               #AlertMailer.send_mail(person, "testing_unab").deliver_now
@@ -140,7 +149,7 @@ class Ticket < ApplicationRecord
             end
 
           elsif mailer_send.mails_count == 1 && temp_baja
-            if mailer_send.send_date.between?(date_curr, date_curr + 15.days)
+            if mailer_send.send_date.between?(date_curr - 17.days, date_curr)
               #ENVIAR MAIL
               #@person = person
               #AlertMailer.send_mail(person, "testing_unab").deliver_now

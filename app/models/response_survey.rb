@@ -5,7 +5,6 @@ class ResponseSurvey < ApplicationRecord
     curr_date = Date.current.strftime("%Y-%m-%d")
     ResponseSurvey.transaction do
       SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 165941594, date_range: "2019-01-01 - #{curr_date}").each do |answer_obj|
-        
         ticket = Ticket.find_by(crm_ticket_id: answer_obj[:custom_variables][:ticket_id])
         if !ticket.nil?
           answer = ResponseSurvey.find_or_initialize_by(api_id: answer_obj[:id], answer_type: 'open')
@@ -20,10 +19,9 @@ class ResponseSurvey < ApplicationRecord
           answer.income_channel = 'Survey Monkey'
           puts "open answer: #{answer.question}"
           answer.save
-
-          if !answer.persisted?
-            puts answer.errors.messages
-          end
+          #if !answer.persisted?
+          #  puts answer.errors.messages
+          #end
         end
       end
     end
@@ -44,10 +42,9 @@ class ResponseSurvey < ApplicationRecord
           answer.income_channel = 'Survey Monkey'
           puts "graded answer: #{answer.question}"
           answer.save
-
-          if !answer.persisted?
-            puts answer.errors.messages
-          end
+          #if !answer.persisted?
+          #  puts answer.errors.messages
+          #end
         end
       end
     end

@@ -101,11 +101,6 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
   create_table "response_surveys", force: :cascade do |t|
     t.bigint "api_id"
     t.string "answer_type"
-    t.boolean "have_solution"
-    t.integer "level_effort"
-    t.string "descript_effort"
-    t.integer "level_executive"
-    t.integer "level_time_respond"
     t.string "income_channel"
     t.text "question"
     t.text "answer"
