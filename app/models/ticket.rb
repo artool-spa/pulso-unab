@@ -27,7 +27,7 @@ class Ticket < ApplicationRecord
             person.career = ticket_created[:mksv_carreraid]
             person.campus = ticket_created[:mksv_campusid]
             person.faculty = ticket_created[:prog_mksv_facultadid]
-            
+            person.regimen = ticket_created[:da_mksv_regimen]
             #check if there are fields 
             if unab_api.get_client_by_rut(person.rut)[:salida][:estado] == '1'
               if unab_api.get_client_by_rut(person.rut)[:contacto].kind_of?(Array)
