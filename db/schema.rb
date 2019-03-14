@@ -10,10 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_30_130418) do
+ActiveRecord::Schema.define(version: 2019_03_14_133830) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "categories", force: :cascade do |t|
+    t.string "internal_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_categories_on_ancestry"
+  end
 
   create_table "clients", force: :cascade do |t|
     t.string "name"
@@ -67,6 +76,7 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.string "career"
     t.string "campus"
     t.string "faculty"
+    t.string "regimen"
     t.integer "mail_send_counts", default: 0
     t.datetime "mail_send_date"
     t.datetime "created_at", null: false
@@ -78,6 +88,7 @@ ActiveRecord::Schema.define(version: 2019_01_30_130418) do
     t.index ["email"], name: "index_people_on_email"
     t.index ["faculty"], name: "index_people_on_faculty"
     t.index ["phone"], name: "index_people_on_phone"
+    t.index ["regimen"], name: "index_people_on_regimen"
     t.index ["rut"], name: "index_people_on_rut"
   end
 

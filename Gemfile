@@ -85,6 +85,7 @@ gem 'awesome_print', require: "ap"
 gem 'savon', '~> 2.12.0'
 gem 'rut_validation'
 gem 'json_api_client'
+gem 'ancestry'
 # user management
 gem 'devise', '~> 4.0'
 gem 'omniauth-google-oauth2'
