@@ -13,7 +13,13 @@ class CreateTickets < ActiveRecord::Migration[5.2]
 
       t.string :modify_by
       t.string :case_phase, index: true
-      t.string :category, index: true
+      
+      t.string :category_1, index: true
+      t.string :category_2, index: true
+      t.string :category_3, index: true
+      t.string :category_4, index: true
+      
+      t.integer :category_id, index: true
 
       t.string :state, index: true
       t.string :status, index: true

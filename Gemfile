@@ -86,6 +86,11 @@ gem 'savon', '~> 2.12.0'
 gem 'rut_validation'
 gem 'json_api_client'
 gem 'ancestry'
+
+gem 'rubyzip', '>= 1.2.1'
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'
+
 # user management
 gem 'devise', '~> 4.0'
 gem 'omniauth-google-oauth2'
