@@ -38,6 +38,7 @@ class Ticket < ApplicationRecord
                 contact_id = unab_api.get_client_by_rut(person.rut)[:contacto][:contactid]
                 person.contact_id = contact_id
               end
+
             else
               person.contact_id = nil
             end
@@ -55,8 +56,6 @@ class Ticket < ApplicationRecord
             ticket.income_channel = ticket_created[:mksv_canaldeingresoid]
             ticket.modify_by = ticket_created[:modifiedby]
             ticket.case_phase = ticket_created[:mksv_fasedelcasoname]
-            #set_category_code(ticket_created[:subjectid])
-            #ticket.category = ticket_created[:subjectid]
             ticket.category_id = find_category_id(ticket_created[:subjectid])
             Category.set_categories_to_ticket(ticket)
             ticket.state = ticket_created[:statecodename]
@@ -69,33 +68,22 @@ class Ticket < ApplicationRecord
             
             ticket.save
             puts "ticket guardado fecha: #{date}"
-            #ticket_hash[ticket.crm_ticket_id] = ticket.id
-            
-            #mailer_send = person.log_mailer_sends.find_or_initialize_by(person_id: person.id)
-            #mailer_send.had_answer = false
-            #mailer_send.save
-    
-            #if person.id == 2
-            #  @person = person
-            #  AlertMailer.send_mail(@person, "testing_unab").deliver_now
-            #  person.send_email = true
-            #  person.save
-            #end
           end
         end
       end
     end
-    #ticket_hash
   end
 
   def self.get_tickets_close_from_crm(from_date, to_date)
     unab_api = UnabApi.new
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
+      
       if !unab_api.get_ticket_closed(date)[:salida][:estado] == '3'
         unab_api.get_ticket_closed(date)[:casos_cerrados].each do |ticket_closed|
           Ticket.transaction do        
             ticket = Ticket.find_by(crm_ticket_id: ticket_closed[:ticketnumber])
+            
             if ticket.present?
               ticket.closed_time = ticket_closed.key?(:modifiedonname) && ticket_closed[:modifiedonname].present? ? ticket_closed[:modifiedonname].to_datetime : nil
               ticket.save
@@ -113,68 +101,6 @@ class Ticket < ApplicationRecord
     cat_obj = Category.find_by(internal_id: cat[0])
     byebug if cat_obj.nil?
     cat_obj.id
-  end
-
-  def self.check_send_mail(date_from, date_to)
-    temp_alta = false
-    temp_baja = true
-    date_curr = DateTime.current
-    Ticket.where("created_time between ? and ?", date_from, date_to).each do |ticket|
-      person = Person.find_by(id: ticket.person_id)
-      if !person.nil?
-        mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
-        puts "person_name: #{person.full_name}"
-        
-        if mailer_send.mails_count < 2 && !ticket.response_ivrs.present? && !ticket.response_surveys.present?
-          
-          if ticket.closed_time.present?
-            if ticket.created_time.to_date == ticket.closed_time.to_date
-              #ENVIAR MAIL
-              #@person = person
-              #AlertMailer.send_mail(person, "testing_unab").deliver_now
-              mailer_send.mails_count += 1
-              mailer_send.send_date = Date.current
-              mailer_send.save
-              puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
-            end
-          end
-          if mailer_send.mails_count == 0
-            #ENVIAR MAIL
-            #@person = person
-            #AlertMailer.send_mail(person, "testing_unab").deliver_now
-            mailer_send.mails_count += 1
-            mailer_send.send_date = Date.current - 15.days
-            mailer_send.save
-            puts "Mail enviado al ticket #{ticket.crm_ticket_id}"  
-          
-          elsif mailer_send.mails_count == 1 && temp_alta
-            if mailer_send.send_date.between?(date_curr - 32.days, date_curr)
-              #ENVIAR MAIL
-              #@person = person
-              #AlertMailer.send_mail(person, "testing_unab").deliver_now
-              mailer_send.mails_count += 1
-              mailer_send.send_date = Date.current
-              mailer_send.save
-              puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
-            end
-
-          elsif mailer_send.mails_count == 1 && temp_baja
-            if mailer_send.send_date.between?(date_curr - 17.days, date_curr)
-              #ENVIAR MAIL
-              #@person = person
-              #AlertMailer.send_mail(person, "testing_unab").deliver_now
-              mailer_send.mails_count += 1
-              mailer_send.send_date = Date.current
-              mailer_send.save
-              puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
-            end
-
-          end
-          
-        end
-      end
-    end
-    nil
   end
 
 end
