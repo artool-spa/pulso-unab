@@ -11,6 +11,7 @@ class CreateResponseSurveys < ActiveRecord::Migration[5.2]
       t.string :income_channel
       t.text :question
       t.text :answer
+      t.string :satisfaction
       t.bigint :sm_response_id, index: true
       t.bigint :sm_question_id, index: true
       t.string :crm_ticket_id

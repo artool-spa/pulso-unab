@@ -115,6 +115,7 @@ ActiveRecord::Schema.define(version: 2019_03_14_133830) do
     t.string "income_channel"
     t.text "question"
     t.text "answer"
+    t.string "satisfaction"
     t.bigint "sm_response_id"
     t.bigint "sm_question_id"
     t.string "crm_ticket_id"
@@ -152,8 +153,6 @@ ActiveRecord::Schema.define(version: 2019_03_14_133830) do
     t.datetime "created_time"
     t.datetime "updated_time"
     t.datetime "closed_time"
-    t.integer "mail_send_counts", default: 0
-    t.datetime "mail_send_date"
     t.bigint "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

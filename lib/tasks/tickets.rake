@@ -22,6 +22,9 @@ namespace :tickets do
     puts "listo..."
     ResponseIvr.get_answer_from_ivr(date_from, date_to)
     puts "listo...."
-    end  
+    
+    end
+
+    
 end
   
