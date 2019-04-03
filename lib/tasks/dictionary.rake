@@ -6,8 +6,8 @@ namespace :dictionary do
         { internal_id: "1", name: "PRORRECTORIA", childs: [
           { internal_id: "1.1", name: "RRHH", childs: [
             { internal_id: "1.1.01", name: "Certificados", childs: [
-              {internal_id: "1.1.1.01", name: "Certificado de Acreditación de Docencia"},
-              {internal_id: "1.1.1.02", name: "Certificado P/Beneficio Matrícula"},
+              {internal_id: "1.1.01.01", name: "Certificado de Acreditación de Docencia"},
+              {internal_id: "1.1.01.02", name: "Certificado P/Beneficio Matrícula"},
             ]},
             { internal_id: "1.1.02", name: "Claves y Accesos Docentes Honorarios", childs: [
               {internal_id: "1.1.02.01", name: "Recuperación de Clave P. Pago Honorarios"},
