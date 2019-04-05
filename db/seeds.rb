@@ -3,7 +3,7 @@
 #    phone: '+56227236340', cellphone: '+56974539270', email: 'cristianfervas1992@gmail.com',
 #    career: 'INGENIERIA INFORMATICA', campus: 'Estacion central', faculty: 'Facultad de Ingenieria'),
 Person.create(id: 10000001, contact_id: '91fbfb09-c93f-e611-83bc-0050549944e8', 
-    full_name: 'Jean Piere', rut: '18117016',
+    full_name: 'JEAN PIERE', rut: '11111111',
     phone: '+56227236340', cellphone: '+56974539270', email: 'jp@artool.cl',
     career: 'INGENIERIA INFORMATICA', campus: 'Estacion central', faculty: 'Facultad de Ingenieria')
 Person.create(id: 10000002, contact_id: '91fbfb09-c93f-e611-83bc-0050549944e8', 

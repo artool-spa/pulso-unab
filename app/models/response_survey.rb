@@ -63,43 +63,41 @@ class ResponseSurvey < ApplicationRecord
 
       end
     end
-=begin
+
     # Encuesta via Totem selectivas
     ResponseSurvey.transaction do
       check = StringUtils.new
-      SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: , date_range: "#{date_from} - #{date_to}").each do |graded|
-        answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
-        if graded[:custom_variables][:rut].present?
-          rut = check.normalize_rut(graded[:custom_variables][:rut])
-          if !rut.nil?
-            person = Person.find_by(rut)
-            
-            if !person.nil?
-              answer.ticket_id = ticket.id
-              #answer.crm_ticket_id = ticket.crm_ticket_id       
-              answer.question = graded[:heading]
-              answer.answer = graded[:weight]
-              answer.sm_response_id = graded[:sm_response_id] 
-              answer.sm_question_id = graded[:sm_question_id]
-              answer.date_created = graded[:created_at]
-              
-              associate_answer_to_ticket_totem(person, answer)
-
-              answer.date_updated = graded[:updated_at]
-              answer.income_channel = 'Totem'
-              puts "graded answer: #{answer.question}"
-              answer.save
-              #if !answer.persisted?
-              #  puts answer.errors.messages
-              #end
-            end
-
+      global_rut = nil
+      SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 171188971 , date_range: "#{date_from} - #{date_to}").each do |opened|
+        answer = ResponseSurvey.find_or_initialize_by(api_id: opened[:id], answer_type: 'open')
+        if !check.normalize_rut(opened[:txt_response]).nil?
+          rut = check.normalize_rut(opened[:txt_response])
+          global_rut = rut
+        end
+        
+        person = Person.find_by(rut: global_rut)            
+        if !person.nil?   
+          answer.date_created = opened[:created_at]
+          ticket = associate_answer_to_ticket_totem(person, answer)
+          if !ticket.nil?
+            answer.ticket_id = ticket.id      
+            answer.question = opened[:heading]
+            answer.answer = opened[:txt_response]
+            answer.sm_response_id = opened[:sm_response_id] 
+            answer.sm_question_id = opened[:sm_question_id]
+            answer.crm_ticket_id = ticket.crm_ticket_id 
+            answer.date_updated = opened[:updated_at]
+            answer.income_channel = 'Totem'
+            puts "opened answer: #{answer.question}"
+            answer.save
+            #if !answer.persisted?
+              #puts answer.errors.messages
+            #end
           end
         end
-
       end
     end
-
+=begin
     # Encuesta via QR selectivas
     ResponseSurvey.transaction do
       SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: , date_range: "#{date_from} - #{date_to}").each do |graded|
@@ -128,11 +126,13 @@ class ResponseSurvey < ApplicationRecord
 =end
   end
   
-  def associate_answer_to_ticket_totem(person, answer)
+  def self.associate_answer_to_ticket_totem(person, answer)
     person.tickets.each do |ticket|
       if answer.date_created.to_date == ticket.created_time.to_date
-        answer.crm_ticket_id = ticket.crm_ticket_id 
-        answer.save
+        ticket = Ticket.find_by(id: ticket.id)
+        return ticket
+      else
+        nil
       end
     end
   end
