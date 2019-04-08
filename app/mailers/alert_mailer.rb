@@ -7,11 +7,11 @@ class AlertMailer < ApplicationMailer
   def send_mail(person, m_type = nil)
     @person = person
     @m_type = m_type
-    mail(subject: "Encuesta UNAB: #{@m_type}")
+    mail(subject: "Encuesta UNAB: #{@m_type}", to: person.email)
   end
 
   def testing_mail(m_type = nil)
     @m_type = m_type
-    mail(subject: "Encuesta UNAB: #{@m_type}")
+    mail(subject: "Encuesta UNAB: #{@m_type}", to: person.email)
   end
 end

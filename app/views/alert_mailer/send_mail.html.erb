@@ -1,9 +1,9 @@
-<p>Estimado <%=@person.full_name%></p>
-<p>Como parte de la evaluacion de nuestro servicio de atención 
+<p>Hola <%=@person.full_name%>!</p>
+<p>Como parte de la evaluación de nuestro servicio de atención 
 le pedimos contestar la siguiente encuesta</p>
 <p> La encuesta se encuentra disponible en el siguiente link</p>
 <p>
   <%=link_to  "Link", "https://es.research.net/r/5M8JN3T?ticket_id=#{@person.tickets.first.crm_ticket_id}"%>
 </p>
-<p>De antemano muchas gracias</p>
+<p>De antemano muchas gracias!</p>
 

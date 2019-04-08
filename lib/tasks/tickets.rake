@@ -14,9 +14,9 @@ namespace :tickets do
       date_to = date_curr
     end
 
-    Ticket.get_tickets_from_crm(date_from, date_to)
+    #Ticket.get_tickets_from_crm(date_from, date_to)
     puts "listo."
-    Ticket.get_tickets_close_from_crm(date_from, date_to)
+    #Ticket.get_tickets_close_from_crm(date_from, date_to)
     puts "listo.."
     ResponseSurvey.get_answers_from_survey(date_from, date_to)
     puts "listo..."
