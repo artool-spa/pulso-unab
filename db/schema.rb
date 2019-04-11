@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 2019_03_14_133830) do
     t.datetime "created_time"
     t.datetime "updated_time"
     t.datetime "closed_time"
+    t.integer "elapsed_time"
     t.bigint "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

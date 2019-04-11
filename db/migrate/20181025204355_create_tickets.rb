@@ -29,6 +29,7 @@ class CreateTickets < ActiveRecord::Migration[5.2]
       t.datetime :created_time, index: true
       t.datetime :updated_time, index: true
       t.datetime :closed_time, index: true
+      t.integer :elapsed_time
 
       #t.integer :mail_send_counts, default: 0 
       #t.datetime :mail_send_date, default: nil

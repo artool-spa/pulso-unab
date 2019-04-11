@@ -18,7 +18,7 @@ class Ticket < ApplicationRecord
       date = date.strftime("%Y-%m-%d")
       unab_api.get_ticket_created(date)[:casos_creados].each do |ticket_created|
         Person.transaction do
-          if (ticket_created[:ctc_wa_rut].present? && !check.normalize_rut(ticket_created[:ctc_wa_rut]).nil?)
+          if (ticket_created[:ctc_wa_rut].present? && !check.normalize_rut(ticket_created[:ctc_wa_rut]).nil? && find_category_id(ticket_created[:subjectid]).present?)
             person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
             person.full_name = ticket_created[:customerid]
             person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
@@ -28,6 +28,7 @@ class Ticket < ApplicationRecord
             person.campus = ticket_created[:mksv_campusid]
             person.faculty = ticket_created[:prog_mksv_facultadid]
             person.regimen = ticket_created[:da_mksv_regimen]
+            puts "regimen: #{ticket_created[:da_mksv_regimen]}"
             #check if there are fields 
             if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:salida][:estado] == '1'
               if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:contacto].kind_of?(Array)
@@ -64,6 +65,7 @@ class Ticket < ApplicationRecord
             ticket.case_type = ticket_created[ :casetypecodename]
     
             ticket.created_time = ticket_created[:createdonname].to_datetime
+            ticket.elapsed_time = (DateTime.current.to_i - ticket.created_time.to_i)/(3600*24)
             ticket.updated_time = ticket_created[:modifiedonname].to_datetime
             
             ticket.save
@@ -99,8 +101,11 @@ class Ticket < ApplicationRecord
   def self.find_category_id(category)
     cat = category.split(' ')
     cat_obj = Category.find_by(internal_id: cat[0])
-    byebug if cat_obj.nil?
-    cat_obj.id
+    if !cat_obj.nil?
+      cat_obj.id
+    else
+      nil
+    end
   end
 
 end

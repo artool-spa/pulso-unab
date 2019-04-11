@@ -36,7 +36,6 @@ namespace :send_mail do
                 end
                 
               elsif mailer_send.mails_count == 1 && temp_alta
-                
                 if mailer_send.send_date + 30.days < date_curr
                   puts "person_name: #{person.full_name}"
                   puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
@@ -93,7 +92,6 @@ namespace :send_mail do
     end
     
     def send_mail_to_person(person, mailer_send, ticket)
-      
       #AlertMailer.send_mail(person, "testing_unab").deliver_now
       mailer_send.mails_count += 1
       mailer_send.send_date = Date.current
