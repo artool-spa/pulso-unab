@@ -28,6 +28,7 @@ namespace :send_mail do
               if mailer_send.mails_count == 0
                 send_mail_to_person(person, mailer_send, ticket)
                 puts "entro via web"
+                
               elsif mailer_send.mails_count == 1 && temp_baja
                 if mailer_send.send_date + 15.days < date_curr
                   puts "person_name: #{person.full_name}"
