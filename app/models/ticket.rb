@@ -78,6 +78,38 @@ class Ticket < ApplicationRecord
             
             ticket.save
             puts "ticket guardado fecha: #{date}"
+          else
+            if !ticket_created[:ctc_wa_rut].present?
+              LostReasonTicket.transaction do
+                lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+                lost_ticket.lost_reason = "Rut individuo no presente"
+                lost_ticket.created_time = ticket_created[:createdonname].to_datetime
+                lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
+                lost_ticket.save
+                byebug if !lost_ticket.persisted?
+              end
+              
+            elsif !check.normalize_rut(ticket_created[:ctc_wa_rut]).nil?
+              LostReasonTicket.transaction do
+                lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+                lost_ticket.lost_reason = "Rut individuo no válido"
+                lost_ticket.created_time = ticket_created[:createdonname].to_datetime
+                lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
+                lost_ticket.save
+                byebug if !lost_ticket.persisted?
+              end
+
+            elsif !find_category_id(ticket_created[:subjectid]).present?
+              LostReasonTicket.transaction do
+                lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+                lost_ticket.lost_reason = "Categoria no registrada"
+                lost_ticket.created_time = ticket_created[:createdonname].to_datetime
+                lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
+                lost_ticket.save
+                byebug if !lost_ticket.persisted?
+              end
+
+            end
           end
         end
       end

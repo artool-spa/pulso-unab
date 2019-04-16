@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_14_133830) do
+ActiveRecord::Schema.define(version: 2019_04_15_182136) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -51,6 +51,18 @@ ActiveRecord::Schema.define(version: 2019_03_14_133830) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["person_id"], name: "index_log_mailer_sends_on_person_id"
+  end
+
+  create_table "lost_reason_tickets", force: :cascade do |t|
+    t.string "crm_ticket_id"
+    t.text "lost_reason"
+    t.datetime "created_time"
+    t.datetime "updated_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["created_time"], name: "index_lost_reason_tickets_on_created_time"
+    t.index ["crm_ticket_id"], name: "index_lost_reason_tickets_on_crm_ticket_id"
+    t.index ["updated_time"], name: "index_lost_reason_tickets_on_updated_time"
   end
 
   create_table "mailers", force: :cascade do |t|
