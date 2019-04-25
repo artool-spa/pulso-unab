@@ -13,13 +13,17 @@ namespace :send_mail do
         date_from = (date_curr - 1.days).strftime("%Y-%m-%d")
         date_to = date_curr.strftime("%Y-%m-%d")
       end
-      temp_alta = set_season_alta()
-      temp_baja = set_season_baja()
       
       Ticket.where("created_time::date between ? and ?", date_from, date_to).each do |ticket|
-        
+        temp_alta = false
+        temp_baja = false
         person = Person.find_by(id: ticket.person_id)
         if !person.nil?
+          if set_season_alta(ticket)
+            temp_alta = true
+          else
+            temp_baja = true
+          end
           mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
           #puts "person_name: #{person.full_name}"
           if !ticket.response_ivrs.present? && !ticket.response_surveys.present? && mailer_send.mails_count < 2
@@ -27,6 +31,7 @@ namespace :send_mail do
             if ticket.income_channel.present? && ticket.income_channel.downcase == 'web'
               if mailer_send.mails_count == 0
                 send_mail_to_person(person, mailer_send, ticket)
+                puts "person_name: #{person.full_name}"
                 puts "entro via web"
                 
               elsif mailer_send.mails_count == 1 && temp_baja
@@ -101,24 +106,25 @@ namespace :send_mail do
       puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
     end
 
-    def set_season_alta()
-      #temporada alta -> Enero - Marzo
-      #Temporada baja -> Abril - Diciembre     
-      date_current = DateTime.current
-      year = date_current.year
-      if date_current.between?("#{year}-01-01", "#{year}-03-31")
-        true
-      else
-        false
-      end
-    end
+=begin
+  Meses de temporada alta:
+    Dic
+    Ene
+    Feb
+    Marzo
 
-    def set_season_baja()
-      #temporada alta -> Enero - Marzo
-      #Temporada baja -> Abril - Diciembre
-      date_current = DateTime.current
-      year = date_current.year
-      if date_current.between?("#{year}-04-01", "#{year}-12-31")
+  Meses de temporada baja:
+    Abril
+    Mayo
+    Junio
+    Julio (*)
+    Agosto
+    Setiembre
+    Octubre
+    Noviembre
+=end
+    def set_season_alta(ticket)
+      if ticket.created_time.strftime("%B") == "December" || ticket.created_time.strftime("%B") == "January" || ticket.created_time.strftime("%B") == "February" || ticket.created_time.strftime("%B") == "March"
         true
       else
         false

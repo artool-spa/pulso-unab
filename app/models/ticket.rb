@@ -75,9 +75,8 @@ class Ticket < ApplicationRecord
             ticket.created_time = ticket_created[:createdonname].to_datetime
             ticket.elapsed_time = (DateTime.current.to_i - ticket.created_time.to_i)/(3600*24)
             ticket.updated_time = ticket_created[:modifiedonname].to_datetime
-            
             ticket.save
-            puts "ticket guardado fecha: #{date}"
+            puts "ticket guardado fecha: #{date}".colorize(:light_blue)
           else
             if !ticket_created[:ctc_wa_rut].present?
               LostReasonTicket.transaction do
@@ -86,7 +85,7 @@ class Ticket < ApplicationRecord
                 lost_ticket.created_time = ticket_created[:createdonname].to_datetime
                 lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
                 lost_ticket.save
-                byebug if !lost_ticket.persisted?
+                #byebug if !lost_ticket.persisted?
               end
               
             elsif !check.normalize_rut(ticket_created[:ctc_wa_rut]).nil?
@@ -96,7 +95,7 @@ class Ticket < ApplicationRecord
                 lost_ticket.created_time = ticket_created[:createdonname].to_datetime
                 lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
                 lost_ticket.save
-                byebug if !lost_ticket.persisted?
+                #byebug if !lost_ticket.persisted?
               end
 
             elsif !find_category_id(ticket_created[:subjectid]).present?
@@ -106,7 +105,7 @@ class Ticket < ApplicationRecord
                 lost_ticket.created_time = ticket_created[:createdonname].to_datetime
                 lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
                 lost_ticket.save
-                byebug if !lost_ticket.persisted?
+                #byebug if !lost_ticket.persisted?
               end
 
             end
