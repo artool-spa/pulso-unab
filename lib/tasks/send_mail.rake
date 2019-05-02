@@ -18,7 +18,7 @@ namespace :send_mail do
         temp_alta = false
         temp_baja = false
         person = Person.find_by(id: ticket.person_id)
-        if !person.nil?
+        if !person.nil? && person.email.present?
           if set_season_alta(ticket)
             temp_alta = true
           else

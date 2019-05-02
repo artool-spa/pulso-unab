@@ -97,33 +97,110 @@ class ResponseSurvey < ApplicationRecord
         end
       end
     end
-=begin
-    # Encuesta via QR selectivas
-    ResponseSurvey.transaction do
-      SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: , date_range: "#{date_from} - #{date_to}").each do |graded|
-        answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
-        person = Person.find_by(rut: graded[:custom_variables][:rut])
-        
-        if !person.nil?
-          answer.ticket_id = ticket.id
-          answer.crm_ticket_id = ticket.crm_ticket_id       
-          answer.question = graded[:heading]
-          answer.answer = graded[:weight]
-          answer.sm_response_id = graded[:sm_response_id] 
-          answer.sm_question_id = graded[:sm_question_id]
-          answer.date_created = graded[:created_at]
-          answer.date_updated = graded[:updated_at]
-          answer.income_channel = 'QR'
-          puts "graded answer: #{answer.question}"
-          answer.save
-          #if !answer.persisted?
-          #  puts answer.errors.messages
-          #end
-        end
 
+    # Encuesta via QR Baños Selectiva -- Abierta
+    ResponseSurvey.transaction do
+      SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 173798152, date_range: "#{date_from} - #{date_to}").each do |graded|
+        answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
+        answer.qr_value = qr_value
+        answer.question = graded[:heading]
+        answer.answer = graded[:weight]
+        answer.sm_response_id = graded[:sm_response_id] 
+        answer.sm_question_id = graded[:sm_question_id]
+        answer.date_created = graded[:created_at]
+        answer.date_updated = graded[:updated_at]
+        puts "graded answer: #{answer.question}"
+        answer.save
+        #if !answer.persisted?
+        #  puts answer.errors.messages
+        #end
+      end
+      SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173798152, date_range: "#{date_from} - #{date_to}").each do |graded|
+        answer = ResponseSurvey.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
+        answer.qr_value = qr_value
+        answer.question = opened[:heading]
+        answer.answer = opened[:weight]
+        answer.sm_response_id = opened[:sm_response_id] 
+        answer.sm_question_id = opened[:sm_question_id]
+        answer.date_created = opened[:created_at]
+        answer.date_updated = opened[:updated_at]
+        puts "opened answer: #{answer.question}"
+        answer.save
+        #if !answer.persisted?
+        #  puts answer.errors.messages
+        #end
       end
     end
-=end
+
+    # Encuesta via QR Casino Selectiva -- Abierta
+    ResponseSurvey.transaction do
+      SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 173801696, date_range: "#{date_from} - #{date_to}").each do |graded|
+        answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
+        answer.qr_value = qr_value
+        answer.question = graded[:heading]
+        answer.answer = graded[:weight]
+        answer.sm_response_id = graded[:sm_response_id] 
+        answer.sm_question_id = graded[:sm_question_id]
+        answer.date_created = graded[:created_at]
+        answer.date_updated = graded[:updated_at]
+        puts "graded answer: #{answer.question}"
+        answer.save
+        #if !answer.persisted?
+        #  puts answer.errors.messages
+        #end
+      end
+      
+      SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173801696, date_range: "#{date_from} - #{date_to}").each do |graded|
+        answer = ResponseSurvey.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
+        answer.qr_value = qr_value
+        answer.question = opened[:heading]
+        answer.answer = opened[:weight]
+        answer.sm_response_id = opened[:sm_response_id] 
+        answer.sm_question_id = opened[:sm_question_id]
+        answer.date_created = opened[:created_at]
+        answer.date_updated = opened[:updated_at]
+        puts "opened answer: #{answer.question}"
+        answer.save
+        #if !answer.persisted?
+        #  puts answer.errors.messages
+        #end
+      end
+    end
+
+    # Encuesta via QR Biblioteca Selectiva -- Abierta
+    ResponseSurvey.transaction do
+      SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 173802394, date_range: "#{date_from} - #{date_to}").each do |graded|
+        answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
+        answer.qr_value = qr_value
+        answer.question = graded[:heading]
+        answer.answer = graded[:weight]
+        answer.sm_response_id = graded[:sm_response_id] 
+        answer.sm_question_id = graded[:sm_question_id]
+        answer.date_created = graded[:created_at]
+        answer.date_updated = graded[:updated_at]
+        puts "graded answer: #{answer.question}"
+        answer.save
+        #if !answer.persisted?
+        #  puts answer.errors.messages
+        #end
+      end
+      SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173802394, date_range: "#{date_from} - #{date_to}").each do |graded|
+        answer = ResponseSurvey.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
+        answer.qr_value = qr_value
+        answer.question = opened[:heading]
+        answer.answer = opened[:weight]
+        answer.sm_response_id = opened[:sm_response_id] 
+        answer.sm_question_id = opened[:sm_question_id]
+        answer.date_created = opened[:created_at]
+        answer.date_updated = opened[:updated_at]
+        puts "opened answer: #{answer.question}"
+        answer.save
+        #if !answer.persisted?
+        #  puts answer.errors.messages
+        #end
+      end
+    end
+
   end
   
   def self.associate_answer_to_ticket_totem(person, answer)
