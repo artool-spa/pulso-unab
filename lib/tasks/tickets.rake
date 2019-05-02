@@ -14,14 +14,16 @@ namespace :tickets do
       date_to = date_curr
     end
 
-    Ticket.get_tickets_from_crm(date_from, date_to)
-    puts "listo."
-    Ticket.get_tickets_close_from_crm(date_from, date_to)
-    puts "listo.."
-    #ResponseSurvey.get_answers_from_survey(date_from, date_to)
-    puts "listo..."
+    #Ticket.get_tickets_from_crm(date_from, date_to)
+    #puts "tickets from crm"
+    #Ticket.get_tickets_close_from_crm(date_from, date_to)
+    #puts "tickets closes"
+    ResponseSurvey.get_answers_from_survey(date_from, date_to)
+    puts "answers from survey"
+    #ResponseQr.get_qr_answers_from_survey(date_from, date_to)
+    puts "answers from qr"
     #ResponseIvr.get_answer_from_ivr(date_from, date_to)
-    puts "listo...."
+    puts "answers from ivr"
     end
 
     

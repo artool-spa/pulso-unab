@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_15_182136) do
+ActiveRecord::Schema.define(version: 2019_05_02_153557) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -119,6 +119,26 @@ ActiveRecord::Schema.define(version: 2019_04_15_182136) do
     t.datetime "updated_at", null: false
     t.index ["have_solution"], name: "index_response_ivrs_on_have_solution"
     t.index ["ticket_id"], name: "index_response_ivrs_on_ticket_id"
+  end
+
+  create_table "response_qrs", force: :cascade do |t|
+    t.string "qr_code"
+    t.bigint "api_id"
+    t.string "answer_type"
+    t.text "question"
+    t.text "answer"
+    t.string "satisfaction"
+    t.bigint "sm_response_id"
+    t.bigint "sm_question_id"
+    t.datetime "date_created"
+    t.datetime "date_updated"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["answer_type"], name: "index_response_qrs_on_answer_type"
+    t.index ["api_id"], name: "index_response_qrs_on_api_id"
+    t.index ["qr_code"], name: "index_response_qrs_on_qr_code"
+    t.index ["sm_question_id"], name: "index_response_qrs_on_sm_question_id"
+    t.index ["sm_response_id"], name: "index_response_qrs_on_sm_response_id"
   end
 
   create_table "response_surveys", force: :cascade do |t|
