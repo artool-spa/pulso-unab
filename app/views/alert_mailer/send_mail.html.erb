@@ -1,9 +1,25 @@
-<p>Hola <%=@person.full_name%>!</p>
-<p>Como parte de la evaluación de nuestro servicio de atención 
-le pedimos contestar la siguiente encuesta</p>
-<p> La encuesta se encuentra disponible en el siguiente link</p>
-<p>
-  <%=link_to  "Link", "https://es.research.net/r/5M8JN3T?ticket_id=#{@person.tickets.first.crm_ticket_id}"%>
-</p>
-<p>De antemano muchas gracias!</p>
+
+<div style="margin-top: 80px;display: block;">
+<%= image_tag("evalua_tu_experiencia_unab.png") %>
+</div>
+
+<h2 style="margin-top: 80px;display: block;margin-left:40px;font-weight:bold;font-size:25px;width: 970px;"> Estimada/o Estudiante </h2>
+
+<p style="margin-top: 10px;display: block;margin-left:40px;font-size:23px;width: 970px;text-align: justify;"> Con el objetivo de conocer tu experiencia en relacion a nuestro
+servicio y plataforma de atención, te invitamos a contestar una breve encuesta. </p>
+
+<div style="margin-top: 40px;display: block;text-align: center;width: 970px;margin-left:40px;">
+<%= link_to "https://es.research.net/r/5M8JN3T?ticket_id=#{@person.tickets.first.crm_ticket_id}" do %>
+  <%= image_tag('ingresa_aqui_unab.png') %>
+<% end %>
+</div>
+
+<p style="margin-top: 40px;display: block;margin-left:40px;font-size:23px;width: 970px;text-align: justify;"> Tu respuesta es una oportunidad para seguir mejorando y entregar un servicio
+de calidad a nuestra comunidad universitaria. </p>
+
+<p style="margin-top: 50px;display: block;text-align: center;width: 970px;margin-left:40px;font-size:36px;"> ¡Muchas gracias! </p> 
+
+<div style="margin-top: 30px;display: block;text-align: center;width: 970px;margin-left:40px;"><%= image_tag('unab_logo.png') %></div>
+
+<div style="margin-top: 20px;"><%= image_tag('footer_unab.png') %></div>
 
