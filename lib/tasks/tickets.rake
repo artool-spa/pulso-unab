@@ -18,10 +18,10 @@ namespace :tickets do
     #puts "tickets from crm"
     #Ticket.get_tickets_close_from_crm(date_from, date_to)
     #puts "tickets closes"
-    #ResponseSurvey.get_answers_from_survey(date_from, date_to)
-    #puts "answers from survey"
-    ResponseQr.get_qr_answers_from_survey(date_from, date_to)
-    puts "answers from qr"
+    ResponseSurvey.get_answers_from_survey(date_from, date_to)
+    puts "answers from survey"
+    #ResponseQr.get_qr_answers_from_survey(date_from, date_to)
+    #puts "answers from qr"
     #ResponseIvr.get_answer_from_ivr(date_from, date_to)
     #puts "answers from ivr"
     end

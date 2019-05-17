@@ -105,7 +105,6 @@ class ResponseQr < ApplicationRecord
         elsif answer.present? && answer.answer.to_i == 5
           answer.satisfaction = 'Neutro'
         end
-
         answer.save
         #if !answer.persisted?
         #  puts answer.errors.messages
