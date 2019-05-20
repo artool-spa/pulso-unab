@@ -30,7 +30,7 @@ namespace :send_mail do
           else
             temp_baja = true
           end
-            
+          puts "Temp_alta: #{temp_alta} | Temp_baja: #{temp_baja}".colorize(:light_red)
           mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
           #puts "person_name: #{person.full_name}"
           if !ticket.response_ivrs.present? && !ticket.response_surveys.present? && mailer_send.mails_count < 2
@@ -39,33 +39,28 @@ namespace :send_mail do
               if mailer_send.mails_count == 0
                 #Via Web
                 send_mail_to_person(person, mailer_send, ticket)
-                puts "person_name: #{person.full_name}"
-                puts "entro via web"
+                puts "Ticket via web"
                 
               elsif mailer_send.mails_count == 1 && temp_baja
                 if mailer_send.send_date + 15.days < date_curr
-                  puts "person_name: #{person.full_name}"
                   puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
                   send_mail_to_person(person, mailer_send, ticket)
                 end
                 
               elsif mailer_send.mails_count == 1 && temp_alta
                 if mailer_send.send_date + 30.days < date_curr
-                  puts "person_name: #{person.full_name}"
                   puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
                   send_mail_to_person(person, mailer_send, ticket)
                 end
 
               elsif mailer_send.mails_count == 1 && temp_alta
                 if mailer_send.send_date + 30.days < date_curr
-                  puts "person_name: #{person.full_name}"
                   puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
                   send_mail_to_person(person, mailer_send, ticket)
                 end
 
               elsif mailer_send.mails_count == 1 && temp_baja
                 if mailer_send.send_date + 15.days < date_curr
-                  puts "person_name: #{person.full_name}"
                   puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
                   send_mail_to_person(person, mailer_send, ticket)
                 end
@@ -75,8 +70,7 @@ namespace :send_mail do
               if mailer_send.mails_count == 0
                 #Dont have answers 
                 send_mail_to_person(person, mailer_send, ticket)
-                puts "person_name: #{person.full_name}"
-                puts "entro pq no tuvo respuesta alguna"
+                puts "Ticket sin respuesta"
                 #if ticket.closed_time.present?
                   #if ticket.created_time.to_date == ticket.closed_time.to_date
                     #send_mail_to_person(person, mailer_send, ticket)
@@ -85,14 +79,12 @@ namespace :send_mail do
 
               elsif mailer_send.mails_count == 1 && temp_alta
                 if mailer_send.send_date + 30.days < date_curr
-                  puts "person_name: #{person.full_name}"
                   puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
                   send_mail_to_person(person, mailer_send, ticket)
                 end
 
               elsif mailer_send.mails_count == 1 && temp_baja
                 if mailer_send.send_date + 15.days < date_curr
-                  puts "person_name: #{person.full_name}"
                   puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
                   send_mail_to_person(person, mailer_send, ticket)
                 end
@@ -112,7 +104,7 @@ namespace :send_mail do
       mailer_send.send_date = Date.current
       #mailer_send.send_date = rand(45.days).seconds.ago.to_date
       mailer_send.save
-      puts "Mail enviado al ticket #{ticket.crm_ticket_id}"
+      puts "Send mail to #{ticket.crm_ticket_id} | person_name: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
     end
 
 =begin
