@@ -53,7 +53,10 @@ class Ticket < ApplicationRecord
             end
     
             person.save
-            puts "persona guardada fecha:#{date}"
+            if person.persisted?
+              puts "Person: #{person.full_name} | Fecha: #{date}"
+            end
+    
             ticket = person.tickets.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
             ticket.business_owner_unit = ticket_created[:mksv_unidaddenegociodelpropietarioid]
             ticket.business_author_unit = ticket_created[:mksv_unidaddenegociodelautorid]
@@ -76,7 +79,12 @@ class Ticket < ApplicationRecord
             ticket.elapsed_time = (DateTime.current.to_i - ticket.created_time.to_i)/(3600*24)
             ticket.updated_time = ticket_created[:modifiedonname].to_datetime
             ticket.save
-            puts "ticket guardado fecha: #{date}".colorize(:light_blue)
+            
+            if ticket.persisted?
+              puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_blue)
+              puts "------------------------------"
+            end
+
           else
             if !ticket_created[:ctc_wa_rut].present?
               LostReasonTicket.transaction do
@@ -128,6 +136,8 @@ class Ticket < ApplicationRecord
             if ticket.present?
               ticket.closed_time = ticket_closed.key?(:modifiedonname) && ticket_closed[:modifiedonname].present? ? ticket_closed[:modifiedonname].to_datetime : nil
               ticket.save
+              puts "Ticket close: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_red)
+              puts "------------------------------"
             end
 
           end

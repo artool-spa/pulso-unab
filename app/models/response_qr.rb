@@ -12,8 +12,6 @@ class ResponseQr < ApplicationRecord
         answer.sm_question_id = graded[:sm_question_id]
         answer.date_created = graded[:created_at]
         answer.date_updated = graded[:updated_at]
-        puts "graded answer: #{answer.question}"
-
         if answer.present? && answer.answer.to_i > 5
           answer.satisfaction = 'Satisfecho'
         elsif answer.present? && answer.answer.to_i < 5
@@ -21,7 +19,7 @@ class ResponseQr < ApplicationRecord
         elsif answer.present? && answer.answer.to_i == 5
           answer.satisfaction = 'Neutro'
         end
-
+        puts "Baños graded question: #{graded[:heading]} | answer: #{graded[:weight]}".colorize(:light_green)
         answer.save
         #if !answer.persisted?
         #  puts answer.errors.messages
@@ -31,12 +29,13 @@ class ResponseQr < ApplicationRecord
         answer = ResponseQr.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
         #answer.qr_code = opened[:id]
         answer.question = opened[:heading]
-        answer.answer = opened[:weight]
+        answer.answer = opened[:txt_response]
         answer.sm_response_id = opened[:sm_response_id] 
         answer.sm_question_id = opened[:sm_question_id]
         answer.date_created = opened[:created_at]
         answer.date_updated = opened[:updated_at]
-        puts "opened answer: #{answer.question}"
+        puts "Baños opened question: #{opened[:heading]} | opened answer: #{opened[:txt_response]}".colorize(:light_blue)
+        puts "-------------------------------".colorize(:light_yellow)
         answer.save
         #if !answer.persisted?
         #  puts answer.errors.messages
@@ -55,7 +54,6 @@ class ResponseQr < ApplicationRecord
         answer.sm_question_id = graded[:sm_question_id]
         answer.date_created = graded[:created_at]
         answer.date_updated = graded[:updated_at]
-        puts "graded answer: #{answer.question}"
 
         if answer.present? && answer.answer.to_i > 5
           answer.satisfaction = 'Satisfecho'
@@ -64,6 +62,7 @@ class ResponseQr < ApplicationRecord
         elsif answer.present? && answer.answer.to_i == 5
           answer.satisfaction = 'Neutro'
         end
+        puts "Casino graded question: #{graded[:heading]} | answer: #{graded[:weight]}".colorize(:light_green)
         answer.save
         #if !answer.persisted?
         #  puts answer.errors.messages
@@ -73,12 +72,13 @@ class ResponseQr < ApplicationRecord
         answer = ResponseQr.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
         #answer.qr_code = opened[:id]
         answer.question = opened[:heading]
-        answer.answer = opened[:weight]
+        answer.answer = opened[:txt_response]
         answer.sm_response_id = opened[:sm_response_id] 
         answer.sm_question_id = opened[:sm_question_id]
         answer.date_created = opened[:created_at]
         answer.date_updated = opened[:updated_at]
-        puts "opened answer: #{answer.question}"
+        puts "Casino opened question: #{opened[:heading]} | opened answer: #{opened[:txt_response]}".colorize(:light_blue)
+        puts "-------------------------------".colorize(:light_yellow)
         answer.save
         #if !answer.persisted?
         #  puts answer.errors.messages
@@ -97,7 +97,6 @@ class ResponseQr < ApplicationRecord
         answer.sm_question_id = graded[:sm_question_id]
         answer.date_created = graded[:created_at]
         answer.date_updated = graded[:updated_at]
-        puts "graded answer: #{answer.question}"
         if answer.present? && answer.answer.to_i > 5
           answer.satisfaction = 'Satisfecho'
         elsif answer.present? && answer.answer.to_i < 5
@@ -105,6 +104,7 @@ class ResponseQr < ApplicationRecord
         elsif answer.present? && answer.answer.to_i == 5
           answer.satisfaction = 'Neutro'
         end
+        puts "Biblio graded question: #{graded[:heading]} | answer: #{graded[:weight]}".colorize(:light_green)
         answer.save
         #if !answer.persisted?
         #  puts answer.errors.messages
@@ -114,12 +114,13 @@ class ResponseQr < ApplicationRecord
         answer = ResponseQr.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
         #answer.qr_code = opened[:id]
         answer.question = opened[:heading]
-        answer.answer = opened[:weight]
+        answer.answer = opened[:txt_response]
         answer.sm_response_id = opened[:sm_response_id] 
         answer.sm_question_id = opened[:sm_question_id]
         answer.date_created = opened[:created_at]
         answer.date_updated = opened[:updated_at]
-        puts "opened answer: #{answer.question}"
+        puts "Biblio opened question: #{opened[:heading]} | opened answer: #{opened[:txt_response]}".colorize(:light_blue)
+        puts "-------------------------------".colorize(:light_yellow)
         answer.save
         #if !answer.persisted?
         #  puts answer.errors.messages
