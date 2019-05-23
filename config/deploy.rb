@@ -1,9 +1,9 @@
 # config valid only for current version of Capistrano
 #lock '3.4.0'
-set :application, 'ddm-semaphore'
-set :repo_url, "git@bitbucket.org:hiperjp/#{fetch(:application)}.git"
-set :rvm_ruby_version, "2.4.3@#{fetch(:application)}"
-set :rvm_ruby, '2.4.3'
+set :application, 'pulso_unab'
+set :repo_url, "git@gitlab.com:artool/pulso-unab.git"
+set :rvm_ruby_version, "2.5.1@#{fetch(:application)}"
+set :rvm_ruby, '2.5.1'
 set :keep_releases, 3
 
 # Default deploy_to directory is /var/www/my_app_name
@@ -22,7 +22,7 @@ set :log_level, :debug
 # set :pty, true
 
 # Default value for :linked_files is []
-set :linked_files, fetch(:linked_files, []).push('config/master.key', 'config/ddm-semaphore.json')
+set :linked_files, fetch(:linked_files, []).push('config/master.key')
 
 # Default value for linked_dirs is []
 set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')

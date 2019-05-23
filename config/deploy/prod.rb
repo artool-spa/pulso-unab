@@ -4,9 +4,9 @@ set :stage, :production
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 set :branch, "master"
 
-role :app, %w{ubuntu@52.37.95.9}
-role :web, %w{ubuntu@52.37.95.9}
-role :db,  %w{ubuntu@52.37.95.9}
+role :app, %w{ubuntu@34.208.59.152}
+role :web, %w{ubuntu@34.208.59.152}
+role :db,  %w{ubuntu@34.208.59.152}
 
 load File.expand_path('../../secrets_deploy.rb', __FILE__)
 
