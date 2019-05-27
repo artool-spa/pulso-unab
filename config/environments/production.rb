@@ -91,13 +91,13 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-  config.action_mailer.default_url_options = { host: 'ddmbe.artool.cl' }
+  config.action_mailer.default_url_options = { host: 'pulsounab.artool.cl' }
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: 'ddmbe.artool.cl' }
-  config.action_mailer.asset_host = 'https://ddmbe.artool.cl'
+  config.action_mailer.default_url_options = { host: 'pulsounab.artool.cl' }
+  config.action_mailer.asset_host = 'https://pulsounab.artool.cl'
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = Rails.application.credentials.artool_smtp
 end
