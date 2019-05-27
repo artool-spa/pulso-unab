@@ -8,7 +8,6 @@ class CreateResponseIvrs < ActiveRecord::Migration[5.2]
       t.integer :option_3
       t.integer :option_4
       t.datetime :date_created
-      t.datetime :date_updated
       t.string :crm_ticket_id
       t.references :ticket
       t.timestamps

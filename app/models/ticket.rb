@@ -74,14 +74,13 @@ class Ticket < ApplicationRecord
             ticket.status = ticket_created[:statuscodename]
             ticket.priority = ticket_created[:prioritycodename]
             ticket.case_type = ticket_created[ :casetypecodename]
-    
-            ticket.created_time = ticket_created[:createdonname].to_datetime
-            ticket.elapsed_time = (DateTime.current.to_i - ticket.created_time.to_i)/(3600*24)
-            ticket.updated_time = ticket_created[:modifiedonname].to_datetime
+            ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
+            ticket.elapsed_time = (DateTime.current.to_i - ticket.created_time.to_f)/(3600*24)
+            ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
             ticket.save
             
             if ticket.persisted?
-              puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_blue)
+              puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) ".colorize(:light_blue)
               puts "------------------------------"
             end
 
@@ -90,8 +89,8 @@ class Ticket < ApplicationRecord
               LostReasonTicket.transaction do
                 lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
                 lost_ticket.lost_reason = "Rut individuo no presente"
-                lost_ticket.created_time = ticket_created[:createdonname].to_datetime
-                lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
+                lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
+                lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.save
                 #byebug if !lost_ticket.persisted?
               end
@@ -100,8 +99,8 @@ class Ticket < ApplicationRecord
               LostReasonTicket.transaction do
                 lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
                 lost_ticket.lost_reason = "Rut individuo no válido"
-                lost_ticket.created_time = ticket_created[:createdonname].to_datetime
-                lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
+                lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
+                lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.save
                 #byebug if !lost_ticket.persisted?
               end
@@ -110,8 +109,8 @@ class Ticket < ApplicationRecord
               LostReasonTicket.transaction do
                 lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
                 lost_ticket.lost_reason = "Categoria no registrada"
-                lost_ticket.created_time = ticket_created[:createdonname].to_datetime
-                lost_ticket.updated_time = ticket_created[:modifiedonname].to_datetime
+                lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
+                lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.save
                 #byebug if !lost_ticket.persisted?
               end
@@ -134,7 +133,7 @@ class Ticket < ApplicationRecord
             ticket = Ticket.find_by(crm_ticket_id: ticket_closed[:ticketnumber])
             
             if ticket.present?
-              ticket.closed_time = ticket_closed.key?(:modifiedonname) && ticket_closed[:modifiedonname].present? ? ticket_closed[:modifiedonname].to_datetime : nil
+              ticket.closed_time = ticket_closed.key?(:modifiedon) && ticket_closed[:modifiedon].present? ? DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p") : nil
               ticket.save
               puts "Ticket close: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_red)
               puts "------------------------------"

@@ -11,7 +11,7 @@ class UnabIvr
     #2602201914
     #timeParam = "28022019"
     timeParam = date.to_date.strftime("%d%m%Y")
-    puts("> "+time)
+    #puts("> "+time)
 
     url = URI.parse("http://epa.mets.cl/unab/index.php?t=" + timeParam + "&h=" + hash)
     req = Net::HTTP::Get.new(url.to_s)

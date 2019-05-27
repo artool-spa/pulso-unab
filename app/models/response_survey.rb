@@ -70,7 +70,6 @@ class ResponseSurvey < ApplicationRecord
         if !check.normalize_rut(opened[:txt_response]).nil?
           rut = check.normalize_rut(opened[:txt_response])
           global_rut = rut
-          puts global_rut
         end
         
         person = Person.find_by(rut: global_rut)            
@@ -102,7 +101,6 @@ class ResponseSurvey < ApplicationRecord
         if !check.normalize_rut(graded[:txt_response]).nil?
           rut = check.normalize_rut(graded[:txt_response])
           global_rut = rut
-          puts global_rut
         end
         
         person = Person.find_by(rut: global_rut)            

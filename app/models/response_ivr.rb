@@ -6,7 +6,8 @@ class ResponseIvr < ApplicationRecord
       from_date.upto(to_date) do |date|
         
         answer = JSON.parse(ivr_api.get_ivr_data(date).body)
-        puts "answer: #{answer} con fecha: #{date}"
+        puts "Date: #{date} Answer: #{answer} ".colorize(:light_green)
+        puts "--------------------------------".colorize(:light_blue)
         #answer = JSON.parse(ivr_api.get_ivr_data(date))
         answer["data"].each do |response|
           ResponseIvr.transaction do

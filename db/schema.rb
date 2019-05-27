@@ -112,7 +112,6 @@ ActiveRecord::Schema.define(version: 2019_05_02_153557) do
     t.integer "option_3"
     t.integer "option_4"
     t.datetime "date_created"
-    t.datetime "date_updated"
     t.string "crm_ticket_id"
     t.bigint "ticket_id"
     t.datetime "created_at", null: false
