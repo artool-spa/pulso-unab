@@ -13,11 +13,11 @@ namespace :send_mail do
         date_from = (date_curr - 35.days).strftime("%Y-%m-%d")
         date_to = date_curr.strftime("%Y-%m-%d")
       end
-      #person = Person.find_by(id: 10000003)
-      #ticket = Ticket.find_by(crm_ticket_id: "CAS-21393-F1F2Y3")
-      #mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
-      #send_mail_to_person(person, mailer_send, ticket)
-      #exit(1)
+      person = Person.find_by(id: 10000003)
+      ticket = Ticket.find_by(crm_ticket_id: "CAS-21393-F1F2Y3")
+      mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
+      send_mail_to_person(person, mailer_send, ticket)
+      exit(1)
       #byebug
       Ticket.where("created_time::date between ? and ?", date_from, date_to).each do |ticket|
         temp_alta = false
@@ -99,7 +99,7 @@ namespace :send_mail do
     end
     
     def send_mail_to_person(person, mailer_send, ticket)
-      #AlertMailer.send_mail(person, "testing_unab").deliver_now
+      AlertMailer.send_mail(person, "testing_unab").deliver_now
       mailer_send.mails_count += 1
       mailer_send.send_date = Date.current
       #mailer_send.send_date = rand(45.days).seconds.ago.to_date

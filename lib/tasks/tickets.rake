@@ -10,7 +10,7 @@ namespace :tickets do
       date_from = DateTime.parse(args.date_from)
       date_to = DateTime.parse(args.date_to)
     else
-      date_from = date_curr.beginning_of_month
+      date_from = date_curr - 2.days
       date_to = date_curr
     end
 
