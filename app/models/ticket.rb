@@ -20,7 +20,7 @@ class Ticket < ApplicationRecord
       date = date.strftime("%Y-%m-%d")
       unab_api.get_ticket_created(date)[:casos_creados].each do |ticket_created|
         Person.transaction do
-          if (ticket_created[:ctc_wa_rut].present? && !check.normalize_rut(ticket_created[:ctc_wa_rut]).nil? && find_category_id(ticket_created[:subjectid]).present?)
+          if (ticket_created[:ctc_wa_rut].present? && ticket_created[:ctc_emailaddress1].present? && find_category_id(ticket_created[:subjectid]).present?)
             person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
             person.full_name = ticket_created[:customerid]
             person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
@@ -93,17 +93,14 @@ class Ticket < ApplicationRecord
                 lost_ticket.save
                 #byebug if !lost_ticket.persisted?
               end
-              
-            elsif !check.normalize_rut(ticket_created[:ctc_wa_rut]).nil?
+            elsif !ticket_created[:ctc_emailaddress1].present?
               LostReasonTicket.transaction do
                 lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
-                lost_ticket.lost_reason = "Rut individuo no válido"
+                lost_ticket.lost_reason = "Ticket sin Email asociado"
                 lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.save
-                #byebug if !lost_ticket.persisted?
               end
-
             elsif !find_category_id(ticket_created[:subjectid]).present?
               LostReasonTicket.transaction do
                 lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
@@ -113,7 +110,7 @@ class Ticket < ApplicationRecord
                 lost_ticket.save
                 #byebug if !lost_ticket.persisted?
               end
-
+             
             end
           end
         end
