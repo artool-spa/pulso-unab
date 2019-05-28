@@ -7,12 +7,13 @@ namespace :send_mail do
 
       # Set initial retrieving period for stats
       if args.date_from.present? && args.date_to.present?
-        date_from = DateTime.parse(args.date_from).strftime("%Y-%m-%d")
-        date_to = DateTime.parse(args.date_to).strftime("%Y-%m-%d")
+        date_from = DateTime.parse(args.date_from)
+        date_to = DateTime.parse(args.date_to)
       else
-        date_from = (date_curr - 35.days).strftime("%Y-%m-%d")
-        date_to = date_curr.strftime("%Y-%m-%d")
+        date_from = (date_curr - 35.days).beginning_of_day
+        date_to = date_curr.end_of_day
       end
+      puts ">> Executing send_mail task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
       #person = Person.find_by(id: 10000003)
       #ticket = Ticket.find_by(crm_ticket_id: "CAS-21393-F1F2Y3")
       #mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
@@ -23,14 +24,14 @@ namespace :send_mail do
         temp_alta = false
         temp_baja = false
         person = Person.find_by(id: ticket.person_id)
-        if !person.nil? && person.email.present?
-
+        if !person.blank? && person.email.present?
           if set_season_alta(ticket)
             temp_alta = true
           else
             temp_baja = true
           end
-          puts "Temp_alta: #{temp_alta} | Temp_baja: #{temp_baja}".colorize(:light_yellow)
+          
+          puts "   Temp_alta: #{temp_alta} | Temp_baja: #{temp_baja}".colorize(:light_yellow)
           mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
           #puts "person_name: #{person.full_name}"
           if !ticket.response_ivrs.present? && !ticket.response_surveys.present? && mailer_send.mails_count < 2
@@ -39,55 +40,30 @@ namespace :send_mail do
               if mailer_send.mails_count == 0
                 #Via Web
                 send_mail_to_person(person, mailer_send, ticket)
-                puts "Ticket via web"
+                puts "   Ticket via web"
                 
-              elsif mailer_send.mails_count == 1 && temp_baja
-                if mailer_send.send_date + 15.days < date_curr
-                  puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-                  send_mail_to_person(person, mailer_send, ticket)
-                end
+              elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr
+                puts "   temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+                send_mail_to_person(person, mailer_send, ticket)
                 
-              elsif mailer_send.mails_count == 1 && temp_alta
-                if mailer_send.send_date + 30.days < date_curr
-                  puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-                  send_mail_to_person(person, mailer_send, ticket)
-                end
-
-              elsif mailer_send.mails_count == 1 && temp_alta
-                if mailer_send.send_date + 30.days < date_curr
-                  puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-                  send_mail_to_person(person, mailer_send, ticket)
-                end
-
-              elsif mailer_send.mails_count == 1 && temp_baja
-                if mailer_send.send_date + 15.days < date_curr
-                  puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-                  send_mail_to_person(person, mailer_send, ticket)
-                end
+              elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
+                puts "   temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+                send_mail_to_person(person, mailer_send, ticket)
               end
           
             else
               if mailer_send.mails_count == 0
                 #Dont have answers 
                 send_mail_to_person(person, mailer_send, ticket)
-                puts "Ticket sin respuesta"
-                #if ticket.closed_time.present?
-                  #if ticket.created_time.to_date == ticket.closed_time.to_date
-                    #send_mail_to_person(person, mailer_send, ticket)
-                  #end
-                #end
+                puts "   Ticket sin respuesta"
 
-              elsif mailer_send.mails_count == 1 && temp_alta
-                if mailer_send.send_date + 30.days < date_curr
-                  puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-                  send_mail_to_person(person, mailer_send, ticket)
-                end
+              elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
+                puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+                send_mail_to_person(person, mailer_send, ticket)
 
-              elsif mailer_send.mails_count == 1 && temp_baja
-                if mailer_send.send_date + 15.days < date_curr
-                  puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-                  send_mail_to_person(person, mailer_send, ticket)
-                end
+              elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr 
+                puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+                send_mail_to_person(person, mailer_send, ticket)
               end
 
             end
@@ -99,12 +75,12 @@ namespace :send_mail do
     end
     
     def send_mail_to_person(person, mailer_send, ticket)
-      #AlertMailer.send_mail(person, "testing_unab").deliver_now
+      AlertMailer.send_mail(person, "Evalúa atención").deliver_now
       mailer_send.mails_count += 1
       mailer_send.send_date = DateTime.current
       #mailer_send.send_date = rand(45.days).seconds.ago.to_date
       mailer_send.save
-      puts "Send mail to #{ticket.crm_ticket_id} | person_name: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
+      puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
     end
 
 =begin

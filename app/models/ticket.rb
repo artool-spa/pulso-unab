@@ -14,6 +14,8 @@ class Ticket < ApplicationRecord
     unab_api = UnabApi.new
     check = StringUtils.new
     ticket_hash = {}
+    from_date = from_date.to_datetime
+    to_date = to_date.to_datetime
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
       unab_api.get_ticket_created(date)[:casos_creados].each do |ticket_created|
