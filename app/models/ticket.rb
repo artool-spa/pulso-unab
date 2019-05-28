@@ -29,16 +29,13 @@ class Ticket < ApplicationRecord
             person.career = ticket_created[:mksv_carreraid]
             #homologate_careers
             if ticket_created[:mksv_carreraid].present? && ticket_created[:mksv_carreraid].split(' ').last.include?('E') && ticket_created[:mksv_carreraid].split(' ').last =~ /\d/ 
-              #puts "CARRERA: #{person.career}"
               career = ticket_created[:mksv_carreraid].split(' ')
               career.pop
               person.career = career.join(" ")
-              #puts "CARRERA mod: #{person.career}"
             end
             person.campus = ticket_created[:mksv_campusid]
             person.faculty = ticket_created[:prog_mksv_facultadid]
             person.regimen = ticket_created[:da_mksv_regimen]
-            #puts "regimen: #{ticket_created[:da_mksv_regimen]}"
             #check if there are fields 
             if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:salida][:estado] == '1'
               if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:contacto].kind_of?(Array)
@@ -126,6 +123,8 @@ class Ticket < ApplicationRecord
 
   def self.get_tickets_close_from_crm(from_date, to_date)
     unab_api = UnabApi.new
+    from_date = from_date.to_datetime
+    to_date = to_date.to_datetime
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
       

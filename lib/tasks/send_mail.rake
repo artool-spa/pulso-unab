@@ -33,7 +33,6 @@ namespace :send_mail do
           
           puts "   Temp_alta: #{temp_alta} | Temp_baja: #{temp_baja}".colorize(:light_yellow)
           mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
-          #puts "person_name: #{person.full_name}"
           if !ticket.response_ivrs.present? && !ticket.response_surveys.present? && mailer_send.mails_count < 2
 
             if ticket.income_channel.present? && ticket.income_channel.downcase == 'web'
