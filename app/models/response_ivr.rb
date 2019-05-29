@@ -1,13 +1,14 @@
 class ResponseIvr < ApplicationRecord
     belongs_to :ticket
-
+    
     def self.get_answer_from_ivr(from_date, to_date)
+      @total_ivr_answers = 0
       ivr_api = UnabIvr.new
       from_date.upto(to_date) do |date|
         
         answer = JSON.parse(ivr_api.get_ivr_data(date).body)
-        puts "Date: #{date} Answer: #{answer} ".colorize(:light_green)
-        puts "--------------------------------".colorize(:light_blue)
+        #puts "Date: #{date} Answer: #{answer} ".colorize(:light_green)
+        #puts "--------------------------------".colorize(:light_blue)
         #answer = JSON.parse(ivr_api.get_ivr_data(date))
         answer["data"].each do |response|
           ResponseIvr.transaction do
@@ -24,14 +25,19 @@ class ResponseIvr < ApplicationRecord
               answer.option_4 = response["answer_details"]["option4"].present? ? response["answer_details"]["option4"].to_i : nil
               answer.date_created = date
               answer.save
-              #if !answer.persisted?
-              #  puts answer.errors.messages
+              @total_ivr_answers += 1
+              #if answer.persisted?
+              #  @total_ivr_answers_save += 1
               #end
             end
           end
         
         end
       end
+      puts "Respuestas IVR totales del periodo: #{@total_ivr_answers}"
+      #puts "Respuestas IVR guardadas del periodo: #{@total_ivr_answers_save}"
+      logger.debug{"Respuestas IVR totales del periodo => #{@total_ivr_answers}".colorize(:light_yellow)}
+      #logger.debug{"Respuestas IVR guardadas del periodo => #{@total_ivr_answers_save}".colorize(:light_yellow)}
     end
   
   end

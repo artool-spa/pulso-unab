@@ -9,7 +9,7 @@ class Ticket < ApplicationRecord
   #  AlertMailer.send_mail(@test_subject, "testing_unab").deliver_now
   #end
   @ticket_hash = {}
-
+  @total_tickets = 0
   def self.get_tickets_from_crm(from_date, to_date)
     unab_api = UnabApi.new
     check = StringUtils.new
@@ -80,6 +80,7 @@ class Ticket < ApplicationRecord
             
             if ticket.persisted?
               puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) ".colorize(:light_blue)
+              @total_tickets += 1
               puts "------------------------------"
             end
 
@@ -116,6 +117,8 @@ class Ticket < ApplicationRecord
         end
       end
     end
+    puts "Tickets totales del periodo: #{@total_tickets}"
+    logger.debug{"Tickets totales del periodo => #{@total_tickets}".colorize(:light_yellow)}
   end
 
   def self.get_tickets_close_from_crm(from_date, to_date)
