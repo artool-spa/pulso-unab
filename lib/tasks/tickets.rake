@@ -1,7 +1,7 @@
 namespace :tickets do
     desc "Process tickets (; separator)"
-    task :all, [:date_from, :date_to] => [:environment] do |t, args|
-      args.with_defaults(date_from: nil, date_to: nil)
+    task :all, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
+      args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
 
       date_curr = DateTime.current
       # Set initial retrieving period for stats
@@ -38,7 +38,8 @@ namespace :tickets do
       date_to = (date_curr + 1.days).end_of_day
 
       puts ">> Executing send_mail task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
-      LogMailerSend.send_mail(date_from, date_to)
+      
+      LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
       puts "   Ending send mails...".colorize(:light_yellow)
     end
 end
