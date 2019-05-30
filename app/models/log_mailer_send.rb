@@ -60,14 +60,18 @@ class LogMailerSend < ApplicationRecord
   private
 
   def self.send_mail_to_person(person, mailer_send, ticket, debug)
-    
-    AlertMailer.send_mail(person, "Evalúa atención").deliver_now if debug == false
-    mailer_send.mails_count += 1
-    mailer_send.send_date = DateTime.current
-    #mailer_send.send_date = rand(45.days).seconds.ago.to_date
-    mailer_send.save
-    puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
-    @mail_send_count += 1
+    begin
+      AlertMailer.send_mail(person, "Evalúa atención").deliver_now if debug == false
+      mailer_send.mails_count += 1
+      mailer_send.send_date = DateTime.current
+      #mailer_send.send_date = rand(45.days).seconds.ago.to_date
+      mailer_send.save
+      puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
+      @mail_send_count += 1
+    rescue StandardError => error
+      logger.debug{"Mail send error => ticket: #{ticket.crm_ticket_id} person_email: #{person.email}".colorize(:light_red)}
+      puts "Mail send error => ticket: #{ticket.crm_ticket_id} person_email: #{person.email}".colorize(:light_red)
+    end
   end
 
   def self.set_season_alta(ticket)
