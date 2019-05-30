@@ -15,7 +15,8 @@ namespace :tickets do
       
       date_from_crm = date_from.to_date
       date_to_crm = date_to.to_date
-         
+      puts ">> Executing task from_date: #{date_from_crm} to_date: #{date_to_crm} debug_mode: #{args.debug_mode}"
+
       puts ">> Executing get_tickets task from_date: #{date_from_crm} to_date: #{date_to_crm}".colorize(:light_yellow)
       Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
       puts "Ending get tickets from crm".colorize(:light_yellow)
