@@ -18,9 +18,10 @@ class Ticket < ApplicationRecord
     to_date = to_date.to_datetime
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
-      unab_api.get_ticket_created(date)[:casos_creados].each do |ticket_created|
-        Person.transaction do
-          if (ticket_created[:ctc_wa_rut].present? && ticket_created[:ctc_emailaddress1].present? && find_category_id(ticket_created[:subjectid]).present?)
+      tickets = unab_api.get_ticket_created(date)[:casos_creados]
+      Person.transaction do
+        tickets.each do |ticket_created|
+          if (ticket_created.key?(:ctc_wa_rut) && ticket_created.key?(:ctc_emailaddress1) && ticket_created.key?(:subjectid) && ticket_created[:ctc_wa_rut].present? && ticket_created[:ctc_emailaddress1].present? && find_category_id(ticket_created[:subjectid]).present?)
             person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
             person.full_name = ticket_created[:customerid]
             person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
@@ -115,7 +116,7 @@ class Ticket < ApplicationRecord
             end
           end
         end
-      end
+      end if tickets.present?
     end
     puts "Tickets totales del periodo: #{@total_tickets}"
     logger.debug{"Tickets totales del periodo => #{@total_tickets}".colorize(:light_yellow)}

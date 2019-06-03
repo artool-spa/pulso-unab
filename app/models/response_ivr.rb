@@ -19,10 +19,10 @@ class ResponseIvr < ApplicationRecord
                 answer.crm_ticket_id = ticket.crm_ticket_id
                 answer.income_channel = "IVR"
                 answer.have_solution = response["answer"]
-                answer.option_1 = response["answer_details"]["option1"].present? ? response["answer_details"]["option1"].to_i : nil
-                answer.option_2 = response["answer_details"]["option2"].present? ? response["answer_details"]["option2"].to_i : nil
-                answer.option_3 = response["answer_details"]["option3"].present? ? response["answer_details"]["option3"].to_i : nil
-                answer.option_4 = response["answer_details"]["option4"].present? ? response["answer_details"]["option4"].to_i : nil
+                answer.option_1 = response["answer_details"].key?("option1") && response["answer_details"]["option1"].present? ? response["answer_details"]["option1"].to_i : nil
+                answer.option_2 = response["answer_details"].key?("option2") && response["answer_details"]["option2"].present? ? response["answer_details"]["option2"].to_i : nil
+                answer.option_3 = response["answer_details"].key?("option3") && response["answer_details"]["option3"].present? ? response["answer_details"]["option3"].to_i : nil
+                answer.option_4 = response["answer_details"].key?("option4") && response["answer_details"]["option4"].present? ? response["answer_details"]["option4"].to_i : nil
                 answer.date_created = date
                 answer.save
                 @total_ivr_answers += 1
