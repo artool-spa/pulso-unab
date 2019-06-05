@@ -149,11 +149,15 @@ class Ticket < ApplicationRecord
   end
 
   def self.find_category_id(category)
-    cat = category.split(' ')
-    cat_obj = Category.find_by(internal_id: cat[0])
-    if !cat_obj.nil?
-      cat_obj.id
-    else
+    if category.present?
+      cat = category.split(' ')
+      cat_obj = Category.find_by(internal_id: cat[0])
+      if !cat_obj.nil?
+        cat_obj.id
+      else
+        nil
+      end
+    else 
       nil
     end
   end
