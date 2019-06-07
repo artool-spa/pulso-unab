@@ -24,7 +24,7 @@ namespace :tickets do
       #Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
       puts "Ending get tickets closes from crm".colorize(:light_yellow)
 
-      date_from = (date_curr - 5.days).beginning_of_day
+      date_from = (date_curr - 1.days).beginning_of_day
       date_to = date_curr.end_of_day
 
       puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
