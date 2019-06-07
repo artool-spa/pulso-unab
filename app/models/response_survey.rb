@@ -8,22 +8,26 @@ class ResponseSurvey < ApplicationRecord
       SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173838967, date_range: "#{date_from} - #{date_to}").each do |answer_obj|
         ticket = Ticket.find_by(crm_ticket_id: answer_obj[:custom_variables][:ticket_id])
         if !ticket.nil?
-          answer = ResponseSurvey.find_or_initialize_by(api_id: answer_obj[:id], answer_type: 'open')
-          answer.ticket_id      = ticket.id
-          answer.crm_ticket_id  = ticket.crm_ticket_id
-          answer.question       = answer_obj[:heading]
-          answer.answer         = answer_obj[:txt_response]
-          #Categorizar respuesta de acuerdo al diccionario
-          answer.sm_response_id = answer_obj[:sm_response_id] 
-          answer.sm_question_id = answer_obj[:sm_question_id]
-          answer.date_created   = answer_obj[:created_at]
-          answer.date_updated   = answer_obj[:updated_at]
-          answer.income_channel = 'Mailing'
-          puts "open answer: #{answer.question}"
-          answer.save
-          if !answer.persisted?
-            puts answer.errors.messages
-          end
+          #if !(ticket.response_surveys.find_by(income_channel: "Mailing").present? && ticket.response_surveys.find_by(income_channel: "Mailing").date_created < answer_obj[:date_modified].to_time.utc) 
+            
+            answer = ResponseSurvey.find_or_initialize_by(api_id: answer_obj[:id], answer_type: 'open')
+            answer.ticket_id      = ticket.id
+            answer.crm_ticket_id  = ticket.crm_ticket_id
+            answer.question       = answer_obj[:heading]
+            answer.answer         = answer_obj[:txt_response]
+            #Categorizar respuesta de acuerdo al diccionario
+            answer.sm_response_id = answer_obj[:sm_response_id] 
+            answer.sm_question_id = answer_obj[:sm_question_id]
+            answer.date_created   = answer_obj[:date_modified]
+            answer.date_updated   = answer_obj[:updated_at]
+            answer.income_channel = 'Mailing'
+            puts "open answer: #{answer.question}"
+            answer.save
+            if !answer.persisted?
+              puts answer.errors.messages
+            end
+
+          #end
         end
         
       end
@@ -34,29 +38,31 @@ class ResponseSurvey < ApplicationRecord
         answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
         ticket = Ticket.find_by(crm_ticket_id: graded[:custom_variables][:ticket_id])
         if !ticket.nil?
-          answer.ticket_id      = ticket.id
-          answer.crm_ticket_id  = ticket.crm_ticket_id       
-          answer.question       = graded[:heading]
-          answer.answer         = graded[:weight]
+          #if !(ticket.response_surveys.find_by(income_channel: "Mailing").present? && ticket.response_surveys.find_by(income_channel: "Mailing").date_created < graded[:date_modified].to_time.utc)
+            answer.ticket_id      = ticket.id
+            answer.crm_ticket_id  = ticket.crm_ticket_id       
+            answer.question       = graded[:heading]
+            answer.answer         = graded[:weight]
 
-          if answer.present? && answer.answer.to_i > 5
-            answer.satisfaction = 'Satisfecho'
-          elsif answer.present? && answer.answer.to_i < 5
-            answer.satisfaction = 'Insatisfecho'
-          elsif answer.present? && answer.answer.to_i == 5
-            answer.satisfaction = 'Neutro'
-          end
+            if answer.present? && answer.answer.to_i > 5
+              answer.satisfaction = 'Satisfecho'
+            elsif answer.present? && answer.answer.to_i < 5
+              answer.satisfaction = 'Insatisfecho'
+            elsif answer.present? && answer.answer.to_i == 5
+              answer.satisfaction = 'Neutro'
+            end
 
-          answer.sm_response_id = graded[:sm_response_id] 
-          answer.sm_question_id = graded[:sm_question_id]
-          answer.date_created   = graded[:created_at]
-          answer.date_updated   = graded[:updated_at]
-          answer.income_channel = 'Mailing'
-          puts "graded answer: #{answer.question}"
-          answer.save
-          if !answer.persisted?
-            puts answer.errors.messages
-          end
+            answer.sm_response_id = graded[:sm_response_id] 
+            answer.sm_question_id = graded[:sm_question_id]
+            answer.date_created   = graded[:date_modified]
+            answer.date_updated   = graded[:updated_at]
+            answer.income_channel = 'Mailing'
+            puts "graded answer: #{answer.question}"
+            answer.save
+            if !answer.persisted?
+              puts answer.errors.messages
+            end
+          #end
         end
       end
     end
@@ -74,7 +80,7 @@ class ResponseSurvey < ApplicationRecord
         
         person = Person.find_by(rut: global_rut)            
         if !person.nil?   
-          answer.date_created = opened[:created_at]
+          answer.date_created = opened[:date_modified]
           
           totem_ticket = associate_answer_to_ticket_totem(person, answer)
           
@@ -105,7 +111,7 @@ class ResponseSurvey < ApplicationRecord
         
         person = Person.find_by(rut: global_rut)            
         if !person.nil?   
-          graded_answer.date_created = graded[:created_at]
+          graded_answer.date_created = graded[:date_modified]
           
           totem_ticket = associate_answer_to_ticket_totem(person, graded_answer)
           
@@ -125,7 +131,7 @@ class ResponseSurvey < ApplicationRecord
 
             graded_answer.sm_response_id = graded[:sm_response_id] 
             graded_answer.sm_question_id = graded[:sm_question_id]
-            graded_answer.date_created   = graded[:created_at]
+            graded_answer.date_created   = graded[:date_modified]
             graded_answer.date_updated   = graded[:updated_at]
             graded_answer.income_channel = 'Totem'
             puts "graded answer: #{graded_answer.question}"

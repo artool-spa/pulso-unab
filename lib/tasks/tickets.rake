@@ -18,14 +18,14 @@ namespace :tickets do
       puts ">> Executing task from_date: #{date_from_crm} to_date: #{date_to_crm} debug_mode: #{args.debug_mode}"
 
       puts ">> Executing get_tickets task from_date: #{date_from_crm} to_date: #{date_to_crm}".colorize(:light_yellow)
-      Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
+      #Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
       puts "Ending get tickets from crm".colorize(:light_yellow)
       puts "------------------------------"
-      Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
+      #Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
       puts "Ending get tickets closes from crm".colorize(:light_yellow)
 
-      date_from = (date_curr - 5.days).beginning_of_day
-      date_to = date_curr.end_of_day
+      #date_from = (date_curr - 5.days).beginning_of_day
+      #date_to = date_curr.end_of_day
 
       puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
       ResponseSurvey.get_answers_from_survey(date_from, date_to)
@@ -40,7 +40,7 @@ namespace :tickets do
 
       puts ">> Executing send_mail task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
       
-      LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
+      #LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
       puts "   Ending send mails...".colorize(:light_yellow)
     end
 end
