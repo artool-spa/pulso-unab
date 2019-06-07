@@ -8,7 +8,8 @@ class ResponseSurvey < ApplicationRecord
       SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173838967, date_range: "#{date_from} - #{date_to}").each do |answer_obj|
         ticket = Ticket.find_by(crm_ticket_id: answer_obj[:custom_variables][:ticket_id])
         if !ticket.nil?
-          #if !(ticket.response_surveys.find_by(income_channel: "Mailing").present? && ticket.response_surveys.find_by(income_channel: "Mailing").date_created < answer_obj[:date_modified].to_time.utc) 
+          check_first_response = ticket.response_surveys.where(income_channel: "Mailing", sm_question_id: answer_obj[:sm_question_id]).count(:sm_question_id)
+          if check_first_response == 0 
             
             answer = ResponseSurvey.find_or_initialize_by(api_id: answer_obj[:id], answer_type: 'open')
             answer.ticket_id      = ticket.id
@@ -27,7 +28,7 @@ class ResponseSurvey < ApplicationRecord
               puts answer.errors.messages
             end
 
-          #end
+          end
         end
         
       end
@@ -38,7 +39,8 @@ class ResponseSurvey < ApplicationRecord
         answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
         ticket = Ticket.find_by(crm_ticket_id: graded[:custom_variables][:ticket_id])
         if !ticket.nil?
-          #if !(ticket.response_surveys.find_by(income_channel: "Mailing").present? && ticket.response_surveys.find_by(income_channel: "Mailing").date_created < graded[:date_modified].to_time.utc)
+          check_first_response = ticket.response_surveys.where(income_channel: "Mailing", sm_question_id: graded[:sm_question_id]).count(:sm_question_id)
+          if check_first_response == 0
             answer.ticket_id      = ticket.id
             answer.crm_ticket_id  = ticket.crm_ticket_id       
             answer.question       = graded[:heading]
@@ -62,7 +64,7 @@ class ResponseSurvey < ApplicationRecord
             if !answer.persisted?
               puts answer.errors.messages
             end
-          #end
+          end
         end
       end
     end
