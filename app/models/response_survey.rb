@@ -9,7 +9,7 @@ class ResponseSurvey < ApplicationRecord
         ticket = Ticket.find_by(crm_ticket_id: answer_obj[:custom_variables][:ticket_id])
         if !ticket.nil?
           check_first_response = ticket.response_surveys.where(income_channel: "Mailing", sm_question_id: answer_obj[:sm_question_id]).count(:sm_question_id)
-          if check_first_response == 0 
+          if check_first_response == 0 && !ticket.response_ivrs.present?
             
             answer = ResponseSurvey.find_or_initialize_by(api_id: answer_obj[:id], answer_type: 'open')
             answer.ticket_id      = ticket.id
@@ -40,7 +40,7 @@ class ResponseSurvey < ApplicationRecord
         ticket = Ticket.find_by(crm_ticket_id: graded[:custom_variables][:ticket_id])
         if !ticket.nil?
           check_first_response = ticket.response_surveys.where(income_channel: "Mailing", sm_question_id: graded[:sm_question_id]).count(:sm_question_id)
-          if check_first_response == 0
+          if check_first_response == 0 && !ticket.response_ivrs.present?
             answer.ticket_id      = ticket.id
             answer.crm_ticket_id  = ticket.crm_ticket_id       
             answer.question       = graded[:heading]
