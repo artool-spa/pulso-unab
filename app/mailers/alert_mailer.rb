@@ -4,8 +4,9 @@ class AlertMailer < ApplicationMailer
   #
   #   en.alert_mailer.exception_msg.subject
   #
-  def send_mail(person, m_type = nil)
+  def send_mail(person, ticket, m_type = nil)
     @person = person
+    @ticket = ticket
     @m_type = m_type
     mail(subject: "Encuesta UNAB: #{@m_type}", to: person.email)
   end

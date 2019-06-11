@@ -61,11 +61,12 @@ class LogMailerSend < ApplicationRecord
 
   def self.send_mail_to_person(person, mailer_send, ticket, debug)
     begin
-      AlertMailer.send_mail(person, "Evalúa atención").deliver_now if debug == false
+      AlertMailer.send_mail(person, ticket, "Evalúa atención").deliver_now if debug == false
       mailer_send.mails_count += 1
       mailer_send.send_date = DateTime.current
       #mailer_send.send_date = rand(45.days).seconds.ago.to_date
       mailer_send.save
+      puts "   Cant save Mailer send: #{mailer_send.errors.full_messages}".colorize(:light_red) if !mailer_send.errors.empty?
       puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
       @mail_send_count += 1
     rescue StandardError => error
