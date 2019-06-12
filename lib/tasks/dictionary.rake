@@ -1,5 +1,5 @@
 namespace :dictionary do
-    desc "Process tickets (; separator)"
+    desc "Process dictionary (; separator)"
     task :all, [:date_from, :date_to] => [:environment] do |t, args|
       args.with_defaults(date_from: nil, date_to: nil)
       first_branch = [

@@ -91,6 +91,7 @@ gem 'rubyzip', '>= 1.2.1'
 gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
 gem 'axlsx_rails'
 gem 'roo', '~> 2.8.2'
+gem 'rqrcode', '~> 0.10.1'
 
 # user management
 gem 'devise', '~> 4.0'

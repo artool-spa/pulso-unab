@@ -1,5 +1,5 @@
 namespace :careers do
-    desc "Process tickets (; separator)"
+    desc "Process careers (; separator)"
     task :all, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
       args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
       
