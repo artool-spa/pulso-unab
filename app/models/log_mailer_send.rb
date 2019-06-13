@@ -14,7 +14,7 @@ class LogMailerSend < ApplicationRecord
         else
           temp_baja = true
         end
-        
+
         mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
         if !ticket.response_ivrs.present? && !ticket.response_surveys.present? && mailer_send.mails_count < 2
 
@@ -27,7 +27,6 @@ class LogMailerSend < ApplicationRecord
             elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr
               puts "   temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
               send_mail_to_person(person, mailer_send, ticket, debug)
-              mail_send_count += 1
 
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
               puts "   temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
