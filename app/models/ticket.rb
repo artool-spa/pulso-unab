@@ -66,6 +66,21 @@ class Ticket < ApplicationRecord
             ticket.incident_id = ticket_created[:incidentid]
     
             ticket.income_channel = ticket_created[:mksv_canaldeingresoid]
+            if ticket.income_channel.present?
+              if ticket.income_channel.downcase == 'facebook' || ticket.income_channel.downcase == 'instagram' || ticket.income_channel.downcase == 'twitter' 
+                ticket.income_channel_rec = 'Call Center RRSS'
+                
+              elsif ticket.income_channel.downcase == 'web' || ticket.income_channel.downcase == 'correo electrónico'
+                ticket.income_channel_rec = 'Call Center Web'
+      
+              elsif ticket.income_channel.downcase == 'call center'
+                ticket.income_channel_rec = 'Call Center Telefonico'
+      
+              elsif ticket.income_channel.downcase == 'mas' || ticket.income_channel.downcase == 'presencial'
+                ticket.income_channel_rec = ticket.income_channel
+              end
+            end
+            
             ticket.modify_by = ticket_created[:modifiedby]
             ticket.case_phase = ticket_created[:mksv_fasedelcasoname]
             ticket.category_id = find_category_id(ticket_created[:subjectid])
@@ -159,6 +174,28 @@ class Ticket < ApplicationRecord
       end
     else 
       nil
+    end
+  end
+
+  def self.add_income_channel_rec
+    Ticket.all.each do |ticket|
+      if ticket.income_channel.present?
+        if ticket.income_channel.downcase == 'facebook' || ticket.income_channel.downcase == 'instagram' || ticket.income_channel.downcase == 'twitter' 
+          ticket.income_channel_rec = 'Call Center RRSS'
+          ticket.save
+
+        elsif ticket.income_channel.downcase == 'web' || ticket.income_channel.downcase == 'correo electrónico'
+          ticket.income_channel_rec = 'Call Center Web'
+          ticket.save
+
+        elsif ticket.income_channel.downcase == 'call center'
+          ticket.income_channel_rec = 'Call Center Telefonico'
+
+        elsif ticket.income_channel.downcase == 'mas' || ticket.income_channel.downcase == 'presencial'
+          ticket.income_channel_rec = ticket.income_channel
+          ticket.save
+        end
+      end
     end
   end
 

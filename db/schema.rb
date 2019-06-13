@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_06_190832) do
+ActiveRecord::Schema.define(version: 2019_06_13_152813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -198,6 +198,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_190832) do
     t.bigint "person_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "income_channel_rec"
     t.index ["business_author_unit"], name: "index_tickets_on_business_author_unit"
     t.index ["business_owner_unit"], name: "index_tickets_on_business_owner_unit"
     t.index ["case_phase"], name: "index_tickets_on_case_phase"
@@ -211,6 +212,7 @@ ActiveRecord::Schema.define(version: 2019_06_06_190832) do
     t.index ["created_time"], name: "index_tickets_on_created_time"
     t.index ["crm_ticket_id"], name: "index_tickets_on_crm_ticket_id"
     t.index ["income_channel"], name: "index_tickets_on_income_channel"
+    t.index ["income_channel_rec"], name: "index_tickets_on_income_channel_rec"
     t.index ["person_id"], name: "index_tickets_on_person_id"
     t.index ["priority"], name: "index_tickets_on_priority"
     t.index ["state"], name: "index_tickets_on_state"
