@@ -25,16 +25,16 @@ class Ticket < ApplicationRecord
             person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
             person.full_name = ticket_created[:customerid]
             person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
-            person.phone = check.normalize_phone(ticket_created[:ctc_telephone2])
-            person.email = check.normalize_mail(ticket_created[:ctc_emailaddress1])
-            person.career = ticket_created[:mksv_carreraid]
+            person.phone     = check.normalize_phone(ticket_created[:ctc_telephone2])
+            person.email     = check.normalize_mail(ticket_created[:ctc_emailaddress1])
+            person.career    = ticket_created[:mksv_carreraid]
             #homologate_careers
             if ticket_created[:mksv_carreraid].present? && ticket_created[:mksv_carreraid].split(' ').last.include?('E') && ticket_created[:mksv_carreraid].split(' ').last =~ /\d/ 
               career = ticket_created[:mksv_carreraid].split(' ')
               career.pop
               person.career = career.join(" ")
             end
-            person.campus = ticket_created[:mksv_campusid]
+            person.campus  = ticket_created[:mksv_campusid]
             person.faculty = ticket_created[:prog_mksv_facultadid]
             person.regimen = ticket_created[:da_mksv_regimen]
             #check if there are fields 
@@ -81,14 +81,14 @@ class Ticket < ApplicationRecord
               end
             end
 
-            ticket.modify_by = ticket_created[:modifiedby]
-            ticket.case_phase = ticket_created[:mksv_fasedelcasoname]
-            ticket.category_id = find_category_id(ticket_created[:subjectid])
+            ticket.modify_by    = ticket_created[:modifiedby]
+            ticket.case_phase   = ticket_created[:mksv_fasedelcasoname]
+            ticket.category_id  = find_category_id(ticket_created[:subjectid])
             Category.set_categories_to_ticket(ticket)
-            ticket.state = ticket_created[:statecodename]
-            ticket.status = ticket_created[:statuscodename]
-            ticket.priority = ticket_created[:prioritycodename]
-            ticket.case_type = ticket_created[ :casetypecodename]
+            ticket.state        = ticket_created[:statecodename]
+            ticket.status       = ticket_created[:statuscodename]
+            ticket.priority     = ticket_created[:prioritycodename]
+            ticket.case_type    = ticket_created[ :casetypecodename]
             ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
             ticket.elapsed_time = (DateTime.current.to_i - ticket.created_time.to_f)/(3600*24)
             ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
@@ -103,8 +103,8 @@ class Ticket < ApplicationRecord
           else
             if !ticket_created[:ctc_wa_rut].present?
               LostReasonTicket.transaction do
-                lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
-                lost_ticket.lost_reason = "Rut individuo no presente"
+                lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+                lost_ticket.lost_reason  = "Rut individuo no presente"
                 lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.save
@@ -112,16 +112,16 @@ class Ticket < ApplicationRecord
               end
             elsif !ticket_created[:ctc_emailaddress1].present?
               LostReasonTicket.transaction do
-                lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
-                lost_ticket.lost_reason = "Ticket sin Email asociado"
+                lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+                lost_ticket.lost_reason  = "Ticket sin Email asociado"
                 lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.save
               end
             elsif !find_category_id(ticket_created[:subjectid]).present?
               LostReasonTicket.transaction do
-                lost_ticket = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
-                lost_ticket.lost_reason = "Categoria no registrada"
+                lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+                lost_ticket.lost_reason  = "Categoria no registrada"
                 lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
                 lost_ticket.save
