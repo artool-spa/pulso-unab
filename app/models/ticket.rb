@@ -21,7 +21,7 @@ class Ticket < ApplicationRecord
       tickets = unab_api.get_ticket_created(date)[:casos_creados]
       Person.transaction do
         tickets.each do |ticket_created|
-          if (ticket_created.key?(:ctc_wa_rut) && ticket_created.key?(:ctc_emailaddress1) && ticket_created.key?(:subjectid) && ticket_created[:ctc_wa_rut].present? && ticket_created[:ctc_emailaddress1].present? && find_category_id(ticket_created[:subjectid]).present?)
+          if (ticket_created.kind_of?(Hash) && ticket_created.key?(:ctc_wa_rut) && ticket_created.key?(:ctc_emailaddress1) && ticket_created.key?(:subjectid) && ticket_created[:ctc_wa_rut].present? && ticket_created[:ctc_emailaddress1].present? && find_category_id(ticket_created[:subjectid]).present?)
             person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
             person.full_name = ticket_created[:customerid]
             person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
