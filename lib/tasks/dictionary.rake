@@ -201,7 +201,7 @@ namespace :dictionary do
               {internal_id: "3.2.02.01", name: "Comité Retención (Financiero)"}
             ]},
           ]},
-          { internal_id: "3.3", name: "Matrícula", childs: [
+          { internal_id: "3.3", name: "Matrícula Y Gestión De Financiamiento", childs: [
             { internal_id: "3.3.01", name: "Atención", childs: [
               {internal_id: "3.3.01.01", name: "Disconformidad por Atención"},
               {internal_id: "3.3.01.02", name: "Felicitaciones"},
