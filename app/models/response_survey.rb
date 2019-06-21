@@ -39,6 +39,13 @@ class ResponseSurvey < ApplicationRecord
         answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
         ticket = Ticket.find_by(crm_ticket_id: graded[:custom_variables][:ticket_id])
         if !ticket.nil?
+          if answer.answer.to_i == 6 && graded[:weight] == 7
+            answer.answer = graded[:weight]
+            answer.save
+            if !answer.persisted?
+              puts answer.errors.messages
+            end
+          end
           check_first_response = ticket.response_surveys.where(income_channel: "Mailing", sm_question_id: graded[:sm_question_id]).count(:sm_question_id)
           if check_first_response == 0 && !ticket.response_ivrs.present?
             answer.ticket_id      = ticket.id
