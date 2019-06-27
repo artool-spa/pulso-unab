@@ -28,12 +28,13 @@ namespace :tickets do
         date_to = date_curr.end_of_day
 
         puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
+        ResponseIvr.get_answer_from_ivr(date_from, date_to)
+        puts "   Ending get answers from IVR...".colorize(:light_yellow)
         ResponseSurvey.get_answers_from_survey(date_from, date_to)
         puts "   Ending get answers from SM...".colorize(:light_yellow)
         ResponseQr.get_qr_answers_from_survey(date_from, date_to)
         puts "   Ending get QR answers from SM...".colorize(:light_yellow)
-        ResponseIvr.get_answer_from_ivr(date_from, date_to)
-        puts "   Ending get answers from IVR...".colorize(:light_yellow)
+        
 
         date_from = (date_curr - 35.days).beginning_of_day
         date_to = (date_curr + 1.days).end_of_day
