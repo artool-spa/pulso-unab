@@ -4,23 +4,23 @@ module SurveyMonkeyArtoolApi
   end
 
   class SmSurvey < Base
-    def self.table_name
-      "sm-survey"
-    end
+    #def self.table_name
+    #  "sm-survey"
+    #end
     #has_many :graded_answers
   end
 
   class GradedAnswer < Base
-    def self.table_name
-      "graded-answers"
-    end
+    #def self.table_name
+    #  "graded-answers"
+    #end
     #belongs_to :sm_survey
   end
 
   class OpenAnswer < Base
-    def self.table_name
-      "open-answers"
-    end
+    #def self.table_name
+    #  "open-answers"
+    #end
     #belongs_to :sm_survey
   end
 
