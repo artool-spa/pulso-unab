@@ -29,7 +29,10 @@ class ResponseIvr < ApplicationRecord
                 answer.option_2 = response["answer_details"].key?("option2") && response["answer_details"]["option2"].present? ? response["answer_details"]["option2"].to_i : nil
                 answer.option_3 = response["answer_details"].key?("option3") && response["answer_details"]["option3"].present? ? response["answer_details"]["option3"].to_i : nil
                 answer.option_4 = response["answer_details"].key?("option4") && response["answer_details"]["option4"].present? ? response["answer_details"]["option4"].to_i : nil
-                  
+                if answer.option_4 == -1
+                  answer.option_4 = nil
+                end
+
                 answer.date_created = date
                 if answer.option_3 != -1  
                   answer.save
@@ -89,8 +92,6 @@ class ResponseIvr < ApplicationRecord
 
     end
   end
-
-
 
 end
   
