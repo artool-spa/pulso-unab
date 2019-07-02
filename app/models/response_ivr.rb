@@ -20,7 +20,7 @@ class ResponseIvr < ApplicationRecord
                 answer.crm_ticket_id = ticket.crm_ticket_id
                 answer.income_channel = 'Call Center'
                 answer.have_solution = response["answer"]
-                option_1 = response["answer_details"].key?("option1") && response["answer_details"]["option1"].present? ? response["answer_details"]["option1"].to_i : nil
+                answer.option_1 = response["answer_details"].key?("option1") && response["answer_details"]["option1"].present? ? response["answer_details"]["option1"].to_i : nil
                 #if option_1 == 1
                 #  answer.option_1 = 'Sí'
                 #elsif option_1 == 2
