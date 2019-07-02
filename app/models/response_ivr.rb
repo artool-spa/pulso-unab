@@ -29,15 +29,21 @@ class ResponseIvr < ApplicationRecord
                 answer.option_2 = response["answer_details"].key?("option2") && response["answer_details"]["option2"].present? ? response["answer_details"]["option2"].to_i : nil
                 answer.option_3 = response["answer_details"].key?("option3") && response["answer_details"]["option3"].present? ? response["answer_details"]["option3"].to_i : nil
                 answer.option_4 = response["answer_details"].key?("option4") && response["answer_details"]["option4"].present? ? response["answer_details"]["option4"].to_i : nil
-                if answer.option_4 == -1
+                
+                if answer.option_1 == -1
+                  answer.option_1 = nil
+                elsif answer.option_3 == -1
+                  answer.option_3 = nil
+                elsif answer.option_4 == -1
                   answer.option_4 = nil
                 end
-
+                
                 answer.date_created = date
-                if answer.option_3 != -1  
+                if (answer.option_1.present? && answer.option_3.present? && answer.option_4.present?)
                   answer.save
+                  @total_ivr_answers += 1
                 end
-                @total_ivr_answers += 1
+                
                 #if answer.persisted?
                 #  @total_ivr_answers_save += 1
                 #end
@@ -86,7 +92,7 @@ class ResponseIvr < ApplicationRecord
         ivr.save
       end
 
-      if ivr.option_3.nil? && ivr.option_4.nil?
+      if (ivr.option_1.nil? || ivr.option_3.nil? || ivr.option_4.nil?) 
         ivr.destroy
       end
 
