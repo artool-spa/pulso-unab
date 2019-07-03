@@ -1,5 +1,5 @@
 class Person < ApplicationRecord
-  has_many :tickets
+  has_many :tickets, dependent: :destroy
   has_many :log_mailer_sends
 
   def self.person_tickets_count
