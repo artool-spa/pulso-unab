@@ -36,13 +36,13 @@ namespace :tickets do
         puts "   Ending get QR answers from SM...".colorize(:light_yellow)
         
 
-        #date_from = (date_curr - 35.days).beginning_of_day
-        #date_to = (date_curr + 1.days).end_of_day
+        date_from = (date_curr - 35.days).beginning_of_day
+        date_to = (date_curr + 1.days).end_of_day
 
-        #puts ">> Executing send_mail task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
+        puts ">> Executing send_mail task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
         
-        #LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
-        #puts "   Ending send mails...".colorize(:light_yellow)
+        LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
+        puts "   Ending send mails...".colorize(:light_yellow)
       end
     end
 end
