@@ -113,12 +113,14 @@ class ResponseSurvey < ApplicationRecord
                         :question       => graded[:heading],
                         :answer         => graded[:weight],
                         :sm_question_id => graded[:sm_question_id],
+                        :sm_response_id => graded[:sm_response_id],
                         :date_created   => graded[:date_modified],
                         :date_updated   => graded[:updated_at]
                       }
                 }
         graded_ans.merge!(grad)
       end
+       
       #associate graded answers with open answers
       answers_hash.each do |key, answer|
         if graded_ans[answer[:sm_response_id]].present?
@@ -128,133 +130,87 @@ class ResponseSurvey < ApplicationRecord
         end
       end
       check = StringUtils.new
-
+      
       answers_hash.each do |key, answer|
         global_rut = check.normalize_rut(key)
-        if !global_rut.present?
+        
+        if global_rut.present?
           person = Person.find_by(rut: global_rut)
           
-          if !person.present?
-      
+          if person.present?
             answer_date = answer[:date_created]
             totem_ticket = associate_answer_to_ticket_totem(person, answer_date)
-            if !totem_ticket.present?
-              question_1 = answer[266254398]
+            
+            if totem_ticket.present?
+              
+              question_1 = answer[266253775]
               response = ResponseSurvey.find_or_initialize_by(api_id: question_1[:opened_id], answer_type: 'open')
 
               response.ticket_id      = totem_ticket.id      
               response.question       = question_1[:question]
               response.answer         = question_1[:answer]
               response.sm_response_id = question_1[:sm_response_id] 
-              response.sm_question_id = 266254398
+              response.sm_question_id = 266253775
               response.crm_ticket_id  = totem_ticket.crm_ticket_id
-              answer.date_created     = question_1[:date_created]   
-              response.date_updated   = question_1[:updated_at]
+              response.date_created   = question_1[:date_created]   
+              response.date_updated   = question_1[:date_updated]
               response.income_channel = 'Totem'
-              puts "opened answer: #{answer.question}"
-              byebug
-              answer.save
+              response.save
 
               question_2 = answer[266254398]
-              response = ResponseSurvey.find_or_initialize_by(api_id: question_2[:opened_id], answer_type: 'open')
+              response_2 = ResponseSurvey.find_or_initialize_by(api_id: question_2[:opened_id], answer_type: 'open')
+
+              response_2.ticket_id      = totem_ticket.id      
+              response_2.question       = question_2[:question]
+              response_2.answer         = question_2[:answer]
+              response_2.sm_response_id = question_2[:sm_response_id] 
+              response_2.sm_question_id = 266254398
+              response_2.crm_ticket_id  = totem_ticket.crm_ticket_id
+              response_2.date_created     = question_2[:date_created]   
+              response_2.date_updated   = question_2[:date_updated]
+              response_2.income_channel = 'Totem'
+              response_2.save
 
               question_3 = answer[277856029]
-              response = ResponseSurvey.find_or_initialize_by(api_id: question_3[:opened_id], answer_type: 'open')
+              response_3 = ResponseSurvey.find_or_initialize_by(api_id: question_3[:opened_id], answer_type: 'open')
+              
+              response_3.ticket_id      = totem_ticket.id      
+              response_3.question       = question_3[:question]
+              response_3.answer         = question_3[:answer]
+              response_3.sm_response_id = question_3[:sm_response_id] 
+              response_3.sm_question_id = 277856029
+              response_3.crm_ticket_id  = totem_ticket.crm_ticket_id
+              response_3.date_created     = question_3[:date_created]   
+              response_3.date_updated   = question_3[:date_updated]
+              response_3.income_channel = 'Totem'
+              response_3.save
 
               #question graded
               question_4 = answer[266259845]
-              answer.ticket_id      = totem_ticket.id      
-              answer.question       = opened[:heading]
-              answer.answer         = opened[:txt_response]
-              answer.sm_response_id = opened[:sm_response_id] 
-              answer.sm_question_id = opened[:sm_question_id]
-              answer.crm_ticket_id  = totem_ticket.crm_ticket_id
-              answer.date_created   =  
-              answer.date_updated   = opened[:updated_at]
-              answer.income_channel = 'Totem'
-              puts "opened answer: #{answer.question}"
-              answer.save
+              response_4 = ResponseSurvey.find_or_initialize_by(api_id: question_4[:graded_id], answer_type: 'graded')
+              
+              response_4.ticket_id      = totem_ticket.id      
+              response_4.question       = question_4[:question]
+              response_4.answer         = question_4[:answer]
+              response_4.sm_response_id = question_4[:sm_response_id] 
+              response_4.sm_question_id = question_4[:sm_question_id]
+              response_4.crm_ticket_id  = totem_ticket.crm_ticket_id
+              response_4.date_created   = question_4[:date_created]
+              response_4.date_updated   = question_4[:date_updated]
+              response_4.income_channel = 'Totem'
+              response_4.save
             end
           end
         end
       end
-=begin
-        answer = ResponseSurvey.find_or_initialize_by(api_id: opened[:id], answer_type: 'open')
-        if !check.normalize_rut(opened[:txt_response]).nil?
-          rut = check.normalize_rut(opened[:txt_response])
-          global_rut = rut
-        end
-        
-        person = Person.find_by(rut: global_rut)            
-        if !person.nil?   
-          answer.date_created = opened[:date_modified]
-          
-          totem_ticket = associate_answer_to_ticket_totem(person, answer)
-          
-          if !totem_ticket.nil?
-            answer.ticket_id      = totem_ticket.id      
-            answer.question       = opened[:heading]
-            answer.answer         = opened[:txt_response]
-            answer.sm_response_id = opened[:sm_response_id] 
-            answer.sm_question_id = opened[:sm_question_id]
-            answer.crm_ticket_id  = totem_ticket.crm_ticket_id 
-            answer.date_updated   = opened[:updated_at]
-            answer.income_channel = 'Totem'
-            puts "opened answer: #{answer.question}"
-            answer.save
-            if !answer.persisted?
-              puts answer.errors.messages
-            end
-          end
-        end
-      end
-=end
-=begin
-      # Encuesta via Totem Selectiva
-      SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 173840981, date_range: "#{date_from} - #{date_to}").each do |graded|
-        graded_answer = ResponseSurvey.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
-        
-        person = Person.find_by(rut: global_rut)            
-        if !person.nil?   
-          graded_answer.date_created = graded[:date_modified]
-          
-          totem_ticket = associate_answer_to_ticket_totem(person, graded_answer)
-          
-          if !totem_ticket.nil?
-            graded_answer.ticket_id      = totem_ticket.id
-            graded_answer.crm_ticket_id  = totem_ticket.crm_ticket_id       
-            graded_answer.question       = graded[:heading]
-            graded_answer.answer         = graded[:weight]
-
-            if graded_answer.present? && graded_answer.answer.to_i > 5
-              graded_answer.satisfaction = 'Satisfecho'
-            elsif graded_answer.present? && graded_answer.answer.to_i < 5
-              graded_answer.satisfaction = 'Insatisfecho'
-            elsif graded_answer.present? && graded_answer.answer.to_i == 5
-              graded_answer.satisfaction = 'Neutro'
-            end
-
-            graded_answer.sm_response_id = graded[:sm_response_id] 
-            graded_answer.sm_question_id = graded[:sm_question_id]
-            graded_answer.date_created   = graded[:date_modified]
-            graded_answer.date_updated   = graded[:updated_at]
-            graded_answer.income_channel = 'Totem'
-            puts "graded answer: #{graded_answer.question}"
-            graded_answer.save
-          end
-
-        end
-      end
-=end
     end
 
   end
   
   def self.associate_answer_to_ticket_totem(person, answer_date)
     person.tickets.each do |ticket|
-      if answer_date.to_date == ticket.created_time.to_date
+      if answer_date.to_date == ticket.created_time.to_date && !ticket.response_surveys.present?
         ticket_match = Ticket.find_by(id: ticket.id)
-        
         return ticket_match
       end
     end
