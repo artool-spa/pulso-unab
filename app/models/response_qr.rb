@@ -4,12 +4,12 @@ class ResponseQr < ApplicationRecord
     # Encuesta via QR Baños Selectiva -- Abierta
     ResponseQr.transaction do
       SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 173798152, date_range: "#{date_from} - #{date_to}").each do |graded|
-        answer = ResponseQr.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
+        answer = ResponseQr.find_or_initialize_by(sm_response_id: graded[:sm_response_id], sm_question_id: graded[:sm_question_id], answer_type: 'graded')
         #answer.qr_code = graded[:id]
         answer.question = graded[:heading]
         answer.answer = graded[:weight]
-        answer.sm_response_id = graded[:sm_response_id] 
-        answer.sm_question_id = graded[:sm_question_id]
+        #answer.sm_response_id = graded[:sm_response_id] 
+        #answer.sm_question_id = graded[:sm_question_id]
         answer.date_created = graded[:created_at]
         answer.date_updated = graded[:updated_at]
         if answer.present? && answer.answer.to_i > 5
@@ -26,12 +26,12 @@ class ResponseQr < ApplicationRecord
         #end
       end
       SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173798152, date_range: "#{date_from} - #{date_to}").each do |opened|
-        answer = ResponseQr.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
+        answer = ResponseQr.find_or_initialize_by(sm_response_id: opened[:sm_response_id], sm_question_id: opened[:sm_question_id], answer_type: 'opened')
         #answer.qr_code = opened[:id]
         answer.question = opened[:heading]
         answer.answer = opened[:txt_response]
-        answer.sm_response_id = opened[:sm_response_id] 
-        answer.sm_question_id = opened[:sm_question_id]
+        #answer.sm_response_id = opened[:sm_response_id] 
+        #answer.sm_question_id = opened[:sm_question_id]
         answer.date_created = opened[:created_at]
         answer.date_updated = opened[:updated_at]
         puts "Baños opened question: #{opened[:heading]} | opened answer: #{opened[:txt_response]}".colorize(:light_blue)
@@ -46,12 +46,12 @@ class ResponseQr < ApplicationRecord
     # Encuesta via QR Casino Selectiva -- Abierta
     ResponseQr.transaction do
       SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 173801696, date_range: "#{date_from} - #{date_to}").each do |graded|
-        answer = ResponseQr.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
+        answer = ResponseQr.find_or_initialize_by(sm_response_id: graded[:sm_response_id],sm_question_id: graded[:sm_question_id], answer_type: 'graded')
         #answer.qr_code = graded[:id]
         answer.question = graded[:heading]
         answer.answer = graded[:weight]
-        answer.sm_response_id = graded[:sm_response_id] 
-        answer.sm_question_id = graded[:sm_question_id]
+        #answer.sm_response_id = graded[:sm_response_id] 
+        #answer.sm_question_id = graded[:sm_question_id]
         answer.date_created = graded[:created_at]
         answer.date_updated = graded[:updated_at]
 
@@ -69,12 +69,12 @@ class ResponseQr < ApplicationRecord
         #end
       end  
       SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173801696, date_range: "#{date_from} - #{date_to}").each do |opened|
-        answer = ResponseQr.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
+        answer = ResponseQr.find_or_initialize_by(sm_response_id: opened[:sm_response_id], sm_question_id: opened[:sm_question_id], answer_type: 'opened')
         #answer.qr_code = opened[:id]
         answer.question = opened[:heading]
         answer.answer = opened[:txt_response]
-        answer.sm_response_id = opened[:sm_response_id] 
-        answer.sm_question_id = opened[:sm_question_id]
+        #answer.sm_response_id = opened[:sm_response_id] 
+        #answer.sm_question_id = opened[:sm_question_id]
         answer.date_created = opened[:created_at]
         answer.date_updated = opened[:updated_at]
         puts "Casino opened question: #{opened[:heading]} | opened answer: #{opened[:txt_response]}".colorize(:light_blue)
@@ -89,7 +89,7 @@ class ResponseQr < ApplicationRecord
     # Encuesta via QR Biblioteca Selectiva -- Abierta
     ResponseQr.transaction do
       SurveyMonkeyArtoolApi::GradedAnswer.where(sm_survey_id: 173802394, date_range: "#{date_from} - #{date_to}").each do |graded|
-        answer = ResponseQr.find_or_initialize_by(api_id: graded[:id], answer_type: 'graded')
+        answer = ResponseQr.find_or_initialize_by(sm_response_id: graded[:sm_response_id], sm_question_id: graded[:sm_question_id], answer_type: 'graded')
         #answer.qr_code = graded[:id]
         answer.question = graded[:heading]
         answer.answer = graded[:weight]
@@ -111,7 +111,7 @@ class ResponseQr < ApplicationRecord
         #end
       end
       SurveyMonkeyArtoolApi::OpenAnswer.where(sm_survey_id: 173802394, date_range: "#{date_from} - #{date_to}").each do |opened|
-        answer = ResponseQr.find_or_initialize_by(api_id: opened[:id], answer_type: 'opened')
+        answer = ResponseQr.find_or_initialize_by(sm_response_id: opened[:sm_response_id], sm_question_id: opened[:sm_question_id], answer_type: 'opened')
         #answer.qr_code = opened[:id]
         answer.question = opened[:heading]
         answer.answer = opened[:txt_response]
