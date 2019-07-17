@@ -209,7 +209,7 @@ class ResponseSurvey < ApplicationRecord
   
   def self.associate_answer_to_ticket_totem(person, answer_date)
     person.tickets.each do |ticket|
-      if answer_date.to_date == ticket.created_time.to_date && !ticket.response_surveys.present?
+      if answer_date.to_date == ticket.created_time.to_date && !ticket.response_surveys.present? && !ticket.response_ivrs.present?
         ticket_match = Ticket.find_by(id: ticket.id)
         return ticket_match
       end
