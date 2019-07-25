@@ -141,7 +141,7 @@ class ResponseSurvey < ApplicationRecord
             totem_ticket = associate_answer_to_ticket_totem(person, answer_date)
             
             if totem_ticket.present?
-              if answer[266253775].present? && answer[266254398].present? && answer[277856029].present? && answer[266259845].present?
+              if answer[266253775].present? && answer[266254398].present? && answer[266259845].present?
                 question_1 = answer[266253775]
                 response = ResponseSurvey.find_or_initialize_by(sm_response_id: question_1[:sm_response_id], sm_question_id: 266253775, answer_type: 'open')
 
@@ -169,20 +169,22 @@ class ResponseSurvey < ApplicationRecord
                 response_2.date_updated   = question_2[:date_updated]
                 response_2.income_channel = 'Totem'
                 response_2.save
-
-                question_3 = answer[277856029]
-                response_3 = ResponseSurvey.find_or_initialize_by(sm_response_id: question_3[:sm_response_id], sm_question_id: 277856029, answer_type: 'open')
                 
-                response_3.ticket_id      = totem_ticket.id      
-                response_3.question       = question_3[:question]
-                response_3.answer         = question_3[:answer]
-                response_3.sm_response_id = question_3[:sm_response_id] 
-                response_3.sm_question_id = 277856029
-                response_3.crm_ticket_id  = totem_ticket.crm_ticket_id
-                response_3.date_created   = question_3[:date_created]   
-                response_3.date_updated   = question_3[:date_updated]
-                response_3.income_channel = 'Totem'
-                response_3.save
+                if answer[277856029].present?
+                  question_3 = answer[277856029]
+                  response_3 = ResponseSurvey.find_or_initialize_by(sm_response_id: question_3[:sm_response_id], sm_question_id: 277856029, answer_type: 'open')
+                  
+                  response_3.ticket_id      = totem_ticket.id      
+                  response_3.question       = question_3[:question]
+                  response_3.answer         = question_3[:answer]
+                  response_3.sm_response_id = question_3[:sm_response_id] 
+                  response_3.sm_question_id = 277856029
+                  response_3.crm_ticket_id  = totem_ticket.crm_ticket_id
+                  response_3.date_created   = question_3[:date_created]   
+                  response_3.date_updated   = question_3[:date_updated]
+                  response_3.income_channel = 'Totem'
+                  response_3.save
+                end
 
                 #question graded
                 question_4 = answer[266259845]
