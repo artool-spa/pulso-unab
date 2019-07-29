@@ -76,7 +76,7 @@ class Ticket < ApplicationRecord
                 elsif ticket.income_channel.downcase == 'web' || ticket.income_channel.downcase == 'correo electrónico'
                   ticket.income_channel_rec = 'Call Center Web'
         
-                elsif ticket.income_channel.downcase == 'call center'
+                elsif ticket.income_channel.downcase == 'call center' || ticket.income_channel.strip.parameterize == 'telefono'
                   ticket.income_channel_rec = 'Call Center Telefonico'
         
                 elsif ticket.income_channel.downcase == 'mas' || ticket.income_channel.downcase == 'presencial'
