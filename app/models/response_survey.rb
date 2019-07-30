@@ -22,7 +22,6 @@ class ResponseSurvey < ApplicationRecord
             answer.date_created   = answer_obj[:date_modified]
             answer.date_updated   = answer_obj[:updated_at]
             answer.income_channel = 'Mailing'
-            puts "open answer: #{answer.question}"
             answer.save
             if !answer.persisted?
               puts answer.errors.messages
@@ -59,7 +58,6 @@ class ResponseSurvey < ApplicationRecord
             answer.date_created   = graded[:date_modified]
             answer.date_updated   = graded[:updated_at]
             answer.income_channel = 'Mailing'
-            puts "graded answer: #{answer.question}"
             answer.save
             if !answer.persisted?
               puts answer.errors.messages

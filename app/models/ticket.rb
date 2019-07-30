@@ -98,9 +98,9 @@ class Ticket < ApplicationRecord
               ticket.save
               
               if ticket.persisted?
-                puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) ".colorize(:light_blue)
+                #puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) ".colorize(:light_blue)
                 @total_tickets += 1
-                puts "------------------------------"
+                #puts "------------------------------"
               end
 
             else

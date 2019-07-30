@@ -22,14 +22,14 @@ class LogMailerSend < ApplicationRecord
             if mailer_send.mails_count == 0
               #Via Web
               send_mail_to_person(person, mailer_send, ticket, debug)
-              puts "   Ticket via web"
+              #puts "   Ticket via web"
 
             elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr
-              puts "   temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+              #puts "   temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
               send_mail_to_person(person, mailer_send, ticket, debug)
 
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
-              puts "   temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+              #puts "   temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
               send_mail_to_person(person, mailer_send, ticket, debug)
             end
         
@@ -37,14 +37,14 @@ class LogMailerSend < ApplicationRecord
             if mailer_send.mails_count == 0
               #Dont have answers 
               send_mail_to_person(person, mailer_send, ticket, debug)
-              puts "   Ticket sin respuesta"
+              #puts "   Ticket sin respuesta"
 
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
-              puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+              #puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
               send_mail_to_person(person, mailer_send, ticket, debug)
 
             elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr 
-              puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
+              #puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
               send_mail_to_person(person, mailer_send, ticket, debug)
             end
           end
