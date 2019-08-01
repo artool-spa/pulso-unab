@@ -56,10 +56,7 @@ class Ticket < ApplicationRecord
               end
       
               person.save
-              if person.persisted?
-                puts "Person: #{person.full_name} | Fecha: #{date}"
-              end
-      
+              
               ticket = person.tickets.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
               ticket.business_owner_unit = ticket_created[:mksv_unidaddenegociodelpropietarioid]
               ticket.business_author_unit = ticket_created[:mksv_unidaddenegociodelautorid]
