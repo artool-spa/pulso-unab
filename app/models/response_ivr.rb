@@ -6,7 +6,7 @@ class ResponseIvr < ApplicationRecord
     ivr_api = UnabIvr.new
     from_date.upto(to_date) do |date|
       begin
-        answer = JSON.parse(ivr_api.get_ivr_data(date).body)
+        answer = JSON.parse(ivr_api.get_ivr_data(date).body.gsub("\r",""))
         #puts "Date: #{date} Answer: #{answer} ".colorize(:light_green)
         #puts "--------------------------------".colorize(:light_blue)
         #answer = JSON.parse(ivr_api.get_ivr_data(date))
