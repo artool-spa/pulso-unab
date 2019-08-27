@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_13_152813) do
+ActiveRecord::Schema.define(version: 2019_08_27_152412) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -103,12 +103,15 @@ ActiveRecord::Schema.define(version: 2019_06_13_152813) do
     t.datetime "mail_send_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "career_code"
+    t.string "level"
     t.index ["campus"], name: "index_people_on_campus"
     t.index ["career"], name: "index_people_on_career"
     t.index ["cellphone"], name: "index_people_on_cellphone"
     t.index ["contact_id"], name: "index_people_on_contact_id"
     t.index ["email"], name: "index_people_on_email"
     t.index ["faculty"], name: "index_people_on_faculty"
+    t.index ["level"], name: "index_people_on_level"
     t.index ["phone"], name: "index_people_on_phone"
     t.index ["regimen"], name: "index_people_on_regimen"
     t.index ["rut"], name: "index_people_on_rut"
@@ -199,6 +202,8 @@ ActiveRecord::Schema.define(version: 2019_06_13_152813) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "income_channel_rec"
+    t.string "impact_name"
+    t.string "close_first_line"
     t.index ["business_author_unit"], name: "index_tickets_on_business_author_unit"
     t.index ["business_owner_unit"], name: "index_tickets_on_business_owner_unit"
     t.index ["case_phase"], name: "index_tickets_on_case_phase"

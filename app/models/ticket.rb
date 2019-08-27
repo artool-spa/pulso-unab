@@ -4,11 +4,6 @@ class Ticket < ApplicationRecord
   has_many :response_ivrs, dependent: :destroy
   has_many :response_surveys, dependent: :destroy
   
-  #@test_subject = Person.where(full_name: 'CRISTIAN MANUEL FERNANDEZ VASQUEZ').first
-  #if @test_subject.full_name == 'CRISTIAN MANUEL FERNANDEZ VASQUEZ' && @test_subject.send_email == false
-  #  AlertMailer.send_mail(@test_subject, "testing_unab").deliver_now
-  #end
-  @ticket_hash = {}
   @total_tickets = 0
   def self.get_tickets_from_crm(from_date, to_date)
     unab_api = UnabApi.new
@@ -27,7 +22,7 @@ class Ticket < ApplicationRecord
             if rut.present? && find_category_id(ticket_created[:subjectid]).present?
               person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
               person.full_name = ticket_created[:customerid]
-              person.cellphone =  check.normalize_phone(ticket_created[:ctc_mobilephone])
+              person.cellphone = check.normalize_phone(ticket_created[:ctc_mobilephone])
               person.phone     = check.normalize_phone(ticket_created[:ctc_telephone2])
               person.email     = check.normalize_mail(ticket_created[:ctc_emailaddress1])
               person.career    = ticket_created[:mksv_carreraid]
@@ -37,9 +32,11 @@ class Ticket < ApplicationRecord
                 career.pop
                 person.career = career.join(" ")
               end
-              person.campus  = ticket_created[:mksv_campusid]
-              person.faculty = ticket_created[:prog_mksv_facultadid]
-              person.regimen = ticket_created[:da_mksv_regimen]
+              person.campus   = ticket_created[:mksv_campusid]
+              person.faculty  = ticket_created[:carr_mksv_facultadid]
+              person.regimen  = ticket_created[:da_mksv_regimen]
+              person.level = ticket_created[:carr_mksv_unidaddenegocioid]
+              person.career_code = ticket_created[:carr_mksv_codigocarrera]
               #check if there are fields 
               if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:salida][:estado] == '1'
                 if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:contacto].kind_of?(Array)
@@ -55,28 +52,25 @@ class Ticket < ApplicationRecord
                 person.contact_id = nil
               end
       
-              person.save
-              
-              ticket = person.tickets.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
-              ticket.business_owner_unit = ticket_created[:mksv_unidaddenegociodelpropietarioid]
+              person.save 
+              ticket                      = person.tickets.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+              ticket.business_owner_unit  = ticket_created[:mksv_unidaddenegociodelpropietarioid]
               ticket.business_author_unit = ticket_created[:mksv_unidaddenegociodelautorid]
-                      
-              ticket.created_by = ticket_created[:createdby]
-              ticket.owner_by = ticket_created[:ownerid]
-              ticket.incident_id = ticket_created[:incidentid]
-      
-              ticket.income_channel = ticket_created[:mksv_canaldeingresoid]
+              ticket.created_by           = ticket_created[:createdby]
+              ticket.owner_by             = ticket_created[:ownerid]
+              ticket.incident_id          = ticket_created[:incidentid]
+              ticket.income_channel       = ticket_created[:mksv_canaldeingresoid]
               if ticket.income_channel.present?
-                if ticket.income_channel.downcase == 'facebook' || ticket.income_channel.downcase == 'instagram' || ticket.income_channel.downcase == 'twitter' 
+                if ticket.income_channel.downcase.include?('facebook') || ticket.income_channel.downcase.include?('instagram') || ticket.income_channel.downcase.include?('twitter')  
                   ticket.income_channel_rec = 'Call Center RRSS'
                   
-                elsif ticket.income_channel.downcase == 'web' || ticket.income_channel.downcase == 'correo electrónico'
+                elsif ticket.income_channel.downcase.include?('web') || ticket.income_channel.downcase.include?('correo electrónico')
                   ticket.income_channel_rec = 'Call Center Web'
         
-                elsif ticket.income_channel.downcase == 'call center' || ticket.income_channel.strip.parameterize == 'telefono'
+                elsif ticket.income_channel.downcase.include?('call center') || ticket.income_channel.strip.parameterize.include?('telefono') || ticket.income_channel.downcase.include?('contact center')
                   ticket.income_channel_rec = 'Call Center Telefonico'
         
-                elsif ticket.income_channel.downcase == 'mas' || ticket.income_channel.downcase == 'presencial'
+                elsif ticket.income_channel.downcase.include?('mas') || ticket.income_channel.downcase.include?('presencial')
                   ticket.income_channel_rec = ticket.income_channel
                 end
               end
@@ -88,16 +82,18 @@ class Ticket < ApplicationRecord
               ticket.state        = ticket_created[:statecodename]
               ticket.status       = ticket_created[:statuscodename]
               ticket.priority     = ticket_created[:prioritycodename]
-              ticket.case_type    = ticket_created[ :casetypecodename]
+              ticket.case_type    = ticket_created[:casetypecodename]
               ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
               ticket.elapsed_time = (DateTime.current.to_i - ticket.created_time.to_f)/(3600*24)
               ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
+              ticket.impact_name  = ticket_created[:mksv_impactoname]
+              ticket.close_first_line = ticket_created[:mksv_cierreenprimeralineaname]
               ticket.save
               
               if ticket.persisted?
-                #puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) ".colorize(:light_blue)
+                puts "Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) ".colorize(:light_blue)
                 @total_tickets += 1
-                #puts "------------------------------"
+                puts "------------------------------"
               end
 
             else
@@ -186,16 +182,16 @@ class Ticket < ApplicationRecord
   def self.add_income_channel_rec
     Ticket.all.each do |ticket|
       if ticket.income_channel.present?
-        if ticket.income_channel.downcase == 'facebook' || ticket.income_channel.downcase == 'instagram' || ticket.income_channel.downcase == 'twitter' 
+        if ticket.income_channel.downcase.include?('facebook') || ticket.income_channel.downcase.include?('instagram') || ticket.income_channel.downcase.include?('twitter') 
           ticket.income_channel_rec = 'Call Center RRSS'
 
-        elsif ticket.income_channel.downcase == 'web' || ticket.income_channel.downcase == 'correo electrónico'
+        elsif ticket.income_channel.downcase.include?('web') || ticket.income_channel.downcase.include?('correo electrónico') 
           ticket.income_channel_rec = 'Call Center Web'
 
-        elsif ticket.income_channel.downcase == 'call center'
+        elsif ticket.income_channel.downcase.include?('call center') || ticket.income_channel.downcase.include?('contact center')
           ticket.income_channel_rec = 'Call Center Telefonico'
 
-        elsif ticket.income_channel.downcase == 'mas' || ticket.income_channel.downcase == 'presencial'
+        elsif ticket.income_channel.downcase.include?('mas') || ticket.income_channel.downcase.include?('presencial')
           ticket.income_channel_rec = ticket.income_channel
         end
         
