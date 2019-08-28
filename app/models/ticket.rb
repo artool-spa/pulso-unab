@@ -106,7 +106,7 @@ class Ticket < ApplicationRecord
                   lost_ticket.save
                   #byebug if !lost_ticket.persisted?
                 end
-              elsif rut.present?
+              elsif !rut.present?
                   LostReasonTicket.transaction do
                     lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
                     lost_ticket.lost_reason  = "Rut individuo no válido"
