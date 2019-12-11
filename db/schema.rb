@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_27_152412) do
+ActiveRecord::Schema.define(version: 2019_12_11_152304) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -204,6 +204,7 @@ ActiveRecord::Schema.define(version: 2019_08_27_152412) do
     t.string "income_channel_rec"
     t.string "impact_name"
     t.string "close_first_line"
+    t.string "crm_classification"
     t.index ["business_author_unit"], name: "index_tickets_on_business_author_unit"
     t.index ["business_owner_unit"], name: "index_tickets_on_business_owner_unit"
     t.index ["case_phase"], name: "index_tickets_on_case_phase"

@@ -18,7 +18,105 @@ namespace :dictionary do
               {internal_id: "1.1.03.02", name: "No Figura Deposito"},
               {internal_id: "1.1.03.03", name: "Plazos de Firma de Contrato"},
             ]},
-          ] }
+          ] },
+          { internal_id: "1.2", name: "SERNAC", childs: [
+            { internal_id: "1.2.01", name: "Cláusulas Abusivas", childs: [
+              {internal_id: "1.2.01.01", name: "Becas-Casos Sociales-Seguro-Pase Escolar"},
+              {internal_id: "1.2.01.02", name: "Certificados"},
+              {internal_id: "1.2.01.03", name: "Servicio Admisión-Horario-Matrícula"},
+            ]},
+            { internal_id: "1.2.02", name: "Cobro de un Precio Superior al Exhibido, Informado", childs: [
+              {internal_id: "1.2.02.01", name: "Cae"},
+              {internal_id: "1.2.02.02", name: "Cobranza"},
+              {internal_id: "1.2.02.03", name: "Retiro por Motivos Financieros"},
+              {internal_id: "1.2.02.04", name: "Retiro por Motivos Personales"},
+              {internal_id: "1.2.02.05", name: "Servicio Admisión-Horario-Matrícula"},
+            ]},
+            { internal_id: "1.2.03", name: "Falta o No Entrega de Contrato", childs: [
+              {internal_id: "1.2.03.01", name: "Certificados"},
+            ]},
+            { internal_id: "1.2.04", name: "Formalidades de Contrato", childs: [
+              {internal_id: "1.2.04.01", name: "Admisión Postgrado"},
+              {internal_id: "1.2.04.02", name: "Becas"},
+              {internal_id: "1.2.04.03", name: "Cae"},
+              {internal_id: "1.2.04.04", name: "Certificados"},
+              {internal_id: "1.2.04.05", name: "Cobranza"},
+              {internal_id: "1.2.04.06", name: "Devolución"},
+              {internal_id: "1.2.04.07", name: "DICOM"},
+              {internal_id: "1.2.04.08", name: "Gestión Y Políticas De Cobranzas y/o Repactación"},
+              {internal_id: "1.2.04.09", name: "Malla, Programa, Ramo, Horario"},
+              {internal_id: "1.2.04.10", name: "Notas"},
+              {internal_id: "1.2.04.11", name: "Publicidad"},
+              {internal_id: "1.2.04.12", name: "Retiro por Motivos Financieros"},
+              {internal_id: "1.2.04.13", name: "Retiro por Motivos Personales"},
+              {internal_id: "1.2.04.14", name: "Retiro por Problemas De Salud"},
+              {internal_id: "1.2.04.15", name: "Retiro Reclamo por Servicio y/o Infraestructura"},
+              {internal_id: "1.2.04.16", name: "Retracto o Resciliación"},
+              {internal_id: "1.2.04.17", name: "Servicio Admisión-Horario-Matrícula"},
+            ]},
+            { internal_id: "1.2.05", name: "Incumplimiento en Condiciones Contratadas", childs: [
+              {internal_id: "1.2.05.01", name: "Cae"},
+              {internal_id: "1.2.05.02", name: "Cobranza"},
+              {internal_id: "1.2.05.03", name: "Malla, Programa, Ramos, Horario o Jornada"},
+              {internal_id: "1.2.05.04", name: "Notas"},
+              {internal_id: "1.2.05.05", name: "Retiro por Motivos De Salud"},
+              {internal_id: "1.2.05.06", name: "Retiro-Reclamo por Servicio y/o Infraestructura"},
+              {internal_id: "1.2.05.07", name: "Servicio Admisión-Horario-Matrícula"},
+              {internal_id: "1.2.05.08", name: "Servicio y/o Infraestructura"},
+            ]},
+            { internal_id: "1.2.06", name: "Incumplimiento en Respuestas al Consumidor", childs: [
+              {internal_id: "1.2.06.01", name: "Insistencia"},
+            ]},
+            { internal_id: "1.2.07", name: "Incumplimiento en Respuestas al SERNAC", childs: [
+              {internal_id: "1.2.07.01", name: "Insistencia"},
+            ]},
+            { internal_id: "1.2.08", name: "Publicidad Engañosa o Falsa", childs: [
+              {internal_id: "1.2.08.01", name: "Publicidad"},
+              {internal_id: "1.2.08.02", name: "Retracto o Resciliación"},
+              {internal_id: "1.2.08.03", name: "Servicio Admisión-Horario-Matrícula"},
+            ]},
+            { internal_id: "1.2.09", name: "Servicio Defectuoso", childs: [
+              {internal_id: "1.2.09.01", name: "Becas-Casos Sociales-Seguro-Pase Escolar"},
+              {internal_id: "1.2.09.02", name: "CAE"},
+              {internal_id: "1.2.09.03", name: "Certificados"},
+              {internal_id: "1.2.09.04", name: "Cobranza"},
+              {internal_id: "1.2.09.05", name: "Descuento No Aplicado"},
+              {internal_id: "1.2.09.06", name: "Devolución Documentos y/o Dinero"},
+              {internal_id: "1.2.09.07", name: "DICOM"},
+              {internal_id: "1.2.09.08", name: "Error Pagos y/o Cobros"},
+              {internal_id: "1.2.09.09", name: "Gestión Y Políticas De Cobranzas y/o Repactación"},
+              {internal_id: "1.2.09.10", name: "Malla, Programa, Ramos, Horario o Jornada"},
+              {internal_id: "1.2.09.11", name: "Notas"},
+              {internal_id: "1.2.09.12", name: "Retiro por Motivos De Salud"},
+              {internal_id: "1.2.09.13", name: "Retiro por Motivos Financieros"},
+              {internal_id: "1.2.09.14", name: "Retiro por Motivos Personales"},
+              {internal_id: "1.2.09.15", name: "Retiro-Reclamo por Servicio y/o Infraestructura"},
+              {internal_id: "1.2.09.16", name: "Retracto O Resciliación"},
+              {internal_id: "1.2.09.17", name: "Seguros y/o Becas"},
+              {internal_id: "1.2.09.18", name: "Servicio"},
+              {internal_id: "1.2.09.19", name: "Servicio Admisión-Horario-Matrícula"},
+              {internal_id: "1.2.09.20", name: "Servicio De Admisión-Horario-Matricula"},
+              {internal_id: "1.2.09.21", name: "Titulación"},
+            ]},
+            { internal_id: "1.2.10", name: "Término de Contrato", childs: [
+              {internal_id: "1.2.10.01", name: "CAE"},
+              {internal_id: "1.2.10.02", name: "Cobranza"},
+              {internal_id: "1.2.10.03", name: "Gestión y Políticas de Cobranzas y/o Repactación"},
+              {internal_id: "1.2.10.04", name: "Resciliación"},
+              {internal_id: "1.2.10.05", name: "Retiro por Motivos De Salud"},
+              {internal_id: "1.2.10.06", name: "Retiro por Motivos Financieros"},
+              {internal_id: "1.2.10.07", name: "Retiro por Motivos Personales"},
+              {internal_id: "1.2.10.08", name: "Retiro por Problemas de Salud"},
+              {internal_id: "1.2.10.09", name: "Retiro por Servicio"},
+              {internal_id: "1.2.10.10", name: "Retiro-Reclamo por Servicio y/o Infraestructura"},
+              {internal_id: "1.2.10.11", name: "Retracto"},
+              {internal_id: "1.2.10.12", name: "Retracto o Resciliación"},
+              {internal_id: "1.2.10.13", name: "Servicio Admisión-Horario-Matrícula"},
+            ]},
+            { internal_id: "1.2.11", name: "Término De Contrato Unilateral", childs: [
+              {internal_id: "1.2.11.01", name: "Retiro"},
+            ]},
+          ]}
         ] },
         { internal_id: "2", name: "VRA", childs:[
           { internal_id: "2.1", name: "Academia", childs: [
@@ -121,16 +219,20 @@ namespace :dictionary do
               {internal_id: "2.1.12.20", name: "Vacantes de Asignaturas"},
             ]},
           ]},
-          { internal_id: "2.2", name: "Campus On-Line", childs: [
+          { internal_id: "2.2", name: "UNAB Online", childs: [
             {internal_id: "2.2.01", name: "Acceso a Plataformas", childs: [
               {internal_id: "2.2.01.01", name: "Acceso al Curso"},
-              {internal_id: "2.2.01.02", name: "Programas On-Line"}
+              {internal_id: "2.2.01.02", name: "Programas On-Line"},
+              {internal_id: "2.2.01.03", name: "Navegación y usabilidad"},
+              {internal_id: "2.2.01.04", name: "No veo el Curso"},
+              {internal_id: "2.2.01.05", name: "Nuevo Intento en Plataforma"},
             ]},
             {internal_id: "2.2.02", name: "Asignaturas y Evaluaciones", childs: [
               {internal_id: "2.2.02.01", name: "Atención Docente"},
               {internal_id: "2.2.02.02", name: "Carga Académica"},
               {internal_id: "2.2.02.03", name: "Controles, Cátedras y Exámenes"},
-              {internal_id: "2.2.02.04", name: "Evaluación y Calificaciones"}
+              {internal_id: "2.2.02.04", name: "Evaluación y Calificaciones"},
+              {internal_id: "2.2.02.05", name: "Grupos de Trabajo"},
             ]},
             {internal_id: "2.2.03", name: "Calendarios y Fechas", childs: [
               {internal_id: "2.2.03.01", name: "Calendario Académico"},
@@ -151,12 +253,24 @@ namespace :dictionary do
               {internal_id: "2.2.05.08", name: "Convalidación de Asignaturas"},
               {internal_id: "2.2.05.09", name: "Eliminación de Asignaturas"},
               {internal_id: "2.2.05.10", name: "Homologación de Asignaturas"},
-              {internal_id: "2.2.05.11", name: "Inscripción de Asignaturas Fuera de Plazo, en Otro Programa o Régimen"},
+              {internal_id: "2.2.05.11", name: "Inscripción de Asignatura"},
               {internal_id: "2.2.05.12", name: "Mantener Dos Carreras Activas"},
               {internal_id: "2.2.05.13", name: "Prórroga Retiro Temporal"},
               {internal_id: "2.2.05.14", name: "Reincorporación de un RT"},
               {internal_id: "2.2.05.15", name: "Renuncia de Asignaturas"},
               {internal_id: "2.2.05.16", name: "Resoluciones"},
+              {internal_id: "2.2.05.17", name: "Re- correcciones"},
+              {internal_id: "2.2.05.18", name: "Extensión plazos entregas"},
+              {internal_id: "2.2.05.19", name: "Solicitud certificados"},
+              {internal_id: "2.2.05.20", name: "Retiro Temporal"},
+              {internal_id: "2.2.05.21", name: "Retiro Definitivo"},
+              {internal_id: "2.2.05.22", name: "Calendarios y Fechas"},
+              {internal_id: "2.2.05.23", name: "Pasantía"},
+            ]},
+            {internal_id: "2.2.06", name: "Solicitudes Administrativas", childs: [
+              {internal_id: "2.2.06.01", name: "No contesta tutor"},
+              {internal_id: "2.2.06.02", name: "No contesta profesor"},
+              {internal_id: "2.2.06.03", name: "Disconformidad con la modalidad"},
             ]},
           ]},
           { internal_id: "2.3", name: "CIADE", childs: [
@@ -193,7 +307,7 @@ namespace :dictionary do
               {internal_id: "3.1.01.01", name: "Casos Financieros con Respuesta DMGF" }
             ]}
           ]},
-          { internal_id: "3.2", name: "GES", childs: [
+          { internal_id: "3.2", name: "MAS", childs: [
             {internal_id: "3.2.01", name: "Crea Caso Comité Crédito", childs: [
               {internal_id: "3.2.01.01", name: "Comité Crédito (Financiero)"}
             ]},
@@ -201,7 +315,7 @@ namespace :dictionary do
               {internal_id: "3.2.02.01", name: "Comité Retención (Financiero)"}
             ]},
           ]},
-          { internal_id: "3.3", name: "Matrícula Y Gestión De Financiamiento", childs: [
+          { internal_id: "3.3", name: "Matrícula", childs: [
             { internal_id: "3.3.01", name: "Atención", childs: [
               {internal_id: "3.3.01.01", name: "Disconformidad por Atención"},
               {internal_id: "3.3.01.02", name: "Felicitaciones"},
@@ -285,6 +399,7 @@ namespace :dictionary do
               {internal_id: "3.4.03.01", name: "Solicita Aplicación de Política"},
               {internal_id: "3.4.03.02", name: "Solicita Excepción Alumno Egresado Derecho"},
               {internal_id: "3.4.03.03", name: "Solicita Fuera de la Política"},
+              {internal_id: "3.4.03.04", name: "Solicita rebaja por Egreso"},
             ]},
             { internal_id: "3.4.04", name: "Gestión y orientación Becas y Cae", childs: [
               {internal_id: "3.4.04.01", name: "Beca Externa no Cargada"},
@@ -390,7 +505,9 @@ namespace :dictionary do
         ]},
         { internal_id: "4", name: "VRSUAE", childs: [
           { internal_id: "4.1", name: "Academia", childs: [
-            { internal_id: "4.1.01", name: "Reglamentaciones", childs: [
+            { internal_id: "4.1.01", name: "Reglamentaciones"},
+            { internal_id: "4.1.02", name: "Retención", childs: [
+              { internal_id: "4.1.02.01", name: "Gestión de Retiros Académicos"},
             ]},
           ]},
           { internal_id: "4.2", name: "Alumni", childs: [
@@ -402,6 +519,9 @@ namespace :dictionary do
               { internal_id: "4.2.01.05", name: "Intercambio Estudiantil"},
               { internal_id: "4.2.01.06", name: "Pase Escolar Tne"},
               { internal_id: "4.2.01.07", name: "Portal Empleos Unab"},
+            ]},
+            { internal_id: "4.2.02", name: "Retención", childs: [
+              { internal_id: "4.2.02.01", name: "Bolsa de empleo"},
             ]},
           ]},
           { internal_id: "4.3", name: "Campus On-Line", childs: [
@@ -520,6 +640,23 @@ namespace :dictionary do
               { internal_id: "4.8.01.01", name: "Caso SERNAC"},
               { internal_id: "4.8.01.02", name: "Casos especiales"},
             ]}
+          ]},
+          { internal_id: "4.9", name: "MAS (Monitoreo Apoyo y Seguimiento)", childs: [
+            { internal_id: "4.9.01", name: "Gestión de Retención", childs: [
+              { internal_id: "4.9.01.01", name: "Asesoramiento Integral al Estudiante"},
+              { internal_id: "4.9.01.02", name: "Evaluación para Asignación de Apoyos"},
+              { internal_id: "4.9.01.03", name: "Gestión por Retiros Académicos"},
+              { internal_id: "4.9.01.04", name: "Gestión por Bloqueos Académicos"},
+              { internal_id: "4.9.01.05", name: "Gestión por Alertas de Financiamiento"},
+              { internal_id: "4.9.01.06", name: "Gestión de Matriculados sin Inscripción de Asignaturas"},
+              { internal_id: "4.9.01.07", name: "Gestión de correos MAS"},
+            ]},
+            { internal_id: "4.9.02", name: "Gestión de Matricula", childs: [
+              { internal_id: "4.9.02.01", name: "Asistencia Remota para MOL"},
+              { internal_id: "4.9.02.02", name: "Carga de Becas y Crédito"},
+              { internal_id: "4.9.02.03", name: "Carga de Descuentos y Convenios"},
+              { internal_id: "4.9.02.04", name: "Gestión de Firmas y/o Pagos pendientes MOL"},
+            ]},
           ]},
         ]},
         { internal_id: "5", name: "VRDP", childs:[

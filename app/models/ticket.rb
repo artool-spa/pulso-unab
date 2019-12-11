@@ -34,9 +34,19 @@ class Ticket < ApplicationRecord
               end
               person.campus   = ticket_created[:mksv_campusid]
               person.faculty  = ticket_created[:carr_mksv_facultadid]
-              person.regimen  = ticket_created[:da_mksv_regimen]
+              #person.regimen  = ticket_created[:da_mksv_regimen]
               person.level = ticket_created[:carr_mksv_unidaddenegocioid]
               person.career_code = ticket_created[:carr_mksv_codigocarrera]
+              if ticket_created[:carr_mksv_codigocarrera].present?
+                if ticket_created[:carr_mksv_codigocarrera].gsub('UNAB', '').first.include?('1')
+                  person.regimen = 'Diurno'
+                elsif ticket_created[:carr_mksv_codigocarrera].gsub('UNAB', '').first.include?('2')
+                  person.regimen = 'Vespertino'
+                elsif ticket_created[:carr_mksv_codigocarrera].gsub('UNAB', '').first.include?('3')
+                  person.regimen = 'Online'
+                end
+              end
+
               #check if there are fields 
               if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:salida][:estado] == '1'
                 if unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:contacto].kind_of?(Array)
@@ -77,6 +87,7 @@ class Ticket < ApplicationRecord
 
               ticket.modify_by    = ticket_created[:modifiedby]
               ticket.case_phase   = ticket_created[:mksv_fasedelcasoname]
+              ticket.crm_classification = ticket_created[:subjectid]
               ticket.category_id  = find_category_id(ticket_created[:subjectid])
               Category.set_categories_to_ticket(ticket)
               ticket.state        = ticket_created[:statecodename]
@@ -116,6 +127,8 @@ class Ticket < ApplicationRecord
                     #byebug if !lost_ticket.persisted?
                   end
               elsif !find_category_id(ticket_created[:subjectid]).present?
+                #puts "Ticket: #{ticket_created[:ticketnumber]} subject_id: #{ticket_created[:subjectid]} created_time: #{DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")}"
+                #puts "------------------------------"
                 LostReasonTicket.transaction do
                   lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
                   lost_ticket.lost_reason  = "Categoria no registrada"
