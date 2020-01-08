@@ -10,7 +10,7 @@ class ResponseIvr < ApplicationRecord
         #puts "Date: #{date} Answer: #{answer} ".colorize(:light_green)
         #puts "--------------------------------".colorize(:light_blue)
         #answer = JSON.parse(ivr_api.get_ivr_data(date))
-        answer["data"].each do |response|
+        answer["data"].each do |response|     
           ResponseIvr.transaction do
             ticket = Ticket.find_by(crm_ticket_id: response["ticket_id"])
             if !ticket.nil?
@@ -55,9 +55,11 @@ class ResponseIvr < ApplicationRecord
       rescue StandardError => error
         logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}".colorize(:light_red)}
         puts "Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}".colorize(:light_red)
+        AlertMailer.send_mail_err(logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}"}).deliver_now
       end
     end
     puts "Respuestas IVR totales del periodo: #{@total_ivr_answers}"
+    AlertMailer.send_mail_err("Respuestas IVR totales: #{@total_ivr_answers} en el periodo #{from_date} | #{to_date}").deliver_now if @total_ivr_answers == 0
     #puts "Respuestas IVR guardadas del periodo: #{@total_ivr_answers_save}"
     logger.debug{"Respuestas IVR totales del periodo => #{@total_ivr_answers}".colorize(:light_yellow)}
     #logger.debug{"Respuestas IVR guardadas del periodo => #{@total_ivr_answers_save}".colorize(:light_yellow)}

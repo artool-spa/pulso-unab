@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_11_152304) do
+ActiveRecord::Schema.define(version: 2019_12_12_173048) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -224,6 +224,29 @@ ActiveRecord::Schema.define(version: 2019_12_11_152304) do
     t.index ["state"], name: "index_tickets_on_state"
     t.index ["status"], name: "index_tickets_on_status"
     t.index ["updated_time"], name: "index_tickets_on_updated_time"
+  end
+
+  create_table "totem_activities", force: :cascade do |t|
+    t.string "crm_totem_activity_id"
+    t.string "name"
+    t.datetime "attention_time_start"
+    t.datetime "attetion_time_end"
+    t.string "rut"
+    t.string "executive_name"
+    t.datetime "broadcast_time"
+    t.string "description"
+    t.string "row_letter"
+    t.string "branch_office"
+    t.string "attention_number"
+    t.string "state"
+    t.string "status"
+    t.bigint "person_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["crm_totem_activity_id"], name: "index_totem_activities_on_crm_totem_activity_id"
+    t.index ["person_id"], name: "index_totem_activities_on_person_id"
+    t.index ["state"], name: "index_totem_activities_on_state"
+    t.index ["status"], name: "index_totem_activities_on_status"
   end
 
   create_table "users", force: :cascade do |t|

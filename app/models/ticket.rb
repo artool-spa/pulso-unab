@@ -146,9 +146,10 @@ class Ticket < ApplicationRecord
 
         end
 
-      end if tickets.present?
+      end if tickets.present? 
     end
     puts "Tickets totales del periodo: #{@total_tickets}"
+    AlertMailer.send_mail_err("Tickets totales: #{@total_tickets} en el periodo #{from_date} | #{to_date}").deliver_now if @total_tickets == 0
     logger.debug{"Tickets totales del periodo => #{@total_tickets}".colorize(:light_yellow)}
   end
 

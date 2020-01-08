@@ -1,6 +1,7 @@
 class Person < ApplicationRecord
   has_many :tickets, dependent: :destroy
   has_many :log_mailer_sends, dependent: :destroy
+  has_many :totem_activities, dependent: :destroy
 
   def self.person_tickets_count
     Person.all.each do |person|

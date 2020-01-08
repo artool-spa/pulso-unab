@@ -2,6 +2,7 @@ class UnabApi
 
   def initialize
     @client = Savon.client(wsdl: 'http://200.29.164.111:8059/WS_CRMContactosCasos.asmx?WSDL')
+    @contact = Savon.client(wsdl: 'http://200.29.164.74:8059/WS_CRMContactosCasos.asmx?WSDL')
   end
 
   def get_client_by_rut(rut)
@@ -23,6 +24,11 @@ class UnabApi
   def get_ticket_managed(date)
     response = @client.call(:wm_get_ticket_managed, message: { date: date })
     response.body[:wm_get_ticket_managed_response][:wm_get_ticket_managed_result][:output]
+  end
+
+  def get_contacts_created(date)
+    response = @contact.call(:wm_get_totem_activities_create_on, message: { date: date })
+    response.body[:wm_get_totem_activities_create_on_response][:wm_get_totem_activities_create_on_result][:output]
   end
   
 end
