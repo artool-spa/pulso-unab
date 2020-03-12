@@ -55,7 +55,7 @@ class ResponseIvr < ApplicationRecord
       rescue StandardError => error
         logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}".colorize(:light_red)}
         puts "Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}".colorize(:light_red)
-        AlertMailer.send_mail_err(logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}"}).deliver_now
+        #AlertMailer.send_mail_err(logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}"}).deliver_now
       end
     end
     puts "Respuestas IVR totales del periodo: #{@total_ivr_answers}"

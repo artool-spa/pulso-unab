@@ -14,7 +14,7 @@ class AlertMailer < ApplicationMailer
   def send_mail_err(err, m_type = nil)
     @err = err
     @m_type = m_type
-    mail(subject: "Error UNAB #{@m_type}", to: "cfernandez@artool.cl")
+    mail(subject: "Error UNAB #{@m_type}", to: "bherdocio@artool.cl")
   end
 
   def testing_mail(m_type = nil)
