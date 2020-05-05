@@ -6,7 +6,7 @@ namespace :importer do
 
         xlsx = Roo::Excelx.new("../../Descargas/Listado ejecutivos.xlsx")
 
-        # create table ejecutivos (id_crm varchar(20), canal_ejecutivo varchar(20), nombre_ejecutivo varchar(20), sede varchar(20));
+        # create table ejecutivos (id_crm varchar(60), canal_ejecutivo varchar(60), nombre_ejecutivo varchar(60), sede varchar(60));
 
         enum = xlsx.sheet("Lista ejecutivos7").each(id: 'ID nombre CRM', canal: 'Canal Ejecutivo UNAB', nombre: 'Nombre Ejecutivo UNAB', sede: 'SEDE')
 
