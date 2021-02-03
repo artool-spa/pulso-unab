@@ -82,7 +82,6 @@ gem 'twitter'
 gem 'bootstrap-filestyle-rails'
 gem 'creek'# Building Excel files
 gem 'awesome_print', require: "ap"
-gem 'savon', '~> 2.12.0'
 gem 'rut_validation'
 gem 'json_api_client'
 gem 'ancestry'

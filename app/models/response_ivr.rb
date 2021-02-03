@@ -44,18 +44,18 @@ class ResponseIvr < ApplicationRecord
                   @total_ivr_answers += 1
                 end
                 
-                #if answer.persisted?
+                # if answer.persisted?
                 #  @total_ivr_answers_save += 1
-                #end
+                # end
               end
             end
           end
           
         end
       rescue StandardError => error
-        logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}".colorize(:light_red)}
-        puts "Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}".colorize(:light_red)
-        #AlertMailer.send_mail_err(logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date).body}"}).deliver_now
+        logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date)}".colorize(:light_red)}
+        puts "Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date)}".colorize(:light_red)
+        #AlertMailer.send_mail_err(logger.debug{"Respuestas IVR error => Response: #{error}"}).deliver_now
       end
     end
     puts "Respuestas IVR totales del periodo: #{@total_ivr_answers}"
