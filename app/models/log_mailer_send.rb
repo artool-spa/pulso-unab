@@ -16,7 +16,7 @@ class LogMailerSend < ApplicationRecord
         end
 
         mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
-        if !ticket.response_ivrs.present? && !ticket.response_surveys.present? && mailer_send.mails_count < 2
+        if !ticket.response_surveys.present? && mailer_send.mails_count < 2
 
           if ticket.income_channel.present? && ticket.income_channel.downcase == 'web'
             if mailer_send.mails_count == 0
