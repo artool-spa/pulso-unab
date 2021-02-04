@@ -17,6 +17,10 @@ class AlertMailer < ApplicationMailer
     mail(subject: "Error UNAB #{@m_type}", to: "bherdocio@artool.cl")
   end
 
+  def send_mail_success(result)
+    mail(subject: "Proceso tickets UNAB", to: "bherdocio@artool.cl", body: result, content_type: "text/html")
+  end
+
   def testing_mail(m_type = nil)
     @m_type = m_type
     mail(subject: "Encuesta UNAB: #{@m_type}", to: person.email)
