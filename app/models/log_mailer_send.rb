@@ -1,13 +1,17 @@
 class LogMailerSend < ApplicationRecord
   belongs_to :person
   @mail_send_count = 0
+  @mail_send_errors = []
+
   def self.send_mail(date_from, date_to, debug)
     
     date_curr = DateTime.current
     Ticket.where("created_time::date between ? and ?", date_from, date_to).each do |ticket|
       temp_alta = false
       temp_baja = false
+
       person = Person.find_by(id: ticket.person_id)
+
       if !person.blank? && person.email.present?
         if set_season_alta(ticket)
           temp_alta = true
@@ -61,8 +65,25 @@ class LogMailerSend < ApplicationRecord
       end
     end
     
-    puts "Total de Emails enviados => #{@mail_send_count}"
-    logger.debug{"Total de Emails enviados => #{@mail_send_count}".colorize(:light_red)}
+    msg = "* Total de Emails enviados efectivos: #{@mail_send_count}"
+    puts msg
+    logger.info { msg }
+
+    mail_send_errors_count = @mail_send_errors.count
+    if mail_send_errors_count > 0
+      msg = "* Total de Emails con errores: #{mail_send_errors_count}. Detalle a continuación:".colorize(:light_red)
+      
+      @mail_send_errors.each do |v|
+        person = v[:person]
+        error = v[:error]
+        msg =  " - Person: #{person.full_name}, RUT: #{person.rut}, ID: #{person.id}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}"
+        msg += "   Error: #{error.message}".colorize(:light_black)
+        logger.debug { msg }
+        # error.backtrace.grep_v(/\/gems\//).map { |l| l.gsub(`pwd`.strip + '/', '') }.each do |v|
+        #   puts "     #{v.colorize(:light_black)}"
+        # end
+      end
+    end
   end
 
   private
@@ -70,12 +91,15 @@ class LogMailerSend < ApplicationRecord
   def self.send_mail_to_person(person, mailer_send, ticket, debug)
     begin
       if debug == false
-        AlertMailer.send_mail(person, ticket, "Evalúa atención").deliver_now
+        begin
+          AlertMailer.send_mail(person, ticket, "Evalúa Atención").deliver_now!
+          @mail_send_count += 1
+        rescue StandardError => e
+          @mail_send_errors << { person: person, error: e }
+        end
       else
         AlertMailer.send_mail_success("Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}").deliver_now
-        puts "-------------- Email success se ha enviado ----------------"
       end
-
 
       mailer_send.mails_count += 1
       mailer_send.send_date = DateTime.current
@@ -83,7 +107,6 @@ class LogMailerSend < ApplicationRecord
       mailer_send.save
       puts "   Cant save Mailer send: #{mailer_send.errors.full_messages}".colorize(:light_red) if !mailer_send.errors.empty?
       #puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
-      @mail_send_count += 1
     rescue StandardError => error
       logger.debug{"Mail send error => ticket: #{ticket.crm_ticket_id} person_email: #{person.email}".colorize(:light_red)}
       puts "Mail send error => ticket: #{ticket.crm_ticket_id} person_email: #{person.email}".colorize(:light_red)
