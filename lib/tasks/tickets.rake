@@ -44,6 +44,7 @@ namespace :tickets do
         LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
         puts "   Ending send mails...".colorize(:light_yellow)
       end
+      AlertMailer.send_mail_success("Mailing Unab ended").deliver_now 
     end
 end
   
