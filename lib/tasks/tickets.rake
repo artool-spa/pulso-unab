@@ -42,7 +42,7 @@ namespace :tickets do
         date_from = (date_curr - 35.days).beginning_of_day
         date_to = (date_curr + 1.days).end_of_day
 
-        puts " * Executing send_mail task from_date: #{date_from} to_date: #{date_to}".colorize(:light_cyan)
+        puts " * Executing LogMailerSend.send_mail from_date: #{date_from} to_date: #{date_to}".colorize(:light_cyan)
         
         LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
         puts "   End sending mails"
