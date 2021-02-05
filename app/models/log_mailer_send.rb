@@ -60,6 +60,7 @@ class LogMailerSend < ApplicationRecord
         end
       end
     end
+    
     puts "Total de Emails enviados => #{@mail_send_count}"
     logger.debug{"Total de Emails enviados => #{@mail_send_count}".colorize(:light_red)}
   end

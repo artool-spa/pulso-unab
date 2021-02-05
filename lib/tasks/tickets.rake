@@ -15,35 +15,36 @@ namespace :tickets do
       
       date_from_crm = date_from.to_date
       date_to_crm = date_to.to_date
-      puts ">> Executing task from_date: #{date_from_crm} to_date: #{date_to_crm} debug_mode: #{args.debug_mode} only_tickets: #{args.only_tickets}"
+      puts ">> Executing tickets:all from_date: #{date_from_crm} to_date: #{date_to_crm} debug_mode: #{args.debug_mode} only_tickets: #{args.only_tickets}"
 
-      puts ">> Executing get_tickets task from_date: #{date_from_crm} to_date: #{date_to_crm}".colorize(:light_yellow)
+      puts "   Executing get_tickets task from_date: #{date_from_crm} to_date: #{date_to_crm}"
       Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
-      puts "Ending get tickets from crm".colorize(:light_yellow)
-      puts "------------------------------"
+      puts "   Ending get tickets from crm"
+      
       Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
-      puts "Ending get tickets closes from crm".colorize(:light_yellow)
+      puts "   Ending get tickets closes from crm"
+
       if !args.only_tickets
         date_from = (date_curr - 3.days).beginning_of_day
         date_to = date_curr.end_of_day
 
-        # puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
+        # puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}"
         # ResponseIvr.get_answer_from_ivr(date_from, date_to)
-        # puts "   Ending get answers from IVR...".colorize(:light_yellow)
+        # puts "   Ending get answers from IVR..."
         ResponseSurvey.get_answers_from_survey(date_from, date_to)
-        puts "   Ending get answers from SM...".colorize(:light_yellow)
+        puts "   Ending get answers from SM..."
         ResponseQr.get_qr_answers_from_survey(date_from, date_to)
-        puts "   Ending get QR answers from SM...".colorize(:light_yellow)
-        
+        puts "   Ending get QR answers from SM..."        
 
         date_from = (date_curr - 35.days).beginning_of_day
         date_to = (date_curr + 1.days).end_of_day
 
-        puts ">> Executing send_mail task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
+        puts " - Executing send_mail task from_date: #{date_from} to_date: #{date_to}"
         
         LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
-        puts "   Ending send mails...".colorize(:light_yellow)
+        puts "   Ending send mails..."
       end
+      
       AlertMailer.send_mail_success("Mailing Unab ended").deliver_now 
     end
 end
