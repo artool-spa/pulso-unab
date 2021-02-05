@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= content_for?(:title) ? full_title(yield(:title)) : "DDM-Semaphore" %></title>
+    <title><%= full_title(yield(:title)) %></title>
     <meta name="description" content="<%= content_for?(:description) ? yield(:description) : "" %>">
     <%= font_tag([:open_sans, 300, 500], [:lato, 400, 700]) %>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => 'reload' %>
