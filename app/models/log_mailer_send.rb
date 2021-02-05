@@ -89,7 +89,7 @@ class LogMailerSend < ApplicationRecord
   private
 
   def self.send_mail_to_person(person, mailer_send, ticket, debug)
-    ERRORS_TO_RESCUE = [
+    errors_to_rescue = [
       Net::SMTPAuthenticationError,
       Net::SMTPServerBusy,
       Net::SMTPSyntaxError,
@@ -113,7 +113,7 @@ class LogMailerSend < ApplicationRecord
       mailer_send.save
       puts "   Cant save Mailer send: #{mailer_send.errors.full_messages}".colorize(:light_red) if !mailer_send.errors.empty?
       #puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
-    rescue *ERRORS_TO_RESCUE => error
+    rescue *errors_to_rescue => error
       @mail_send_errors << { person: person, error: error }
       logger.debug{"Mail send error, ticket: #{ticket.crm_ticket_id} person_email: #{person.email}".colorize(:light_red)}
       puts "Mail send error, ticket: #{ticket.crm_ticket_id} person_email: #{person.email}".colorize(:light_red)
