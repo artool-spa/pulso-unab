@@ -76,7 +76,7 @@ class LogMailerSend < ApplicationRecord
       @mail_send_errors.each do |v|
         person = v[:person]
         error = v[:error]
-        msg =  " - Person: #{person.full_name}, RUT: #{person.rut}, ID: #{person.id}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}"
+        msg =  " - Person: #{person.full_name}, RUT: #{person.rut}, ID: #{person.id}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}" if person.is_a?(Person)
         msg += "   Error: #{error.message}".colorize(:light_black)
         logger.debug { msg }
         # error.backtrace.grep_v(/\/gems\//).map { |l| l.gsub(`pwd`.strip + '/', '') }.each do |v|
