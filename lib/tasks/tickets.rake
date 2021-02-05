@@ -16,6 +16,9 @@ namespace :tickets do
       date_from_crm = date_from.to_date
       date_to_crm = date_to.to_date
       puts ">> Executing tickets:all from_date: #{date_from_crm} to_date: #{date_to_crm} debug_mode: #{args.debug_mode} only_tickets: #{args.only_tickets}"
+      # puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
+      # ResponseIvr.get_answer_from_ivr(date_from, date_to)
+      # puts "   Ending get answers from IVR...".colorize(:light_yellow)
 
       puts "   Executing get_tickets task from_date: #{date_from_crm} to_date: #{date_to_crm}"
       Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)

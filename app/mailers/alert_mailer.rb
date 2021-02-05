@@ -14,11 +14,11 @@ class AlertMailer < ApplicationMailer
   def send_mail_err(err, m_type = nil)
     @err = err
     @m_type = m_type
-    mail(subject: "Error UNAB #{@m_type}", to: "bherdocio@artool.cl")
+    mail(subject: "Error UNAB #{@m_type}", to: "dev@artool.cl")
   end
 
   def send_mail_success(result)
-    mail(subject: "Proceso tickets UNAB", to: "bherdocio@artool.cl", body: result, content_type: "text/html")
+    mail(subject: "Proceso tickets UNAB", to: "dev@artool.cl", body: result, content_type: "text/html")
   end
 
   def testing_mail(m_type = nil)

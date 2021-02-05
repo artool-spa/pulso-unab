@@ -10,7 +10,7 @@ class ResponseSurvey < ApplicationRecord
         if !ticket.nil?
           check_first_mail_response = ticket.response_surveys.where(income_channel: "Mailing", sm_question_id: answer_obj[:sm_question_id]).count(:sm_question_id)
           check_first_totem_response = ticket.response_surveys.where(income_channel: "Totem").count
-          if check_first_mail_response == 0 && check_first_totem_response == 0
+          if check_first_mail_response == 0 && check_first_totem_response == 0 #&& !ticket.response_ivrs.present?
             
             answer = ResponseSurvey.find_or_initialize_by(sm_response_id: answer_obj[:sm_response_id], sm_question_id: answer_obj[:sm_question_id], answer_type: 'open')
             answer.ticket_id      = ticket.id
@@ -39,7 +39,7 @@ class ResponseSurvey < ApplicationRecord
         if !ticket.nil?
           check_first_mail_response = ticket.response_surveys.where(income_channel: "Mailing", sm_question_id: graded[:sm_question_id]).count(:sm_question_id)
           check_first_totem_response = ticket.response_surveys.where(income_channel: "Totem").count
-          if check_first_mail_response == 0 && check_first_totem_response == 0
+          if check_first_mail_response == 0 && check_first_totem_response == 0 #&& !ticket.response_ivrs.present?
             answer.ticket_id      = ticket.id
             answer.crm_ticket_id  = ticket.crm_ticket_id       
             answer.question       = graded[:heading]
@@ -188,7 +188,7 @@ class ResponseSurvey < ApplicationRecord
   
   def self.associate_answer_to_ticket_totem(person, answer_date)
     person.tickets.each do |ticket|
-      if answer_date.to_date == ticket.created_time.to_date && !ticket.response_surveys.present?
+      if answer_date.to_date == ticket.created_time.to_date && !ticket.response_surveys.present? #&& !ticket.response_ivrs.present?
         ticket_match = Ticket.find_by(id: ticket.id)
         return ticket_match
       end

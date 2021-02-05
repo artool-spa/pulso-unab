@@ -16,7 +16,7 @@ class LogMailerSend < ApplicationRecord
         end
 
         mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
-        if !ticket.response_surveys.present? && mailer_send.mails_count < 2
+        if !ticket.response_surveys.present? && mailer_send.mails_count < 2 #&& !ticket.response_ivrs.present?
 
           if ticket.income_channel.present? && ticket.income_channel.downcase == 'web'
             if mailer_send.mails_count == 0
@@ -69,7 +69,14 @@ class LogMailerSend < ApplicationRecord
 
   def self.send_mail_to_person(person, mailer_send, ticket, debug)
     begin
-      AlertMailer.send_mail(person, ticket, "Evalúa atención").deliver_now if debug == false
+      if debug == false
+        AlertMailer.send_mail(person, ticket, "Evalúa atención").deliver_now
+      else
+        AlertMailer.send_mail_success("Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}").deliver_now
+        puts "-------------- Email success se ha enviado ----------------"
+      end
+
+
       mailer_send.mails_count += 1
       mailer_send.send_date = DateTime.current
       #mailer_send.send_date = rand(45.days).seconds.ago.to_date
