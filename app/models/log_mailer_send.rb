@@ -68,6 +68,7 @@ class LogMailerSend < ApplicationRecord
     msg = "* Total de Emails enviados efectivos: #{@mail_send_count}"
     puts msg
     logger.info { msg }
+    AlertMailer.send_mail_err("#{@msg} en el periodo #{from_date} | #{to_date}").deliver_now if @mail_send_count == 0
 
     mail_send_errors_count = @mail_send_errors.count
     if mail_send_errors_count > 0
