@@ -19,10 +19,11 @@ class LogMailerSend < ApplicationRecord
           temp_baja = true
         end
 
+        # Find or Initialize LogMailerSend object
         mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
-        if !ticket.response_surveys.present? && mailer_send.mails_count < 2 #&& !ticket.response_ivrs.present?
 
-          if ticket.income_channel.present? && ticket.income_channel.downcase == 'web'
+        if !ticket.response_surveys.present? && mailer_send.mails_count < 2 #&& !ticket.response_ivrs.present?
+          if ticket.income_channel.present? && ticket.income_channel.downcase.include?('web')
             if mailer_send.mails_count == 0
               #Via Web
               send_mail_to_person(person, mailer_send, ticket, debug)
@@ -37,7 +38,7 @@ class LogMailerSend < ApplicationRecord
               send_mail_to_person(person, mailer_send, ticket, debug)
             end
         
-          elsif ticket.close_first_line.include?('No') && ticket.created_time < date_curr - 1.week
+          elsif ticket.close_first_line.downcase.include?('no') && ticket.created_time < date_curr - 1.week
             if mailer_send.mails_count == 0
               send_mail_to_person(person, mailer_send, ticket, debug)
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 

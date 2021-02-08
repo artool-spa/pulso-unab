@@ -21,10 +21,10 @@ namespace :tickets do
       # ResponseIvr.get_answer_from_ivr(date_from, date_to)
       # puts "   Ending get answers from IVR...".colorize(:light_yellow)
 
-      puts " * Executing get_tickets_from_crm from_date: #{date_from_crm} to_date: #{date_to_crm}"
+      puts " * Executing get_tickets_from_crm"
       Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
       
-      puts " * Executing get_tickets_close_from_crm from_date: #{date_from_crm} to_date: #{date_to_crm}"
+      puts " * Executing get_tickets_close_from_crm"
       Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
 
       if !args.only_tickets
@@ -44,7 +44,6 @@ namespace :tickets do
 
         puts " * Executing LogMailerSend.send_mail from_date: #{date_from} to_date: #{date_to}"
         LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
-        puts "   End sending mails"
       end
       puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
       
