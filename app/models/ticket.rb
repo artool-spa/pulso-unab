@@ -11,9 +11,11 @@ class Ticket < ApplicationRecord
     ticket_hash = {}
     from_date = from_date.to_datetime
     to_date = to_date.to_datetime
+    
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
       tickets = unab_api.get_ticket_created(date)[:casos_creados]
+
       Person.transaction do
         tickets.each do |ticket_created|
           if ticket_created.kind_of?(Hash) && ticket_created.key?(:ctc_wa_rut) && ticket_created.key?(:subjectid)
@@ -167,7 +169,7 @@ class Ticket < ApplicationRecord
             if ticket.present?
               ticket.closed_time = ticket_closed.key?(:modifiedon) && ticket_closed[:modifiedon].present? ? DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p") : nil
               ticket.save
-              
+
               puts "   Ticket close: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_red)
             end
 
@@ -212,6 +214,4 @@ class Ticket < ApplicationRecord
       end
     end
   end
-
 end
-
