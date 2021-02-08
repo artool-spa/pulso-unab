@@ -17,7 +17,7 @@ namespace :tickets do
     date_from_crm = date_from.to_date
     date_to_crm = date_to.to_date
     
-    puts ">> Executing tickets:all from_date: #{date_from_crm} to_date: #{date_to_crm} debug_mode: #{args.debug_mode} only_tickets: #{args.only_tickets}".colorize(:light_yellow)
+    puts ">> Executing tickets:all on #{date_curr.strftime("%F %T %z")}, from_date: #{date_from_crm.strftime("%F %T %z")}, to_date: #{date_to_crm.strftime("%F %T %z")}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
     # puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
     # ResponseIvr.get_answer_from_ivr(date_from, date_to)
     # puts "   Ending get answers from IVR...".colorize(:light_yellow)
@@ -34,16 +34,16 @@ namespace :tickets do
 
       # puts " * Executing get_answers task from_date: #{date_from} to_date: #{date_to}"
       # ResponseIvr.get_answer_from_ivr(date_from, date_to)
-      puts " * Executing get_answers_from_survey from_date: #{date_from} to_date: #{date_to}"
+      puts " * Executing get_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
       ResponseSurvey.get_answers_from_survey(date_from, date_to)
       
-      puts " * Executing get_qr_answers_from_survey from_date: #{date_from} to_date: #{date_to}"
+      puts " * Executing get_qr_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
       ResponseQr.get_qr_answers_from_survey(date_from, date_to)
 
       date_from = (date_curr - 35.days).beginning_of_day
       date_to = (date_curr + 1.days).end_of_day
 
-      puts " * Executing LogMailerSend.send_mail from_date: #{date_from} to_date: #{date_to}"
+      puts " * Executing LogMailerSend.send_mail from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
       LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
     end
     puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
@@ -52,12 +52,12 @@ namespace :tickets do
   end
 
   desc "Process tickets (; separator)"
-  task :send, [:date_from, :date_to, :debug_mode, :only_tickets] => [:environment] do |t, args|
-    args.with_defaults(date_from: nil, date_to: nil, debug_mode: false, only_tickets: false)
+  task :send, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
+    args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
 
     date_curr = DateTime.current
 
-    puts ">> Executing tickets:send from_date: #{date_from} to_date: #{date_to} debug_mode: #{args.debug_mode}".colorize(:light_yellow)
+    puts ">> Executing tickets:send on #{date_curr.strftime("%F %T %z")}, from_date: #{date_from} to_date: #{date_to} debug_mode: #{args.debug_mode}".colorize(:light_yellow)
 
     date_from = (date_curr - 35.days).beginning_of_day
     date_to = (date_curr + 1.days).end_of_day
