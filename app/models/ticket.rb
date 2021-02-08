@@ -102,7 +102,7 @@ class Ticket < ApplicationRecord
               ticket.save
               
               if ticket.persisted?
-                puts "   Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) "
+                #puts "   Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) "
                 @total_tickets += 1
               end
 
@@ -148,9 +148,8 @@ class Ticket < ApplicationRecord
       end if tickets.present? 
     end
 
-    puts "* Tickets totales del periodo #{from_date} a #{to_date}: #{@total_tickets}"
+    puts " - Tickets totales del periodo #{from_date} a #{to_date}: #{@total_tickets}"
     AlertMailer.send_mail_err("Tickets totales: #{@total_tickets} en el periodo #{from_date} a #{to_date}").deliver_now if @total_tickets == 0
-    logger.debug{"* Tickets totales del periodo #{from_date} a #{to_date}: #{@total_tickets}".colorize(:light_yellow)}
   end
 
   def self.get_tickets_close_from_crm(from_date, to_date)
@@ -168,8 +167,8 @@ class Ticket < ApplicationRecord
             if ticket.present?
               ticket.closed_time = ticket_closed.key?(:modifiedon) && ticket_closed[:modifiedon].present? ? DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p") : nil
               ticket.save
-              puts "Ticket close: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_red)
-              puts "------------------------------"
+              
+              puts "   Ticket close: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_red)
             end
 
           end

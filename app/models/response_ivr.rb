@@ -53,16 +53,13 @@ class ResponseIvr < ApplicationRecord
           
         end
       rescue StandardError => error
-        logger.debug{"Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date)}".colorize(:light_red)}
         puts "Respuestas IVR error => Response: #{ivr_api.get_ivr_data(date)}".colorize(:light_red)
-        #AlertMailer.send_mail_err(logger.debug{"Respuestas IVR error => Response: #{error}"}).deliver_now
+        #AlertMailer.send_mail_err("Respuestas IVR error => Response: #{error}").deliver_now
       end
     end
     puts "Respuestas IVR totales del periodo: #{@total_ivr_answers}"
     AlertMailer.send_mail_err("Respuestas IVR totales: #{@total_ivr_answers} en el periodo #{from_date} | #{to_date}").deliver_now if @total_ivr_answers == 0
     #puts "Respuestas IVR guardadas del periodo: #{@total_ivr_answers_save}"
-    logger.debug{"Respuestas IVR totales del periodo => #{@total_ivr_answers}".colorize(:light_yellow)}
-    #logger.debug{"Respuestas IVR guardadas del periodo => #{@total_ivr_answers_save}".colorize(:light_yellow)}
   end
 
   def self.set_income_ivr_channel
