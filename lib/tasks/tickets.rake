@@ -51,6 +51,30 @@ namespace :tickets do
     #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
   end
 
+  desc "Process tickets on demand (; separator)"
+  task :on_demand, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
+    args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
+    date_curr = DateTime.current
+
+    puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr}".colorize(:light_yellow)
+
+    # Tickets Query
+    tickets = "" # Definir query de tickets
+
+    tickets.each do |ticket|
+      # Tracker y mensaje personalizado
+      tracker_id = 'XZVMGCF'
+      custom_msg = <<-TXT
+        Con el objetivo de conocer tu experiencia en relacion a nuestro
+        servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
+      TXT
+      
+      LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, args.debug_mode)
+    end
+
+    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
+  end
+
   desc "Process tickets (; separator)"
   task :send, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
     args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)

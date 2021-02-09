@@ -5,11 +5,17 @@
 
 <h2 style="margin: 3em auto;display: block;font-weight:bold;font-size:1.4em;width: 100%;color:#5b5b5b;"> Estimada/o Estudiante </h2>
 
-<p style="margin: 1em auto;display: block;font-size:1.2em;width: 100%;text-align: justify;color:#5b5b5b;"> Con el objetivo de conocer tu experiencia en relacion a nuestro
-servicio y plataforma de atención, te invitamos a contestar una breve encuesta. </p>
+<p style="margin: 1em auto;display: block;font-size:1.2em;width: 100%;text-align: justify;color:#5b5b5b;">
+<% if @custom_msg.present? %>
+<%= @custom_msg %>
+<% else %>
+Con el objetivo de conocer tu experiencia en relacion a nuestro
+servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
+<% end %>
+</p>
 
 <div style="margin: 3em auto;display: block;text-align: center;width: 100%;">
-<%= link_to "https://es.research.net/r/3VJGGWT?ticket_id=#{@ticket.crm_ticket_id}" do %>
+<%= link_to "https://es.research.net/r/#{@tracker_id}?ticket_id=#{@ticket.crm_ticket_id}" do %>
   <%= image_tag('ingresa_aqui_unab.png', width: 250) %>
 <% end %>
 </div>

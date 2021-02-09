@@ -85,12 +85,23 @@ class LogMailerSend < ApplicationRecord
     end
   end
 
+  def self.send_mail_on_demand(ticket, tracker_id, custom_msg, debug)
+    person = Person.find_by(id: ticket.person_id)
+
+    if person.present? && person.try(:email).present?
+      # Find or Initialize LogMailerSend object
+      mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
+
+      send_mail_to_person(person, mailer_send, ticket, debug, tracker_id, custom_msg)
+    end
+  end
+
   private
 
-    def self.send_mail_to_person(person, mailer_send, ticket, debug)
+    def self.send_mail_to_person(person, mailer_send, ticket, debug, tracker_id = "3VJGGWT", custom_msg = nil)
       begin
         if debug == false
-          AlertMailer.send_mail(person, ticket, "Evalúa Atención").deliver_now!
+          AlertMailer.send_mail(person, ticket, "Evalúa Atención", tracker_id, custom_msg).deliver_now!
           @mail_send_count += 1
         else
           AlertMailer.send_mail_success("Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}").deliver_now!
