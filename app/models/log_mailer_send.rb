@@ -100,11 +100,11 @@ class LogMailerSend < ApplicationRecord
 
     def self.send_mail_to_person(person, mailer_send, ticket, debug, tracker_id = "3VJGGWT", custom_msg = nil)
       begin
-        if debug == false
-          AlertMailer.send_mail(person, ticket, "Evalúa Atención", tracker_id, custom_msg).deliver_now!
+        if debug == 'false'
+          AlertMailer.send_mail(person, ticket, "Evalúa Atención", custom_msg, tracker_id).deliver_now!
           @mail_send_count += 1
         else
-          AlertMailer.send_mail_success("Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}").deliver_now!
+          puts "Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}"
         end
 
         mailer_send.mails_count += 1

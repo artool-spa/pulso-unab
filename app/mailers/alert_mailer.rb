@@ -4,7 +4,7 @@ class AlertMailer < ApplicationMailer
   #
   #   en.alert_mailer.exception_msg.subject
   #
-  def send_mail(person, ticket, m_type = nil, tracker_id, custom_msg = nil)
+  def send_mail(person, ticket, m_type = nil, custom_msg = nil, tracker_id)
     @person = person
     @ticket = ticket
     @m_type = m_type

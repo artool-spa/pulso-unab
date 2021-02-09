@@ -59,10 +59,18 @@ namespace :tickets do
     puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr}".colorize(:light_yellow)
 
     # Tickets Query
-    tickets = "" # Definir query de tickets
+    sql = "select distinct p.id as person_id, t.crm_ticket_id, max(t.id) as ticket_id from tickets t join people p on t.person_id = p.id 
+    where t.created_time between '#{args.date_from}' and '#{args.date_to}'
+    and p.email is not null
+    group by p.id, t.crm_ticket_id;"
 
-    tickets.each do |ticket|
+    results = ActiveRecord::Base.connection.exec_query(sql)
+
+    puts "Sin resultados de query sql" if results.count == 0
+
+    results.each do |result|
       # Tracker y mensaje personalizado
+      ticket = Ticket.find_by(id: result["ticket_id"])
       tracker_id = 'XZVMGCF'
       custom_msg = <<-TXT
         Con el objetivo de conocer tu experiencia en relacion a nuestro
