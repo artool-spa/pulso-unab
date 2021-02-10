@@ -62,13 +62,14 @@ namespace :tickets do
 
     # Tickets Query
     sql = %{
-      SELECT DISTINCT p.id as person_id, t.crm_ticket_id, max(t.id) as ticket_id
+      SELECT DISTINCT p.id as person_id, t.crm_ticket_id, max(t.id) as ticket_id, t.created_time
       FROM tickets t
       JOIN people p ON(t.person_id = p.id)
       WHERE
         (t.created_time BETWEEN '#{Arel.sql(args.date_from)}' AND '#{Arel.sql(args.date_to)}')
         AND p.email IS NOT NULL
-      GROUP BY p.id, t.crm_ticket_id;
+      GROUP BY p.id, t.crm_ticket_id, t.created_time
+      ORDER BY t.created_time ASC;
     }
 
     results = ActiveRecord::Base.connection.exec_query(sql)
