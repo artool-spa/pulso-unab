@@ -61,9 +61,8 @@ namespace :tickets do
     raise " ! No se definió season_month_in_spanish, por ejemplo: Noviembre".colorize(:light_red) if args.season_month_in_spanish.blank?
 
     # Tickets Query
-
     sql = %{
-      SELECT DISTINCT p.rut, p.id as person_id, max(t.crm_ticket_id), max(t.id) as ticket_id, count(*)
+      SELECT DISTINCT p.rut, p.id as person_id, max(t.id) as ticket_id, count(*)
       FROM tickets t
       JOIN people p ON(t.person_id = p.id)
       WHERE
