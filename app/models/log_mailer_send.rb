@@ -6,6 +6,9 @@ class LogMailerSend < ApplicationRecord
   def self.send_mail(date_from, date_to, debug)
     date_curr = DateTime.current
 
+    # Tracker (recopilador) de Surveymonkey actual
+    tracker_id = "3VJGGWT"
+
     Ticket.where("created_time::date between ? and ?", date_from, date_to).each do |ticket|
       temp_alta = false
       temp_baja = false
@@ -26,41 +29,41 @@ class LogMailerSend < ApplicationRecord
           if ticket.income_channel.present? && ticket.income_channel.downcase.include?('web')
             if mailer_send.mails_count == 0
               #Via Web
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
               #puts "   Ticket via web"
 
             elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr
               #puts "   temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
 
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
               #puts "   temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             end
         
           elsif ticket.close_first_line.downcase.include?('no') && ticket.created_time < date_curr - 1.week
             if mailer_send.mails_count == 0
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
               #puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr 
               #puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             end
 
           # elsif mailer_send.mails_count == 0
           #   #Dont have answers 
-          #   send_mail_to_person(person, mailer_send, ticket, debug)
+          #   send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
           #   #puts "   Ticket sin respuesta"
 
           elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
             #puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-            send_mail_to_person(person, mailer_send, ticket, debug)
+            send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
 
           elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr 
             #puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-            send_mail_to_person(person, mailer_send, ticket, debug)
+            send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
           end
         end
       end

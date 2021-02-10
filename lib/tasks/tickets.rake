@@ -101,7 +101,7 @@ namespace :tickets do
   end
 
   desc "Process tickets (; separator)"
-  task :test_api, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
+  task :test_unab_api, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
     args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
 
     date_curr = DateTime.current
