@@ -102,7 +102,7 @@ class LogMailerSend < ApplicationRecord
       raise " ! No hay tracker_id definido".colorize(:light_red) if tracker_id.blank?
 
       begin
-        if debug == false || debug == 'false'
+        if debug == false
           AlertMailer.send_mail(person, ticket, "Evalúa Atención", custom_msg, tracker_id).deliver_now!
           @mail_send_count += 1
         else

@@ -54,6 +54,7 @@ namespace :tickets do
   desc "Process tickets on demand (; separator)"
   task :on_demand, [:date_from, :date_to, :season_month_in_spanish, :debug_mode] => [:environment] do |t, args|
     args.with_defaults(date_from: nil, date_to: nil, season_month_in_spanish: nil, debug_mode: false)
+    debug_mode = (args.debug_mode == 'true')
     date_curr = DateTime.current
 
     puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr}".colorize(:light_yellow)
@@ -73,6 +74,12 @@ namespace :tickets do
     results = ActiveRecord::Base.connection.exec_query(sql)
     results_count = results.count
 
+    if debug_mode
+      puts sql.colorize(:light_black)
+      puts "results_count: #{results_count}"
+      exit(1)
+    end
+
     puts " ! Sin resultados de query sql".colorize(:light_red) if results_count == 0
 
     n_counter = 0
@@ -84,7 +91,7 @@ namespace :tickets do
         Con el objetivo de conocer tu experiencia de #{args.season_month_in_spanish} en relacion a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
       TXT
       
-      LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, args.debug_mode)
+      LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, debug_mode)
       n_counter += 1
     end
 
