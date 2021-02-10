@@ -76,9 +76,9 @@ namespace :tickets do
     results.each do |result|
       # Tracker y mensaje personalizado
       ticket = Ticket.find_by(id: result["ticket_id"])
-      tracker_id = 'XZVMGCF'
+      tracker_id = '3VJGGWT'
       custom_msg = <<-TXT
-        Con el objetivo de conocer tu experiencia en relacion a nuestro
+        Con el objetivo de conocer tu experiencia de Noviembre en relacion a nuestro
         servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
       TXT
       
@@ -89,20 +89,18 @@ namespace :tickets do
   end
 
   desc "Process tickets (; separator)"
-  task :send, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
+  task :test_api, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
     args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
 
     date_curr = DateTime.current
 
-    puts ">> Executing tickets:send on #{date_curr.strftime("%F %T %z")}, from_date: #{date_from} to_date: #{date_to} debug_mode: #{args.debug_mode}".colorize(:light_yellow)
+    puts ">> Executing tickets:test_api on #{date_curr.strftime("%F %T %z")}".colorize(:light_yellow)
 
-    date_from = (date_curr - 35.days).beginning_of_day
-    date_to = (date_curr + 1.days).end_of_day
-
-    LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
-    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
-    
-    #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
+    unab_api = UnabApi.new
+    tickets = unab_api.get_ticket_created("2021-02-10")[:casos_creados]
+    tickets.each do |ticket|
+      puts ticket.inspect
+    end
   end
 end
   

@@ -66,8 +66,8 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
-  config.action_mailer.default_url_options = { host: '6633934f.ngrok.io'}
-  config.action_mailer.asset_host = 'https://6633934f.ngrok.io'
+  config.action_mailer.default_url_options = { host: 'pulsounab.artool.cl' }
+  config.action_mailer.asset_host = 'https://pulsounab.artool.cl'
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = Rails.application.credentials.artool_smtp
 end

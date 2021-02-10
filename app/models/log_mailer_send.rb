@@ -99,6 +99,8 @@ class LogMailerSend < ApplicationRecord
   private
 
     def self.send_mail_to_person(person, mailer_send, ticket, debug, tracker_id = "3VJGGWT", custom_msg = nil)
+      raise " ! No hay tracker_id definido".colorize(:light_red) if tracker_id.blank?
+
       begin
         if debug == 'false'
           AlertMailer.send_mail(person, ticket, "Evalúa Atención", custom_msg, tracker_id).deliver_now!
