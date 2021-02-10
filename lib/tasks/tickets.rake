@@ -61,17 +61,18 @@ namespace :tickets do
     raise " ! No se definió season_month_in_spanish, por ejemplo: Noviembre".colorize(:light_red) if args.season_month_in_spanish.blank?
 
     # Tickets Query
+
     sql = %{
-      SELECT DISTINCT p.id as person_id, t.crm_ticket_id, max(t.id) as ticket_id, t.created_time
+      SELECT DISTINCT p.rut, p.id as person_id, max(t.crm_ticket_id), max(t.id) as ticket_id, count(*)
       FROM tickets t
       JOIN people p ON(t.person_id = p.id)
       WHERE
         (t.created_time BETWEEN '#{Arel.sql(args.date_from)}' AND '#{Arel.sql(args.date_to)}')
         AND p.email IS NOT NULL
-      GROUP BY p.id, t.crm_ticket_id, t.created_time
-      ORDER BY t.created_time ASC;
+      GROUP BY p.rut, p.id
+      ORDER BY person_id ASC;
     }
-
+    
     results = ActiveRecord::Base.connection.exec_query(sql)
     results_count = results.count
 
@@ -97,6 +98,7 @@ namespace :tickets do
     end
 
     puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}, #{n_counter}/#{results_count} sent".colorize(:light_yellow)
+  
   end
 
   desc "Process tickets (; separator)"
