@@ -52,11 +52,12 @@ namespace :tickets do
   end
 
   desc "Process tickets on demand (; separator)"
-  task :on_demand, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
-    args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
+  task :on_demand, [:date_from, :date_to, :season_month_in_spanish, :debug_mode] => [:environment] do |t, args|
+    args.with_defaults(date_from: nil, date_to: nil, season_month_in_spanish: nil, debug_mode: false)
     date_curr = DateTime.current
 
     puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr}".colorize(:light_yellow)
+    raise " ! No se definió season_month_in_spanish, por ejemplo: Noviembre".colorize(:light_red) if args.season_month_in_spanish.blank?
 
     # Tickets Query
     sql = %{
@@ -70,22 +71,24 @@ namespace :tickets do
     }
 
     results = ActiveRecord::Base.connection.exec_query(sql)
+    results_count = results.count
 
-    puts " ! Sin resultados de query sql".colorize(:light_red) if results.count == 0
+    puts " ! Sin resultados de query sql".colorize(:light_red) if results_count == 0
 
+    n_counter = 0
     results.each do |result|
       # Tracker y mensaje personalizado
       ticket = Ticket.find_by(id: result["ticket_id"])
       tracker_id = '3VJGGWT'
       custom_msg = <<-TXT
-        Con el objetivo de conocer tu experiencia de Noviembre en relacion a nuestro
-        servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
+        Con el objetivo de conocer tu experiencia de #{args.season_month_in_spanish} en relacion a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
       TXT
       
       LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, args.debug_mode)
+      n_counter += 1
     end
 
-    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
+    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}, #{n_counter}/#{results_count} sent".colorize(:light_yellow)
   end
 
   desc "Process tickets (; separator)"
