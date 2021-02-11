@@ -2,7 +2,7 @@ set :stage, :production
 
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
-set :branch, "master"
+set :branch, "main"
 
 role :app, %w{ubuntu@34.214.35.122}
 role :web, %w{ubuntu@34.214.35.122}
