@@ -1,7 +1,5 @@
-# config valid only for current version of Capistrano
-#lock '3.4.0'
 set :application, 'pulso_unab'
-set :repo_url, "git@gitlab.com:artool/pulso-unab.git"
+set :repo_url, "git@github.com:artool-spa/pulso-unab.git"
 set :rvm_ruby_version, "2.5.1@#{fetch(:application)}"
 set :rvm_ruby, '2.5.1'
 set :keep_releases, 3
