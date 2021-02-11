@@ -52,39 +52,88 @@ namespace :tickets do
   end
 
   desc "Process tickets on demand (; separator)"
-  task :on_demand, [:date_from, :date_to, :season_month_in_spanish, :debug_mode] => [:environment] do |t, args|
-    args.with_defaults(date_from: nil, date_to: nil, season_month_in_spanish: nil, debug_mode: false)
+  task :on_demand, [:year, :month, :debug_mode] => [:environment] do |t, args|
+    args.with_defaults(year: nil, month: nil, debug_mode: false)
     debug_mode = (args.debug_mode == 'true')
     date_curr = DateTime.current
+    date_given = Date.new(args.year.to_i, args.month.to_i, 1)
+    period_month = I18n.l(date_given, format: '%B').titleize
 
-    puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr}".colorize(:light_yellow)
-    raise " ! No se definió season_month_in_spanish, por ejemplo: Noviembre".colorize(:light_red) if args.season_month_in_spanish.blank?
+    puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr} for period_month: #{period_month}".colorize(:light_yellow)
 
     sql_noviembre = %{
-          SELECT DISTINCT p.id as person_id
-          FROM tickets t
-          JOIN people p ON(t.person_id = p.id)
-          WHERE
-            (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2020-12-01 02:59:59')
-            AND p.email IS NOT NULL
-          GROUP BY p.id
-          ORDER BY person_id ASC
+            SELECT p.id as person_id
+            FROM tickets t
+            JOIN people p ON(t.person_id = p.id)
+            WHERE
+              (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2020-12-01 02:59:59')
+              AND p.email IS NOT NULL
+            GROUP BY p.id
+            ORDER BY person_id ASC
     }
 
     # Tickets Query
     sql = %{
-      SELECT DISTINCT p.rut, p.id as person_id, max(t.id) as ticket_id, count(*)
-      FROM tickets t
-      JOIN people p ON(t.person_id = p.id)
+      SELECT person_id, ticket_id, max_created_time
+      FROM (
+        SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+        FROM tickets t
+        JOIN people p ON(t.person_id = p.id)
+        WHERE
+          (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
+          AND p.email IS NOT NULL
+          AND p.rut != '17406837'
+          AND person_id NOT IN(
+            #{sql_noviembre}
+          )
+        GROUP BY p.rut, p.id
+      ) as collection
       WHERE
-        (t.created_time BETWEEN '#{Arel.sql(args.date_from)}' AND '#{Arel.sql(args.date_to)}')
-        AND p.email IS NOT NULL
-        AND person_id NOT IN(
-          #{sql_noviembre}
-        )
-      GROUP BY p.rut, p.id
-      ORDER BY person_id ASC;
+      DATE_PART('year', max_created_time) = #{Arel.sql(args.year)} AND DATE_PART('month', max_created_time) = #{Arel.sql(args.month)}
+      ORDER BY person_id ASC
     }
+    # Query para validar si no hay duplicados, comentando o descomentando la línea del "group by" al final
+    #
+    # sql = %{
+    #   SELECT person_id
+    #   FROM (
+    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+    #     FROM tickets t
+    #     JOIN people p ON(t.person_id = p.id)
+    #     WHERE
+    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
+    #       AND p.email IS NOT NULL
+    #       AND p.rut != '17406837'
+    #       AND person_id NOT IN(
+    #         #{sql_noviembre}
+    #       )
+    #     GROUP BY p.rut, p.id
+    #   ) as collection
+    #   WHERE
+    #   DATE_PART('year', max_created_time) = 2020 AND DATE_PART('month', max_created_time) = 12
+
+    #   UNION ALL
+
+    #   SELECT person_id
+    #   FROM (
+    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+    #     FROM tickets t
+    #     JOIN people p ON(t.person_id = p.id)
+    #     WHERE
+    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
+    #       AND p.email IS NOT NULL
+    #       AND p.rut != '17406837'
+    #       AND person_id NOT IN(
+    #         #{sql_noviembre}
+    #       )
+    #     GROUP BY p.rut, p.id
+    #   ) as collection
+    #   WHERE
+    #   DATE_PART('year', max_created_time) = 2021 AND DATE_PART('month', max_created_time) = 1
+
+    #   --GROUP BY person_id
+    #   ORDER BY person_id ASC
+    # }
     
     results = ActiveRecord::Base.connection.exec_query(sql)
     results_count = results.count
@@ -103,7 +152,7 @@ namespace :tickets do
       ticket = Ticket.find_by(id: result["ticket_id"])
       tracker_id = '3VJGGWT'
       custom_msg = <<-TXT
-        Con el objetivo de conocer tu experiencia de #{args.season_month_in_spanish} en relacion a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
+        Con el objetivo de conocer tu experiencia de #{period_month} en relacion a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
       TXT
       
       LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, debug_mode)
