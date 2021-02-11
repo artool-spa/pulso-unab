@@ -60,6 +60,17 @@ namespace :tickets do
     puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr}".colorize(:light_yellow)
     raise " ! No se definió season_month_in_spanish, por ejemplo: Noviembre".colorize(:light_red) if args.season_month_in_spanish.blank?
 
+    sql_noviembre = %{
+          SELECT DISTINCT p.id as person_id
+          FROM tickets t
+          JOIN people p ON(t.person_id = p.id)
+          WHERE
+            (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2020-12-01 02:59:59')
+            AND p.email IS NOT NULL
+          GROUP BY p.id
+          ORDER BY person_id ASC
+    }
+
     # Tickets Query
     sql = %{
       SELECT DISTINCT p.rut, p.id as person_id, max(t.id) as ticket_id, count(*)
@@ -68,6 +79,9 @@ namespace :tickets do
       WHERE
         (t.created_time BETWEEN '#{Arel.sql(args.date_from)}' AND '#{Arel.sql(args.date_to)}')
         AND p.email IS NOT NULL
+        AND person_id NOT IN(
+          #{sql_noviembre}
+        )
       GROUP BY p.rut, p.id
       ORDER BY person_id ASC;
     }
