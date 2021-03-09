@@ -69,16 +69,17 @@ class LogMailerSend < ApplicationRecord
       end
     end
     
-    puts " - Total de Emails enviados efectivos: #{@mail_send_count}"
+    puts " * Total de Emails enviados efectivos: #{@mail_send_count}"
 
     mail_send_errors_count = @mail_send_errors.count
     if mail_send_errors_count > 0
-      puts " - Total de Emails con errores: #{mail_send_errors_count}. Detalle a continuación:".colorize(:light_red)
+      puts " * Total de Emails con errores: #{mail_send_errors_count}. Detalle a continuación:".colorize(:light_red)
       
       @mail_send_errors.each do |v|
         person = v[:person]
+        ticket = v[:ticket]
         error = v[:error]
-        msg =  " - Person: #{person.full_name}, RUT: #{person.rut}, ID: #{person.id}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}" if person.is_a?(Person)
+        msg =  " - crm_ticket_id: #{ticket.crm_ticket_id} | Person: #{person.full_name} (ID: #{person.id}), RUT: #{person.rut}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}\n" if person.is_a?(Person)
         msg += "   Error: #{error.message}".colorize(:light_black)
         puts msg
         # error.backtrace.grep_v(/\/gems\//).map { |l| l.gsub(`pwd`.strip + '/', '') }.each do |v|
@@ -120,8 +121,8 @@ class LogMailerSend < ApplicationRecord
         puts " ! Cant save Mailer send: #{mailer_send.errors.full_messages}".colorize(:light_red) if !mailer_send.errors.empty?
         #puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
       rescue Exception => error
-        @mail_send_errors << { person: person, error: error }
-        puts " ! Error, ticket: #{ticket.crm_ticket_id}, person_id: #{person.id}, person_email: #{person.email}".colorize(:light_red)
+        @mail_send_errors << { person: person, ticket: ticket, error: error }
+        #puts " ! Error, ticket: #{ticket.crm_ticket_id}, person_id: #{person.id}, person_email: #{person.email}".colorize(:light_red)
       end
     end
 
