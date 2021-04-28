@@ -29,7 +29,7 @@ namespace :tickets do
     puts " * Executing Ticket.get_tickets_close_from_crm"
     Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
 
-    if !args.only_tickets
+    unless args.only_tickets
       date_from = (date_curr - 3.days).beginning_of_day
       date_to = date_curr.end_of_day
 
