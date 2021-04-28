@@ -13,15 +13,11 @@ namespace :tickets do
       date_from = (date_curr - 2.days).beginning_of_day
       date_to = date_curr.end_of_day
     end
-
-    # Correccion de los periodos a la zona de horaria de Santiago
-    # date_from = date_from.in_time_zone("America/Santiago")
-    # date_to = date_to.in_time_zone("America/Santiago")
     
     date_from_crm = date_from.to_date
     date_to_crm = date_to.to_date
     
-    puts ">> Executing tickets:all on #{date_curr.strftime("%F %T %z")}, from_date: #{date_from_crm.strftime("%F %z")}, to_date: #{date_to_crm.strftime("%F %z")}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
+    puts ">> Executing tickets:all on #{date_curr.strftime("%F %T %z")}, date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
 
     puts " * Executing Ticket.get_tickets_from_crm"
     Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
@@ -33,22 +29,22 @@ namespace :tickets do
       date_from = (date_curr - 3.days).beginning_of_day
       date_to = date_curr.end_of_day
 
-      # puts " * Executing get_answers task from_date: #{date_from} to_date: #{date_to}"
+      # puts " * Executing get_answers task date_from: #{date_from} date_to: #{date_to}"
       # ResponseIvr.get_answer_from_ivr(date_from, date_to)
 
-      puts " * Executing ResponseSurvey.get_answers_from_survey from_date: #{date_from.strftime("%F %T %z")}, to_date: #{date_to.strftime("%F %T %z")}"
+      puts " * Executing ResponseSurvey.get_answers_from_survey date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}"
       ResponseSurvey.get_answers_from_survey(date_from, date_to)
       
-      puts " * Executing ResponseQr.get_qr_answers_from_survey from_date: #{date_from.strftime("%F %T %z")}, to_date: #{date_to.strftime("%F %T %z")}"
+      puts " * Executing ResponseQr.get_qr_answers_from_survey date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}"
       ResponseQr.get_qr_answers_from_survey(date_from, date_to)
 
       date_from = (date_curr - 35.days).beginning_of_day
       date_to = (date_curr + 1.days).end_of_day
 
-      puts " * Executing LogMailerSend.send_mail from_date: #{date_from.strftime("%F %T %z")}, to_date: #{date_to.strftime("%F %T %z")}"
+      puts " * Executing LogMailerSend.send_mail date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}"
       LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
     end
-    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
+    puts "   Ending process on #{DateTime.current.iso8601}".colorize(:light_yellow)
     
     #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
   end

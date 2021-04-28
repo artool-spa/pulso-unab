@@ -150,7 +150,7 @@ class Ticket < ApplicationRecord
       end if tickets.present? 
     end
 
-    puts "   Tickets totales del periodo #{from_date} a #{to_date}: #{@total_tickets}"
+    puts "   Tickets totales del periodo #{from_date.strftime("%F")} a #{to_date.strftime("%F")}: #{@total_tickets}"
     AlertMailer.send_mail_err("Tickets totales: #{@total_tickets} en el periodo #{from_date} a #{to_date}").deliver_now if @total_tickets == 0
   end
 
