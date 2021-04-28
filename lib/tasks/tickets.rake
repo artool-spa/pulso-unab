@@ -3,7 +3,7 @@ namespace :tickets do
   task :all, [:date_from, :date_to, :debug_mode, :only_tickets] => [:environment] do |t, args|
     args.with_defaults(date_from: nil, date_to: nil, debug_mode: false, only_tickets: false)
 
-    date_curr = DateTime.current
+    date_curr = DateTime.now
 
     # Set initial retrieving period for stats
     if args.date_from.present? && args.date_to.present?
@@ -13,7 +13,11 @@ namespace :tickets do
       date_from = (date_curr - 2.days).beginning_of_day
       date_to = date_curr.end_of_day
     end
-    
+
+    # Correccion de los periodos locales para ser mostrados en UTC
+    date_from = date_from.utc
+    date_to = date_to.utc
+
     date_from_crm = date_from.to_date
     date_to_crm = date_to.to_date
     
