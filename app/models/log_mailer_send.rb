@@ -73,14 +73,15 @@ class LogMailerSend < ApplicationRecord
 
     mail_send_errors_count = @mail_send_errors.count
     if mail_send_errors_count > 0
-      puts " * Total de Emails con errores: #{mail_send_errors_count}. Detalle a continuación:".colorize(:light_red)
+      puts ""
+      puts " * #{mail_send_errors_count} emails con errores. Detalle a continuación:".colorize(:light_red)
       
       @mail_send_errors.each do |v|
         person = v[:person]
         ticket = v[:ticket]
         error = v[:error]
-        msg =  " - crm_ticket_id: #{ticket.crm_ticket_id} | Person: #{person.full_name} (ID: #{person.id}), RUT: #{person.rut}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}\n" if person.is_a?(Person)
-        msg += "   Error: #{error.message}".colorize(:light_black)
+        msg =  "   - Ticket ID: #{ticket.crm_ticket_id} | Person: #{person.full_name} (ID: #{person.id}), RUT: #{person.rut}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}\n" if person.is_a?(Person)
+        msg += "     Error: #{error.message.strip}".colorize(:light_black)
         puts msg
         # error.backtrace.grep_v(/\/gems\//).map { |l| l.gsub(`pwd`.strip + '/', '') }.each do |v|
         #   puts "     #{v.colorize(:light_black)}"
