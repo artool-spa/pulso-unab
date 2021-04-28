@@ -15,3 +15,4 @@ Things you may want to cover:
 `rails tickets:all`: Brings all tickets between a given period of time. Includes all answer sources.
 `rails careers:all`: Insert careers to the system from a local XLSX file.
 
+* Documentación del sistema en la KB: https://kb.artool.cl/article/documentacion-proyecto-unab/

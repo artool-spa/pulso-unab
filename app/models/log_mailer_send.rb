@@ -6,6 +6,9 @@ class LogMailerSend < ApplicationRecord
   def self.send_mail(date_from, date_to, debug)
     date_curr = DateTime.current
 
+    # Tracker (recopilador) de Surveymonkey actual
+    tracker_id = "3VJGGWT"
+
     Ticket.where("created_time::date between ? and ?", date_from, date_to).each do |ticket|
       temp_alta = false
       temp_baja = false
@@ -26,57 +29,59 @@ class LogMailerSend < ApplicationRecord
           if ticket.income_channel.present? && ticket.income_channel.downcase.include?('web')
             if mailer_send.mails_count == 0
               #Via Web
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
               #puts "   Ticket via web"
 
             elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr
               #puts "   temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
 
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
               #puts "   temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             end
         
           elsif ticket.close_first_line.downcase.include?('no') && ticket.created_time < date_curr - 1.week
             if mailer_send.mails_count == 0
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
               #puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr 
               #puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-              send_mail_to_person(person, mailer_send, ticket, debug)
+              send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
             end
 
           # elsif mailer_send.mails_count == 0
           #   #Dont have answers 
-          #   send_mail_to_person(person, mailer_send, ticket, debug)
+          #   send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
           #   #puts "   Ticket sin respuesta"
 
           elsif mailer_send.mails_count == 1 && temp_alta && mailer_send.send_date + 30.days < date_curr 
             #puts "temp alta fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-            send_mail_to_person(person, mailer_send, ticket, debug)
+            send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
 
           elsif mailer_send.mails_count == 1 && temp_baja && mailer_send.send_date + 15.days < date_curr 
             #puts "temp baja fechas: #{mailer_send.send_date.to_date} v/s #{date_curr.to_date}"
-            send_mail_to_person(person, mailer_send, ticket, debug)
+            send_mail_to_person(person, mailer_send, ticket, debug, tracker_id)
           end
         end
       end
     end
     
-    puts " - Total de Emails enviados efectivos: #{@mail_send_count}"
+    puts " * Total de Emails enviados efectivos: #{@mail_send_count}"
 
     mail_send_errors_count = @mail_send_errors.count
     if mail_send_errors_count > 0
-      puts " - Total de Emails con errores: #{mail_send_errors_count}. Detalle a continuación:".colorize(:light_red)
+      puts ""
+      puts " * #{mail_send_errors_count} emails con errores. Detalle a continuación:".colorize(:light_red)
       
       @mail_send_errors.each do |v|
         person = v[:person]
+        ticket = v[:ticket]
         error = v[:error]
-        msg =  " - Person: #{person.full_name}, RUT: #{person.rut}, ID: #{person.id}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}" if person.is_a?(Person)
-        msg += "   Error: #{error.message}".colorize(:light_black)
+        msg =  "   - Ticket ID: #{ticket.crm_ticket_id} | Person: #{person.full_name} (ID: #{person.id}), RUT: #{person.rut}, mail_send_counts: #{person.mail_send_counts}, mail_send_date: #{person.mail_send_date}\n" if person.is_a?(Person)
+        msg += "     Error: #{error.message.strip}".colorize(:light_black)
         puts msg
         # error.backtrace.grep_v(/\/gems\//).map { |l| l.gsub(`pwd`.strip + '/', '') }.each do |v|
         #   puts "     #{v.colorize(:light_black)}"
@@ -85,15 +90,28 @@ class LogMailerSend < ApplicationRecord
     end
   end
 
+  def self.send_mail_on_demand(ticket, tracker_id, custom_msg, debug)
+    person = Person.find_by(id: ticket.person_id)
+
+    if person.present? && person.try(:email).present?
+      # Find or Initialize LogMailerSend object
+      mailer_send = person.log_mailer_sends.find_or_initialize_by(crm_ticket_id: ticket.crm_ticket_id)
+
+      send_mail_to_person(person, mailer_send, ticket, debug, tracker_id, custom_msg)
+    end
+  end
+
   private
 
-    def self.send_mail_to_person(person, mailer_send, ticket, debug)
+    def self.send_mail_to_person(person, mailer_send, ticket, debug, tracker_id = "3VJGGWT", custom_msg = nil)
+      raise " ! No hay tracker_id definido".colorize(:light_red) if tracker_id.blank?
+
       begin
         if debug == false
-          AlertMailer.send_mail(person, ticket, "Evalúa Atención").deliver_now!
+          AlertMailer.send_mail(person, ticket, "Evalúa Atención", custom_msg, tracker_id).deliver_now!
           @mail_send_count += 1
         else
-          AlertMailer.send_mail_success("Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}").deliver_now!
+          puts "Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}"
         end
 
         mailer_send.mails_count += 1
@@ -104,8 +122,8 @@ class LogMailerSend < ApplicationRecord
         puts " ! Cant save Mailer send: #{mailer_send.errors.full_messages}".colorize(:light_red) if !mailer_send.errors.empty?
         #puts "   Send mail to: #{ticket.crm_ticket_id} | person: #{person.full_name} | send_date: #{mailer_send.send_date}".colorize(:light_blue)
       rescue Exception => error
-        @mail_send_errors << { person: person, error: error }
-        puts " ! Error, ticket: #{ticket.crm_ticket_id}, person_id: #{person.id}, person_email: #{person.email}".colorize(:light_red)
+        @mail_send_errors << { person: person, ticket: ticket, error: error }
+        #puts " ! Error, ticket: #{ticket.crm_ticket_id}, person_id: #{person.id}, person_email: #{person.email}".colorize(:light_red)
       end
     end
 

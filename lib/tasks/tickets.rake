@@ -51,21 +51,131 @@ namespace :tickets do
     #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
   end
 
+  desc "Process tickets on demand (; separator)"
+  task :on_demand, [:year, :month, :debug_mode] => [:environment] do |t, args|
+    args.with_defaults(year: nil, month: nil, debug_mode: false)
+    debug_mode = (args.debug_mode == 'true')
+    date_curr = DateTime.current
+    date_given = Date.new(args.year.to_i, args.month.to_i, 1)
+    period_month = I18n.l(date_given, format: '%B').titleize
+
+    puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr} for period_month: #{period_month}".colorize(:light_yellow)
+
+    sql_noviembre = %{
+            SELECT p.id as person_id
+            FROM tickets t
+            JOIN people p ON(t.person_id = p.id)
+            WHERE
+              (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2020-12-01 02:59:59')
+              AND p.email IS NOT NULL
+            GROUP BY p.id
+            ORDER BY person_id ASC
+    }
+
+    # Tickets Query
+    sql = %{
+      SELECT person_id, ticket_id, max_created_time
+      FROM (
+        SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+        FROM tickets t
+        JOIN people p ON(t.person_id = p.id)
+        WHERE
+          (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
+          AND p.email IS NOT NULL
+          AND p.rut != '17406837'
+          AND person_id NOT IN(
+            #{sql_noviembre}
+          )
+        GROUP BY p.rut, p.id
+      ) as collection
+      WHERE
+      DATE_PART('year', max_created_time) = #{Arel.sql(args.year)} AND DATE_PART('month', max_created_time) = #{Arel.sql(args.month)}
+      ORDER BY person_id ASC
+    }
+    # Query para validar si no hay duplicados, comentando o descomentando la línea del "group by" al final
+    #
+    # sql = %{
+    #   SELECT person_id
+    #   FROM (
+    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+    #     FROM tickets t
+    #     JOIN people p ON(t.person_id = p.id)
+    #     WHERE
+    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
+    #       AND p.email IS NOT NULL
+    #       AND p.rut != '17406837'
+    #       AND person_id NOT IN(
+    #         #{sql_noviembre}
+    #       )
+    #     GROUP BY p.rut, p.id
+    #   ) as collection
+    #   WHERE
+    #   DATE_PART('year', max_created_time) = 2020 AND DATE_PART('month', max_created_time) = 12
+
+    #   UNION ALL
+
+    #   SELECT person_id
+    #   FROM (
+    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+    #     FROM tickets t
+    #     JOIN people p ON(t.person_id = p.id)
+    #     WHERE
+    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
+    #       AND p.email IS NOT NULL
+    #       AND p.rut != '17406837'
+    #       AND person_id NOT IN(
+    #         #{sql_noviembre}
+    #       )
+    #     GROUP BY p.rut, p.id
+    #   ) as collection
+    #   WHERE
+    #   DATE_PART('year', max_created_time) = 2021 AND DATE_PART('month', max_created_time) = 1
+
+    #   --GROUP BY person_id
+    #   ORDER BY person_id ASC
+    # }
+    
+    results = ActiveRecord::Base.connection.exec_query(sql)
+    results_count = results.count
+
+    if debug_mode
+      puts sql.colorize(:light_black)
+      puts "results_count: #{results_count}"
+      exit(1)
+    end
+
+    puts " ! Sin resultados de query sql".colorize(:light_red) if results_count == 0
+
+    n_counter = 0
+    results.each do |result|
+      # Tracker y mensaje personalizado
+      ticket = Ticket.find_by(id: result["ticket_id"])
+      tracker_id = '3VJGGWT'
+      custom_msg = <<-TXT
+        Con el objetivo de conocer tu experiencia de #{period_month} en relacion a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
+      TXT
+      
+      LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, debug_mode)
+      n_counter += 1
+    end
+
+    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}, #{n_counter}/#{results_count} sent".colorize(:light_yellow)
+  
+  end
+
   desc "Process tickets (; separator)"
-  task :send, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
+  task :test_unab_api, [:date_from, :date_to, :debug_mode] => [:environment] do |t, args|
     args.with_defaults(date_from: nil, date_to: nil, debug_mode: false)
 
     date_curr = DateTime.current
 
-    puts ">> Executing tickets:send on #{date_curr.strftime("%F %T %z")}, from_date: #{date_from} to_date: #{date_to} debug_mode: #{args.debug_mode}".colorize(:light_yellow)
+    puts ">> Executing tickets:test_api on #{date_curr.strftime("%F %T %z")}".colorize(:light_yellow)
 
-    date_from = (date_curr - 35.days).beginning_of_day
-    date_to = (date_curr + 1.days).end_of_day
-
-    LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
-    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
-    
-    #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
+    unab_api = UnabApi.new
+    tickets = unab_api.get_ticket_created("2021-02-10")[:casos_creados]
+    tickets.each do |ticket|
+      puts ticket.inspect
+    end
   end
 end
   

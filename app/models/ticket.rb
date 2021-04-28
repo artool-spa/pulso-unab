@@ -59,12 +59,12 @@ class Ticket < ApplicationRecord
                   contact_id = unab_api.get_client_by_rut(ticket_created[:ctc_wa_rut])[:contacto][:contactid]
                   person.contact_id = contact_id
                 end
-
               else
                 person.contact_id = nil
               end
-      
-              person.save 
+              person.save
+
+              # Initialize person's ticket
               ticket                      = person.tickets.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
               ticket.business_owner_unit  = ticket_created[:mksv_unidaddenegociodelpropietarioid]
               ticket.business_author_unit = ticket_created[:mksv_unidaddenegociodelautorid]
