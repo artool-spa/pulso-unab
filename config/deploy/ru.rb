@@ -4,14 +4,14 @@ set :stage, :production
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 set :branch, "rails-upd"
 
-role :app, %w{ubuntu@34.216.167.93}
-role :web, %w{ubuntu@34.216.167.93}
-role :db,  %w{ubuntu@34.216.167.93}
+role :app, %w{ubuntu@44.228.141.74}
+role :web, %w{ubuntu@44.228.141.74}
+role :db,  %w{ubuntu@44.228.141.74}
 
 load File.expand_path('../../secrets_deploy.rb', __FILE__)
 
 set :default_env, {
-  database_url:  "postgresql://#{fetch(:dbuser)}:#{fetch(:dbpassword)}@#{fetch(:dbhost)}/#{fetch(:dbname)}"
+  database_url: "postgresql://#{fetch(:dbuser)}:#{fetch(:dbpassword)}@#{fetch(:dbhost)}/#{fetch(:dbname)}"
 }
 
 set :ssh_options, {
