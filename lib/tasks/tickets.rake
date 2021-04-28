@@ -18,14 +18,11 @@ namespace :tickets do
     date_to_crm = date_to.to_date
     
     puts ">> Executing tickets:all on #{date_curr.strftime("%F %T %z")}, from_date: #{date_from_crm.strftime("%F %T %z")}, to_date: #{date_to_crm.strftime("%F %T %z")}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
-    # puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
-    # ResponseIvr.get_answer_from_ivr(date_from, date_to)
-    # puts "   Ending get answers from IVR...".colorize(:light_yellow)
 
-    puts " * Executing get_tickets_from_crm"
+    puts " * Executing Ticket.get_tickets_from_crm"
     Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
     
-    puts " * Executing get_tickets_close_from_crm"
+    puts " * Executing Ticket.get_tickets_close_from_crm"
     Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
 
     if !args.only_tickets
@@ -34,10 +31,11 @@ namespace :tickets do
 
       # puts " * Executing get_answers task from_date: #{date_from} to_date: #{date_to}"
       # ResponseIvr.get_answer_from_ivr(date_from, date_to)
-      puts " * Executing get_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
+
+      puts " * Executing ResponseSurvey.get_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
       ResponseSurvey.get_answers_from_survey(date_from, date_to)
       
-      puts " * Executing get_qr_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
+      puts " * Executing ResponseQr.get_qr_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
       ResponseQr.get_qr_answers_from_survey(date_from, date_to)
 
       date_from = (date_curr - 35.days).beginning_of_day
