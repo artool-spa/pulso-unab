@@ -38,15 +38,14 @@ class StringUtils
     if rut.blank? || rut.length < 7 then nil
     else
       begin
-        rut = rut.strip.remove('.','_',' ').downcase
+        rut = rut.strip.upcase
 
         if !rut.include?('-') 
           rut = rut.insert(-2,'-')
         end
 
         if !rut.rut_valid? 
-          rut = rut[1..-3]
-          
+          rut = rut.first(-2)
           #check the verify number
           if verify_digit(rut) == nil then nil
           else
@@ -55,18 +54,15 @@ class StringUtils
             if !rut.rut_valid? then nil
             else
               #return rut removing the verify digit
-              rut = rut[1..-3]
-              rut
+              rut[..-3]
             end
           end
         else
           #return rut removing the verify digit
-          rut = rut[1..-3]
-          rut
+          rut[..-3]
         end
-      rescue ArgumentError => e
-        puts " ! Error in normalize_rut(#{rut}): #{e.message}".colorize(:light_red)
-        nil
+      rescue ArgumentError, NoMethodError => e
+        puts "     ! Error normalize_rut(): #{e.message}".colorize(:light_red)
       end
     end
   end

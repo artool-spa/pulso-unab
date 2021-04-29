@@ -15,16 +15,19 @@ class Ticket < ApplicationRecord
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
       tickets = unab_api.get_ticket_created(date)[:casos_creados]
-      #puts " - get_tickets_from_crm Tickets del dia #{date}: #{tickets.count}"
+      puts " - get_tickets_from_crm Tickets del dia #{date}: #{tickets.count}"
 
       Person.transaction do
         tickets.each do |ticket_created|
           if ticket_created.kind_of?(Hash) && ticket_created.key?(:ctc_wa_rut) && ticket_created.key?(:subjectid)
+            #puts "     Ticket | ticketnumber: #{ticket_created[:ticketnumber]}, ctc_wa_rut: #{ticket_created[:ctc_wa_rut]}, subjectid: #{ticket_created[:subjectid]}"
+
             rut = check.normalize_rut(ticket_created[:ctc_wa_rut])
             category = find_category_id(ticket_created[:subjectid])
 
             if rut.present? && category.present?
-              #puts "     Ticket | ticketnumber: #{ticket_created[:ticketnumber]}, ctc_wa_rut: #{ticket_created[:ctc_wa_rut]} (rut: #{rut}), subjectid: #{ticket_created[:subjectid]} (category: #{category})"
+              puts "     Ticket | ticketnumber: #{ticket_created[:ticketnumber]}, ctc_wa_rut: #{ticket_created[:ctc_wa_rut]} (rut: #{rut}), subjectid: #{ticket_created[:subjectid]} (category: #{category})"
+
               person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
               person.full_name = ticket_created[:customerid]
               person.cellphone = check.normalize_phone(ticket_created[:ctc_mobilephone])
