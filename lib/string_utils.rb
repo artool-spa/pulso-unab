@@ -39,12 +39,14 @@ class StringUtils
     else
       begin
         rut = rut.strip.remove('.','_',' ').downcase
+
         if !rut.include?('-') 
           rut = rut.insert(-2,'-')
         end
 
         if !rut.rut_valid? 
           rut = rut[1..-3]
+          
           #check the verify number
           if verify_digit(rut) == nil then nil
           else
