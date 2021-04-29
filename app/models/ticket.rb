@@ -15,7 +15,7 @@ class Ticket < ApplicationRecord
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
       tickets = unab_api.get_ticket_created(date)[:casos_creados]
-      #puts " - Tickets del dia #{date}: #{tickets.count}"
+      #puts " - get_tickets_from_crm Tickets del dia #{date}: #{tickets.count}"
 
       Person.transaction do
         tickets.each do |ticket_created|
@@ -163,6 +163,7 @@ class Ticket < ApplicationRecord
     Ticket.transaction do
       from_date.upto(to_date) do |date|
         date = date.strftime("%Y-%m-%d")
+        #puts " - get_tickets_close_from_crm Tickets del dia #{date}: #{tickets.count}"
         
         if !unab_api.get_ticket_closed(date)[:salida][:estado] == '3'
           unab_api.get_ticket_closed(date)[:casos_cerrados].each do |ticket_closed|
