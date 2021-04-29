@@ -22,6 +22,8 @@ class Ticket < ApplicationRecord
             rut = check.normalize_rut(ticket_created[:ctc_wa_rut])
 
             if rut.present? && find_category_id(ticket_created[:subjectid]).present?
+              #puts "     Ticket | ticketnumber: #{ticket_created[:ticketnumber]}, ctc_wa_rut: #{ticket_created[:ctc_wa_rut]} (rut: #{rut}), subjectid: #{ticket_created[:subjectid]} (category: #{category})"
+
               person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
               person.full_name = ticket_created[:customerid]
               person.cellphone = check.normalize_phone(ticket_created[:ctc_mobilephone])
