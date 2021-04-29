@@ -4,24 +4,27 @@ class Ticket < ApplicationRecord
   has_many :response_ivrs, dependent: :destroy
   has_many :response_surveys, dependent: :destroy
   
-  @total_tickets = 0
   def self.get_tickets_from_crm(from_date, to_date)
     unab_api = UnabApi.new
     check = StringUtils.new
     ticket_hash = {}
     from_date = from_date.to_datetime
     to_date = to_date.to_datetime
-    
+
+    total_tickets, total_valid_tickets = 0, 0
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
       tickets = unab_api.get_ticket_created(date)[:casos_creados]
+      #puts " - Tickets del dia #{date}: #{tickets.count}"
 
       Person.transaction do
         tickets.each do |ticket_created|
           if ticket_created.kind_of?(Hash) && ticket_created.key?(:ctc_wa_rut) && ticket_created.key?(:subjectid)
             rut = check.normalize_rut(ticket_created[:ctc_wa_rut])
+            category = find_category_id(ticket_created[:subjectid])
 
-            if rut.present? && find_category_id(ticket_created[:subjectid]).present?
+            if rut.present? && category.present?
+              #puts "     Ticket | ticketnumber: #{ticket_created[:ticketnumber]}, ctc_wa_rut: #{ticket_created[:ctc_wa_rut]} (rut: #{rut}), subjectid: #{ticket_created[:subjectid]} (category: #{category})"
               person = Person.find_or_initialize_by(rut: check.normalize_rut(ticket_created[:ctc_wa_rut]))
               person.full_name = ticket_created[:customerid]
               person.cellphone = check.normalize_phone(ticket_created[:ctc_mobilephone])
@@ -34,6 +37,7 @@ class Ticket < ApplicationRecord
                 career.pop
                 person.career = career.join(" ")
               end
+
               person.campus   = ticket_created[:mksv_campusid]
               person.faculty  = ticket_created[:carr_mksv_facultadid]
               #person.regimen  = ticket_created[:da_mksv_regimen]
@@ -72,6 +76,7 @@ class Ticket < ApplicationRecord
               ticket.owner_by             = ticket_created[:ownerid]
               ticket.incident_id          = ticket_created[:incidentid]
               ticket.income_channel       = ticket_created[:mksv_canaldeingresoid]
+
               if ticket.income_channel.present?
                 if ticket.income_channel.downcase.include?('facebook') || ticket.income_channel.downcase.include?('instagram') || ticket.income_channel.downcase.include?('twitter')  
                   ticket.income_channel_rec = 'Call Center RRSS'
@@ -90,7 +95,7 @@ class Ticket < ApplicationRecord
               ticket.modify_by    = ticket_created[:modifiedby]
               ticket.case_phase   = ticket_created[:mksv_fasedelcasoname]
               ticket.crm_classification = ticket_created[:subjectid]
-              ticket.category_id  = find_category_id(ticket_created[:subjectid])
+              ticket.category_id  = category
               Category.set_categories_to_ticket(ticket)
               ticket.state        = ticket_created[:statecodename]
               ticket.status       = ticket_created[:statuscodename]
@@ -103,13 +108,12 @@ class Ticket < ApplicationRecord
               ticket.close_first_line = ticket_created[:mksv_cierreenprimeralineaname]
               ticket.save
               
-              if ticket.persisted?
+              #if ticket.persisted?
                 #puts "   Ticket: #{ticket.crm_ticket_id} | Fecha: #{ticket.created_time} (#{ticket_created[:createdon]}) "
-                @total_tickets += 1
-              end
-
+                total_valid_tickets += 1
+              #end
             else
-              if !ticket_created[:ctc_wa_rut].present?
+              if ticket_created[:ctc_wa_rut].blank?
                 LostReasonTicket.transaction do
                   lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
                   lost_ticket.lost_reason  = "Rut individuo no presente"
@@ -118,16 +122,16 @@ class Ticket < ApplicationRecord
                   lost_ticket.save
                   #byebug if !lost_ticket.persisted?
                 end
-              elsif !rut.present?
-                  LostReasonTicket.transaction do
-                    lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
-                    lost_ticket.lost_reason  = "Rut individuo no válido"
-                    lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
-                    lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
-                    lost_ticket.save
-                    #byebug if !lost_ticket.persisted?
-                  end
-              elsif !find_category_id(ticket_created[:subjectid]).present?
+              elsif rut.blank?
+                LostReasonTicket.transaction do
+                  lost_ticket              = LostReasonTicket.find_or_initialize_by(crm_ticket_id: ticket_created[:ticketnumber])
+                  lost_ticket.lost_reason  = "Rut individuo no válido"
+                  lost_ticket.created_time = DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")
+                  lost_ticket.updated_time = DateTime.strptime(ticket_created[:modifiedon],"%m/%d/%Y %l:%M:%S %p")
+                  lost_ticket.save
+                  #byebug if !lost_ticket.persisted?
+                end
+              elsif category.blank?
                 #puts "Ticket: #{ticket_created[:ticketnumber]} subject_id: #{ticket_created[:subjectid]} created_time: #{DateTime.strptime(ticket_created[:createdon],"%m/%d/%Y %l:%M:%S %p")}"
                 #puts "------------------------------"
                 LostReasonTicket.transaction do
@@ -138,20 +142,17 @@ class Ticket < ApplicationRecord
                   lost_ticket.save
                   #byebug if !lost_ticket.persisted?
                 end
-              
               end
-
             end
-
           end
 
+          total_tickets += 1
         end
-
       end if tickets.present? 
     end
 
-    puts "   Tickets totales del periodo #{from_date.strftime("%F")} a #{to_date.strftime("%F")}: #{@total_tickets}"
-    AlertMailer.send_mail_err("Tickets totales: #{@total_tickets} en el periodo #{from_date} a #{to_date}").deliver_now if @total_tickets == 0
+    puts "   Tickets totales validos del periodo #{from_date.strftime("%F")} a #{to_date.strftime("%F")}: #{total_valid_tickets} de #{total_tickets}"
+    AlertMailer.send_mail_err("Tickets totales validos: #{total_valid_tickets} de #{total_tickets}, en el periodo #{from_date} a #{to_date}").deliver_now if total_valid_tickets == 0
   end
 
   def self.get_tickets_close_from_crm(from_date, to_date)
@@ -184,7 +185,8 @@ class Ticket < ApplicationRecord
     if category.present?
       cat = category.split(' ')
       cat_obj = Category.find_by(internal_id: cat[0])
-      if !cat_obj.nil?
+
+      if cat_obj.present?
         cat_obj.id
       else
         nil

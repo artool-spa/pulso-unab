@@ -21,7 +21,7 @@ namespace :tickets do
     date_from_crm = date_from.to_date
     date_to_crm = date_to.to_date
     
-    puts ">> Executing tickets:all on #{date_curr.strftime("%F %T %z")}, date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
+    puts ">> Executing tickets:all on #{date_curr.iso8601}, date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
 
     puts " * Executing Ticket.get_tickets_from_crm"
     Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)

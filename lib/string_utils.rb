@@ -44,7 +44,7 @@ class StringUtils
         end
 
         if !rut.rut_valid? 
-          rut = rut.first(-2)
+          rut = rut[1..-3]
           #check the verify number
           if verify_digit(rut) == nil then nil
           else
@@ -53,19 +53,19 @@ class StringUtils
             if !rut.rut_valid? then nil
             else
               #return rut removing the verify digit
-              rut = rut.first(-2)
+              rut = rut[1..-3]
               rut
             end
           end
         else
           #return rut removing the verify digit
-          rut = rut.first(-2)
+          rut = rut[1..-3]
           rut
         end
-      rescue 
+      rescue ArgumentError => e
+        puts " ! Error in normalize_rut(#{rut}): #{e.message}".colorize(:light_red)
         nil
       end
-
     end
   end
 
