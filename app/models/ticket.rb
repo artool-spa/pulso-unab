@@ -159,12 +159,13 @@ class Ticket < ApplicationRecord
     unab_api = UnabApi.new
     from_date = from_date.to_datetime
     to_date = to_date.to_datetime
-    from_date.upto(to_date) do |date|
-      date = date.strftime("%Y-%m-%d")
-      
-      if !unab_api.get_ticket_closed(date)[:salida][:estado] == '3'
-        unab_api.get_ticket_closed(date)[:casos_cerrados].each do |ticket_closed|
-          Ticket.transaction do        
+
+    Ticket.transaction do
+      from_date.upto(to_date) do |date|
+        date = date.strftime("%Y-%m-%d")
+        
+        if !unab_api.get_ticket_closed(date)[:salida][:estado] == '3'
+          unab_api.get_ticket_closed(date)[:casos_cerrados].each do |ticket_closed|
             ticket = Ticket.find_by(crm_ticket_id: ticket_closed[:ticketnumber])
             
             if ticket.present?
@@ -173,10 +174,8 @@ class Ticket < ApplicationRecord
 
               puts "   Ticket close: #{ticket.crm_ticket_id} | Fecha: #{date}".colorize(:light_red)
             end
-
           end
         end
-
       end
     end
   end
