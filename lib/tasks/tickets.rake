@@ -75,67 +75,43 @@ namespace :tickets do
     }
 
     # Tickets Query
+    # sql = %{
+    #   SELECT person_id, ticket_id, max_created_time
+    #   FROM (
+    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+    #     FROM tickets t
+    #     JOIN people p ON(t.person_id = p.id)
+    #     WHERE
+    #       (t.created_time BETWEEN '2021-03-31 04:00:00' AND '2021-04-30 03:59:59')
+    #       AND p.email IS NOT NULL
+    #       AND p.rut != '17406837'
+    #       AND person_id NOT IN(
+    #         #{sql_noviembre}
+    #       )
+    #     GROUP BY p.rut, p.id
+    #   ) as collection
+    #   WHERE
+    #   DATE_PART('year', max_created_time) = #{Arel.sql(args.year)} AND DATE_PART('month', max_created_time) = #{Arel.sql(args.month)}
+    #   ORDER BY person_id ASC
+    # }
     sql = %{
-      SELECT person_id, ticket_id, max_created_time
+      SELECT MAX(person_id) max_person_id, MAX(rut) max_rut, email, MAX(ticket_id) max_ticket_id, MAX(max_created_time) max_max_created_time
       FROM (
-        SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+        SELECT p.rut, p.id as person_id, p.email, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
         FROM tickets t
         JOIN people p ON(t.person_id = p.id)
         WHERE
           (t.created_time BETWEEN '2021-03-31 04:00:00' AND '2021-04-30 03:59:59')
           AND p.email IS NOT NULL
           AND p.rut != '17406837'
-          AND person_id NOT IN(
-            #{sql_noviembre}
-          )
-        GROUP BY p.rut, p.id
+        GROUP BY p.rut, p.id, p.email
       ) as collection
       WHERE
       DATE_PART('year', max_created_time) = #{Arel.sql(args.year)} AND DATE_PART('month', max_created_time) = #{Arel.sql(args.month)}
-      ORDER BY person_id ASC
+      GROUP BY email
+      HAVING COUNT(*) > 1
+      ORDER BY email ASC
     }
-    # Query para validar si no hay duplicados, comentando o descomentando la línea del "group by" al final
-    #
-    # sql = %{
-    #   SELECT person_id
-    #   FROM (
-    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
-    #     FROM tickets t
-    #     JOIN people p ON(t.person_id = p.id)
-    #     WHERE
-    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
-    #       AND p.email IS NOT NULL
-    #       AND p.rut != '17406837'
-    #       AND person_id NOT IN(
-    #         #{sql_noviembre}
-    #       )
-    #     GROUP BY p.rut, p.id
-    #   ) as collection
-    #   WHERE
-    #   DATE_PART('year', max_created_time) = 2020 AND DATE_PART('month', max_created_time) = 12
-
-    #   UNION ALL
-
-    #   SELECT person_id
-    #   FROM (
-    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
-    #     FROM tickets t
-    #     JOIN people p ON(t.person_id = p.id)
-    #     WHERE
-    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
-    #       AND p.email IS NOT NULL
-    #       AND p.rut != '17406837'
-    #       AND person_id NOT IN(
-    #         #{sql_noviembre}
-    #       )
-    #     GROUP BY p.rut, p.id
-    #   ) as collection
-    #   WHERE
-    #   DATE_PART('year', max_created_time) = 2021 AND DATE_PART('month', max_created_time) = 1
-
-    #   --GROUP BY person_id
-    #   ORDER BY person_id ASC
-    # }
     
     results = ActiveRecord::Base.connection.exec_query(sql)
     results_count = results.count
