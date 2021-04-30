@@ -108,7 +108,7 @@ namespace :tickets do
       ticket = Ticket.find_by(id: result["ticket_id"])
       tracker_id = '3VJGGWT'
       custom_msg = <<-TXT
-        Con el objetivo de conocer tu experiencia de #{period_month} en relacion a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
+        Con el objetivo de conocer tu experiencia en relación a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
       TXT
       
       LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, debug_mode)
