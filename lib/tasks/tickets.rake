@@ -63,55 +63,33 @@ namespace :tickets do
 
     puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr} for period_month: #{period_month}".colorize(:light_yellow)
 
-    sql_noviembre = %{
-            SELECT p.id as person_id
-            FROM tickets t
-            JOIN people p ON(t.person_id = p.id)
-            WHERE
-              (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2020-12-01 02:59:59')
-              AND p.email IS NOT NULL
-            GROUP BY p.id
-            ORDER BY person_id ASC
-    }
-
     # Tickets Query
-    # sql = %{
-    #   SELECT person_id, ticket_id, max_created_time
-    #   FROM (
-    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
-    #     FROM tickets t
-    #     JOIN people p ON(t.person_id = p.id)
-    #     WHERE
-    #       (t.created_time BETWEEN '2021-03-31 04:00:00' AND '2021-04-30 03:59:59')
-    #       AND p.email IS NOT NULL
-    #       AND p.rut != '17406837'
-    #       AND person_id NOT IN(
-    #         #{sql_noviembre}
-    #       )
-    #     GROUP BY p.rut, p.id
-    #   ) as collection
-    #   WHERE
-    #   DATE_PART('year', max_created_time) = #{Arel.sql(args.year)} AND DATE_PART('month', max_created_time) = #{Arel.sql(args.month)}
-    #   ORDER BY person_id ASC
-    # }
     sql = %{
-      SELECT MAX(person_id) max_person_id, MAX(rut) max_rut, email, MAX(ticket_id) max_ticket_id, MAX(max_created_time) max_max_created_time
+      SELECT max_person_id, max_rut, email, ticket_id, max_created_time
       FROM (
-        SELECT p.rut, p.id as person_id, p.email, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+        SELECT MAX(p.id) as max_person_id, MAX(p.rut) as max_rut, p.email, MAX(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
         FROM tickets t
         JOIN people p ON(t.person_id = p.id)
         WHERE
           (t.created_time BETWEEN '2021-03-31 04:00:00' AND '2021-04-30 03:59:59')
           AND p.email IS NOT NULL
           AND p.rut != '17406837'
-        GROUP BY p.rut, p.id, p.email
+        GROUP BY p.email
       ) as collection
-      WHERE
-      DATE_PART('year', max_created_time) = #{Arel.sql(args.year)} AND DATE_PART('month', max_created_time) = #{Arel.sql(args.month)}
-      GROUP BY email
-      HAVING COUNT(*) > 1
       ORDER BY email ASC
+      LIMIT 5000 OFFSET 0
     }
+
+    # # Totales de tickets por dia
+    # SELECT t.created_time::date as created_time, count(*)
+    # FROM tickets t
+    # JOIN people p ON(t.person_id = p.id)
+    # WHERE
+    #   (t.created_time BETWEEN '2021-03-31 04:00:00' AND '2021-04-30 03:59:59')
+    #   AND p.email IS NOT NULL
+    #   AND p.rut != '17406837'
+    # GROUP BY t.created_time::date
+    # ORDER BY t.created_time::date
     
     results = ActiveRecord::Base.connection.exec_query(sql)
     results_count = results.count
