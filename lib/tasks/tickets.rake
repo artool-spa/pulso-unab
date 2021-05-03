@@ -77,7 +77,7 @@ namespace :tickets do
         GROUP BY p.email
       ) as collection
       ORDER BY email ASC
-      LIMIT 5000 OFFSET 0
+      LIMIT 5000 OFFSET 5000
     }
 
     # # Totales de tickets por dia
