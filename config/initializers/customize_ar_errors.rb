@@ -15,7 +15,7 @@ ActionView::Base.field_error_proc = Proc.new do |html_tag, instance|
       html = %(#{e}).html_safe
     elsif form_fields.include? e.node_name
       e['class'] += ' is-invalid'
-      if instance.error_message.kind_of?(Array)
+      if instance.error_message.kind_of?(ActiveModel::DeprecationHandlingMessageArray)
         html = %(#{e}<div class="invalid-feedback">#{instance.error_message.uniq.join(', ')}</div>).html_safe
       else
         html = %(#{e}<div class="invalid-feedback">#{instance.error_message}</div>).html_safe

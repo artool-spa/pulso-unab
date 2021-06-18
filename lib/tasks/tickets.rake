@@ -3,7 +3,7 @@ namespace :tickets do
   task :all, [:date_from, :date_to, :debug_mode, :only_tickets] => [:environment] do |t, args|
     args.with_defaults(date_from: nil, date_to: nil, debug_mode: false, only_tickets: false)
 
-    date_curr = DateTime.current
+    date_curr = DateTime.now
 
     # Set initial retrieving period for stats
     if args.date_from.present? && args.date_to.present?
@@ -13,40 +13,42 @@ namespace :tickets do
       date_from = (date_curr - 2.days).beginning_of_day
       date_to = date_curr.end_of_day
     end
-    
+
+    # Correccion de los periodos locales para ser mostrados en UTC
+    date_from = date_from.utc
+    date_to = date_to.utc
+
     date_from_crm = date_from.to_date
     date_to_crm = date_to.to_date
     
-    puts ">> Executing tickets:all on #{date_curr.strftime("%F %T %z")}, from_date: #{date_from_crm.strftime("%F %T %z")}, to_date: #{date_to_crm.strftime("%F %T %z")}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
-    # puts ">> Executing get_answers task from_date: #{date_from} to_date: #{date_to}".colorize(:light_yellow)
-    # ResponseIvr.get_answer_from_ivr(date_from, date_to)
-    # puts "   Ending get answers from IVR...".colorize(:light_yellow)
+    puts ">> Executing tickets:all on #{date_curr.iso8601}, date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}, only_tickets: #{args.only_tickets}, debug_mode: #{args.debug_mode}".colorize(:light_yellow)
 
-    puts " * Executing get_tickets_from_crm"
+    puts " * Executing Ticket.get_tickets_from_crm"
     Ticket.get_tickets_from_crm(date_from_crm, date_to_crm)
     
-    puts " * Executing get_tickets_close_from_crm"
+    puts " * Executing Ticket.get_tickets_close_from_crm"
     Ticket.get_tickets_close_from_crm(date_from_crm, date_to_crm)
 
-    if !args.only_tickets
+    unless args.only_tickets
       date_from = (date_curr - 3.days).beginning_of_day
       date_to = date_curr.end_of_day
 
-      # puts " * Executing get_answers task from_date: #{date_from} to_date: #{date_to}"
+      # puts " * Executing get_answers task date_from: #{date_from} date_to: #{date_to}"
       # ResponseIvr.get_answer_from_ivr(date_from, date_to)
-      puts " * Executing get_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
+
+      puts " * Executing ResponseSurvey.get_answers_from_survey date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}"
       ResponseSurvey.get_answers_from_survey(date_from, date_to)
       
-      puts " * Executing get_qr_answers_from_survey from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
+      puts " * Executing ResponseQr.get_qr_answers_from_survey date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}"
       ResponseQr.get_qr_answers_from_survey(date_from, date_to)
 
       date_from = (date_curr - 35.days).beginning_of_day
       date_to = (date_curr + 1.days).end_of_day
 
-      puts " * Executing LogMailerSend.send_mail from_date: #{date_from.strftime("%F %T %z")} to_date: #{date_to.strftime("%F %T %z")}"
+      puts " * Executing LogMailerSend.send_mail date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}"
       LogMailerSend.send_mail(date_from, date_to, args.debug_mode)
     end
-    puts "   Ending process on #{DateTime.current.strftime("%F %T %z")}".colorize(:light_yellow)
+    puts "   Ending process on #{DateTime.current.iso8601}".colorize(:light_yellow)
     
     #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
   end
@@ -61,79 +63,33 @@ namespace :tickets do
 
     puts ">> Executing LogMailerSend.send_mail_on_demand on #{date_curr} for period_month: #{period_month}".colorize(:light_yellow)
 
-    sql_noviembre = %{
-            SELECT p.id as person_id
-            FROM tickets t
-            JOIN people p ON(t.person_id = p.id)
-            WHERE
-              (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2020-12-01 02:59:59')
-              AND p.email IS NOT NULL
-            GROUP BY p.id
-            ORDER BY person_id ASC
-    }
-
     # Tickets Query
     sql = %{
-      SELECT person_id, ticket_id, max_created_time
+      SELECT max_person_id, max_rut, email, ticket_id, max_created_time
       FROM (
-        SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
+        SELECT MAX(p.id) as max_person_id, MAX(p.rut) as max_rut, p.email, MAX(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
         FROM tickets t
         JOIN people p ON(t.person_id = p.id)
         WHERE
-          (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
+          (t.created_time BETWEEN '2021-03-31 04:00:00' AND '2021-04-30 03:59:59')
           AND p.email IS NOT NULL
           AND p.rut != '17406837'
-          AND person_id NOT IN(
-            #{sql_noviembre}
-          )
-        GROUP BY p.rut, p.id
+        GROUP BY p.email
       ) as collection
-      WHERE
-      DATE_PART('year', max_created_time) = #{Arel.sql(args.year)} AND DATE_PART('month', max_created_time) = #{Arel.sql(args.month)}
-      ORDER BY person_id ASC
+      ORDER BY email ASC
+      LIMIT 5000 OFFSET 5000
     }
-    # Query para validar si no hay duplicados, comentando o descomentando la línea del "group by" al final
-    #
-    # sql = %{
-    #   SELECT person_id
-    #   FROM (
-    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
-    #     FROM tickets t
-    #     JOIN people p ON(t.person_id = p.id)
-    #     WHERE
-    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
-    #       AND p.email IS NOT NULL
-    #       AND p.rut != '17406837'
-    #       AND person_id NOT IN(
-    #         #{sql_noviembre}
-    #       )
-    #     GROUP BY p.rut, p.id
-    #   ) as collection
-    #   WHERE
-    #   DATE_PART('year', max_created_time) = 2020 AND DATE_PART('month', max_created_time) = 12
 
-    #   UNION ALL
-
-    #   SELECT person_id
-    #   FROM (
-    #     SELECT p.rut, p.id as person_id, max(t.created_time) as max_created_time, max(t.id) as ticket_id, count(*)
-    #     FROM tickets t
-    #     JOIN people p ON(t.person_id = p.id)
-    #     WHERE
-    #       (t.created_time BETWEEN '2020-11-11 03:00:00' AND '2021-02-01 02:59:59')
-    #       AND p.email IS NOT NULL
-    #       AND p.rut != '17406837'
-    #       AND person_id NOT IN(
-    #         #{sql_noviembre}
-    #       )
-    #     GROUP BY p.rut, p.id
-    #   ) as collection
-    #   WHERE
-    #   DATE_PART('year', max_created_time) = 2021 AND DATE_PART('month', max_created_time) = 1
-
-    #   --GROUP BY person_id
-    #   ORDER BY person_id ASC
-    # }
+    # # Totales de tickets por dia
+    # SELECT t.created_time::date as created_time, count(*)
+    # FROM tickets t
+    # JOIN people p ON(t.person_id = p.id)
+    # WHERE
+    #   (t.created_time BETWEEN '2021-03-31 04:00:00' AND '2021-04-30 03:59:59')
+    #   AND p.email IS NOT NULL
+    #   AND p.rut != '17406837'
+    # GROUP BY t.created_time::date
+    # ORDER BY t.created_time::date
     
     results = ActiveRecord::Base.connection.exec_query(sql)
     results_count = results.count
@@ -152,7 +108,7 @@ namespace :tickets do
       ticket = Ticket.find_by(id: result["ticket_id"])
       tracker_id = '3VJGGWT'
       custom_msg = <<-TXT
-        Con el objetivo de conocer tu experiencia de #{period_month} en relacion a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
+        Con el objetivo de conocer tu experiencia en relación a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
       TXT
       
       LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, debug_mode)

@@ -69,12 +69,12 @@ class LogMailerSend < ApplicationRecord
       end
     end
     
-    puts " * Total de Emails enviados efectivos: #{@mail_send_count}"
+    puts "   Total de Emails enviados efectivos: #{@mail_send_count}"
 
     mail_send_errors_count = @mail_send_errors.count
     if mail_send_errors_count > 0
       puts ""
-      puts " * #{mail_send_errors_count} emails con errores. Detalle a continuación:".colorize(:light_red)
+      puts " * #{mail_send_errors_count} emails con errores. Detalles a continuación:".colorize(:light_red)
       
       @mail_send_errors.each do |v|
         person = v[:person]
@@ -111,7 +111,7 @@ class LogMailerSend < ApplicationRecord
           AlertMailer.send_mail(person, ticket, "Evalúa Atención", custom_msg, tracker_id).deliver_now!
           @mail_send_count += 1
         else
-          puts "Correo enviado con éxito a #{person.email}, ticket ID: #{ticket.id}"
+          puts "   [SIMULACIÓN] Correo enviado por Ticket ID: #{ticket.id} al email: #{person.email}".colorize(:light_black)
         end
 
         mailer_send.mails_count += 1

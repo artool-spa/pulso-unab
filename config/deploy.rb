@@ -1,7 +1,7 @@
 set :application, 'pulso_unab'
 set :repo_url, "git@github.com:artool-spa/pulso-unab.git"
-set :rvm_ruby_version, "2.5.1@#{fetch(:application)}"
-set :rvm_ruby, '2.5.1'
+set :rvm_ruby_version, "2.7.2@#{fetch(:application)}"
+set :rvm_ruby, '2.7.2'
 set :keep_releases, 3
 
 # Default deploy_to directory is /var/www/my_app_name
