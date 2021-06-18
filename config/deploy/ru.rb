@@ -4,9 +4,9 @@ set :stage, :production
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 set :branch, "rails-upd"
 
-role :app, %w{ubuntu@44.228.141.74}
-role :web, %w{ubuntu@44.228.141.74}
-role :db,  %w{ubuntu@44.228.141.74}
+role :app, %w{ubuntu@44.238.156.175}
+role :web, %w{ubuntu@44.238.156.175}
+role :db,  %w{ubuntu@44.238.156.175}
 
 load File.expand_path('../../secrets_deploy.rb', __FILE__)
 
