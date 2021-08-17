@@ -17,5 +17,6 @@ set :default_env, {
 set :ssh_options, {
   keys: %w(~/.ssh/funnel_key.pem),
   forward_agent: true,
+  paranoid: false
 #  auth_methods: %w(password)
 }
