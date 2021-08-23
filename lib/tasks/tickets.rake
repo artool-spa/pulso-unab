@@ -50,7 +50,7 @@ namespace :tickets do
     end
     puts "   Ending process on #{DateTime.current.iso8601}".colorize(:light_yellow)
     
-    #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
+    AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
   end
 
   desc "Process tickets on demand (; separator)"
@@ -111,7 +111,7 @@ namespace :tickets do
         Con el objetivo de conocer tu experiencia en relación a nuestro servicio y plataforma de atención, te invitamos a contestar una breve encuesta.
       TXT
       
-      LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, debug_mode)
+      # LogMailerSend.send_mail_on_demand(ticket, tracker_id, custom_msg, debug_mode)
       n_counter += 1
     end
 

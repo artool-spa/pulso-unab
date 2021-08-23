@@ -9,6 +9,10 @@ class UnabIvr
   end
 
   def get_ivr_data(idTask, param1, param2)
+
+    param1 = Date.parse(param1.to_s).strftime('%Y%m%d')
+    param2 = Date.parse(param2.to_s).strftime('%Y%m%d')
+
     response = @client.call(:execute_task02, message: { idTask: idTask, param1: param1, param2: param2 })
     response.body[:execute_task02_response][:execute_task02_result]
   end
