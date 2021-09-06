@@ -9,15 +9,16 @@ class ResponseIvr < ApplicationRecord
       begin
         answer = JSON.parse(ivr_api.get_ivr_data(57,date,date))
 
-        puts "Date: #{date} Answer: #{answer} ".colorize(:light_green)
+        puts "Date: #{date} Answer: #{answer["Table"].count} ".colorize(:light_green)
         
         answer["Table"].each do |response|
           ResponseIvr.transaction do
-            ticket = Ticket.find_by(crm_ticket_id: response["ticket_id"])
+            ticket = Ticket.find_by(crm_ticket_id: response["ticket_id"].strip)
+
             if !ticket.nil?
               if !ticket.response_surveys.present?
                 response_ivr = ResponseIvr.find_or_initialize_by(ticket_id: ticket.id)
-                response_ivr.ticket_id = response["ticket_id"].to_i
+                response_ivr.ticket_id = ticket.id
                 response_ivr.crm_ticket_id = ticket.crm_ticket_id
                 response_ivr.income_channel = 'Call Center'
                 response_ivr.have_solution = response["answer"]
@@ -55,12 +56,13 @@ class ResponseIvr < ApplicationRecord
           
         end
       rescue StandardError => error
-        puts "Respuestas IVR error => Response: #{ivr_api.get_ivr_data(57,date,date)}".colorize(:light_red)
-        #AlertMailer.send_mail_err("Respuestas IVR error => Response: #{error}").deliver_now
+        puts "Respuestas IVR error => Response: #{JSON.parse(ivr_api.get_ivr_data(57,date,date))["Table"]}".colorize(:light_red)
+        puts "ERROR: #{error}".colorize(:light_red)
+        AlertMailer.send_mail_err("Respuestas IVR error => Response: #{error}").deliver_now
       end
     end
     puts "Respuestas IVR totales del periodo: #{@total_ivr_answers}"
-    #AlertMailer.send_mail_err("Respuestas IVR totales: #{@total_ivr_answers} en el periodo #{from_date} | #{to_date}").deliver_now if @total_ivr_answers == 0
+    AlertMailer.send_mail_err("Respuestas IVR totales: #{@total_ivr_answers} en el periodo #{from_date} | #{to_date}").deliver_now if @total_ivr_answers == 0
     puts "Respuestas IVR guardadas del periodo: #{@total_ivr_answers_save}"
   end
 

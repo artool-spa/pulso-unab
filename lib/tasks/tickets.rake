@@ -33,8 +33,8 @@ namespace :tickets do
       date_from = (date_curr - 3.days).beginning_of_day
       date_to = date_curr.end_of_day
 
-      # puts " * Executing get_answers task date_from: #{date_from} date_to: #{date_to}"
-      # ResponseIvr.get_answer_from_ivr(date_from, date_to)
+      puts " * Executing get_answers task date_from: #{date_from} date_to: #{date_to}"
+      ResponseIvr.get_answer_from_ivr(date_from, date_to)
 
       puts " * Executing ResponseSurvey.get_answers_from_survey date_from: #{date_from.iso8601}, date_to: #{date_to.iso8601}"
       ResponseSurvey.get_answers_from_survey(date_from, date_to)
