@@ -9,7 +9,7 @@ class ResponseIvr < ApplicationRecord
       begin
         answer = JSON.parse(ivr_api.get_ivr_data(57,date,date))
 
-        puts "Date: #{date} Answer: #{answer["Table"].count} ".colorize(:light_green)
+        #puts "Date: #{date} Answer: #{answer["Table"].count} ".colorize(:light_green)
         
         answer["Table"].each do |response|
           ResponseIvr.transaction do
@@ -56,7 +56,7 @@ class ResponseIvr < ApplicationRecord
           
         end
       rescue StandardError => error
-        puts "Respuestas IVR error => Response: #{JSON.parse(ivr_api.get_ivr_data(57,date,date))["Table"]}".colorize(:light_red)
+        #puts "Respuestas IVR error => Response: #{JSON.parse(ivr_api.get_ivr_data(57,date,date))["Table"]}".colorize(:light_red)
         puts "ERROR: #{error}".colorize(:light_red)
         AlertMailer.send_mail_err("Respuestas IVR error => Response: #{error}").deliver_now
       end
