@@ -50,7 +50,7 @@ namespace :tickets do
     end
     puts "   Ending process on #{DateTime.current.iso8601}".colorize(:light_yellow)
     
-    AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
+    #AlertMailer.send_mail_success("Mailing Unab ended").deliver_now
   end
 
   desc "Process tickets on demand (; separator)"
