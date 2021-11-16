@@ -20,7 +20,7 @@ class AlertMailer < ApplicationMailer
   end
 
   def send_mail_success(result)
-    mail(subject: "Proceso tickets UNAB", to: "dev@artool.cl", body: result, content_type: "text/html")
+    mail(subject: "Proceso correos UNAB", to: "dev@artool.cl", body: result, content_type: "text/html")
   end
 
   def testing_mail(m_type = nil)

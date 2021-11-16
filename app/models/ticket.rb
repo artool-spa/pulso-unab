@@ -14,7 +14,7 @@ class Ticket < ApplicationRecord
     total_tickets, total_valid_tickets = 0, 0
     from_date.upto(to_date) do |date|
       date = date.strftime("%Y-%m-%d")
-      tickets = unab_api.get_ticket_created(date)[:casos_creados]
+      tickets = unab_api.get_ticket_created(date)[:casos_x0020_creados]
       #puts " - get_tickets_from_crm Tickets del dia #{date}: #{tickets.count}"
 
       Person.transaction do

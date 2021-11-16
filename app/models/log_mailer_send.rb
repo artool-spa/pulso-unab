@@ -71,6 +71,8 @@ class LogMailerSend < ApplicationRecord
     
     puts "   Total de Emails enviados efectivos: #{@mail_send_count}"
 
+    AlertMailer.send_mail_success("Total de Emails enviados efectivos: #{@mail_send_count}").deliver_now!
+
     mail_send_errors_count = @mail_send_errors.count
     if mail_send_errors_count > 0
       puts ""
